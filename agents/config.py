@@ -50,8 +50,9 @@ class Thresholds(BaseSettings):
 class Settings(BaseSettings):
     """Top-level application settings, loaded from environment / ``.env``."""
 
+    # `.env.local` is written by `npx convex dev` (CONVEX_URL) and overrides `.env`.
     model_config = SettingsConfigDict(
-        env_file=".env",
+        env_file=(".env", ".env.local"),
         env_file_encoding="utf-8",
         extra="ignore",
     )
@@ -64,7 +65,7 @@ class Settings(BaseSettings):
 
     # ---- LangSmith ----
     langsmith_api_key: str = Field(default="", alias="LANGSMITH_API_KEY")
-    langsmith_project: str = Field(default="deckalization", alias="LANGSMITH_PROJECT")
+    langsmith_project: str = Field(default="deckalization-dev", alias="LANGSMITH_PROJECT")
     langsmith_tracing: bool = Field(default=True, alias="LANGSMITH_TRACING")
     langsmith_endpoint: str = Field(
         default="https://api.smith.langchain.com", alias="LANGSMITH_ENDPOINT"

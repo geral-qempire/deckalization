@@ -74,6 +74,19 @@ uv run pytest                   # unit smoke tests
 npx @langchain/langgraph-cli dev  # or: langgraph dev — serves the graph locally
 ```
 
+## Environments (dev / prod)
+
+Same variable names everywhere; only values differ.
+
+| Concern | dev | prod |
+| --- | --- | --- |
+| OpenRouter key | `deckalization-dev` key in `.env` | `deckalization-prod` key as LangGraph Platform secret |
+| LangSmith project | `deckalization-dev` | `deckalization-prod` |
+| Convex deployment | personal dev deployment (`npx convex dev`) | prod deployment (`npx convex deploy` + deploy key) |
+| CI (PRs) | dev/CI OpenRouter key + Convex preview deploy | — |
+
+Prod and CI secrets are wired in **Phase 6 (CI/CD)** and **Phase 7 (deploy)** — dev is all that's needed for Phases 0–5.
+
 ## Build plan
 
 Built **one phase at a time**:
