@@ -10,7 +10,12 @@
     "codegen": "convex codegen",
     "mcp": "convex mcp start"
   },
+  "dependencies": {
+    "stream-chain": "^2.2.5",
+    "stream-json": "^1.8.0"
+  },
   "devDependencies": {
+    "@types/node": "^20.14.0",
     "convex": "^1.16.0",
     "typescript": "^5.5.0"
   }

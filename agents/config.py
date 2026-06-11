@@ -47,6 +47,36 @@ class Thresholds(BaseSettings):
     max_verifier_loops: int = 2
 
 
+class EmbeddingConfig(BaseSettings):
+    """Embedding model for the Comprehensive Rules vectors.
+
+    Version-pinned: the SAME model + dimensions must be used at index time
+    (ingest) and query time (retrieval), and must match the Convex vector
+    index `dimensions`. Computed in Python via OpenRouter for a single,
+    consistent code path. Card rulings are NOT embedded.
+    """
+
+    # OpenRouter embedding model id.
+    model: str = "openai/text-embedding-3-large"
+    # Output dimensionality — must equal `ruleChunks.by_embedding` index dims.
+    dimensions: int = 3072
+    # Batch size for embedding requests during ingest.
+    batch_size: int = 96
+
+
+class IngestConfig(BaseSettings):
+    """Comprehensive Rules ingestion settings."""
+
+    # Optional explicit URL to the CR .txt. If empty, the downloader discovers
+    # the latest link from the official rules page.
+    cr_txt_url: str = Field(default="", alias="CR_TXT_URL")
+    # Official rules landing page used to auto-discover the .txt download link.
+    cr_rules_page: str = "https://magic.wizards.com/en/rules"
+    # How many rule chunks to upsert into Convex per mutation call. Kept small
+    # because each chunk carries a 3072-float embedding (large JSON payload).
+    upsert_batch_size: int = 50
+
+
 class Settings(BaseSettings):
     """Top-level application settings, loaded from environment / ``.env``."""
 
@@ -75,13 +105,11 @@ class Settings(BaseSettings):
     convex_url: str = Field(default="", alias="CONVEX_URL")
     convex_deploy_key: str = Field(default="", alias="CONVEX_DEPLOY_KEY")
 
-    # ---- Embeddings (local, CPU, 384-dim) ----
-    embedding_model: str = "BAAI/bge-small-en-v1.5"
-    embedding_dimensions: int = 384
-
     # ---- Nested config ----
     models: ModelConfig = Field(default_factory=ModelConfig)
     thresholds: Thresholds = Field(default_factory=Thresholds)
+    embeddings: EmbeddingConfig = Field(default_factory=EmbeddingConfig)
+    ingest: IngestConfig = Field(default_factory=IngestConfig)
 
 
 @lru_cache

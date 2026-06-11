@@ -8,7 +8,13 @@
  * @module
  */
 
+import type * as aliases from "../aliases.js";
+import type * as cards from "../cards.js";
+import type * as cardsImport from "../cardsImport.js";
+import type * as crons from "../crons.js";
 import type * as hello from "../hello.js";
+import type * as lib_normalize from "../lib/normalize.js";
+import type * as rules from "../rules.js";
 
 import type {
   ApiFromModules,
@@ -17,7 +23,13 @@ import type {
 } from "convex/server";
 
 declare const fullApi: ApiFromModules<{
+  aliases: typeof aliases;
+  cards: typeof cards;
+  cardsImport: typeof cardsImport;
+  crons: typeof crons;
   hello: typeof hello;
+  "lib/normalize": typeof lib_normalize;
+  rules: typeof rules;
 }>;
 
 /**
