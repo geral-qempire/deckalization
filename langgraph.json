@@ -1,7 +1,9 @@
 {
   "dependencies": ["."],
   "graphs": {
-    "hello": "./agents/hello.py:build_hello_graph"
+    "hello": "./agents/hello.py:build_hello_graph",
+    "baseline_zero_shot": "./agents/baseline/zero_shot.py:build_zero_shot_graph",
+    "baseline_rag": "./agents/baseline/rag.py:build_rag_graph"
   },
-  "env": ".env"
+  "env": ".env.local"
 }

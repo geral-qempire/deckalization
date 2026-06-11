@@ -1,0 +1,10 @@
+{"id": "deathtouch-trample", "question": "Does deathtouch work with trample?", "tags": ["keywords", "combat"]}
+{"id": "bolt-hexproof", "question": "If I cast Lightning Bolt targeting a creature with hexproof, what happens?", "tags": ["targeting", "hexproof"]}
+{"id": "multi-blocker-damage", "question": "How is combat damage assigned when a creature is blocked by two creatures?", "tags": ["combat", "510"]}
+{"id": "respond-to-trigger", "question": "Can I cast an instant in response to a triggered ability after it has already resolved?", "tags": ["stack", "timing"]}
+{"id": "humility-opalescence", "question": "What happens when Humility and Opalescence are both on the battlefield?", "tags": ["layers", "hard"]}
+{"id": "flicker-etb", "question": "If I flicker a creature with an enters-the-battlefield ability, does the ability trigger again?", "tags": ["zones", "triggers"]}
+{"id": "commander-tax", "question": "How does the commander tax work when casting my commander from the command zone?", "tags": ["commander"]}
+{"id": "replacement-effect", "question": "If two replacement effects would modify how a creature enters the battlefield, how do I apply them?", "tags": ["replacement"]}
+{"id": "priority-pass", "question": "When do players receive priority during the combat phase?", "tags": ["priority", "turn structure"]}
+{"id": "legend-rule", "question": "What happens if I control two legendary permanents with the same name?", "tags": ["state-based"]}

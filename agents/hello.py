@@ -12,20 +12,10 @@ Done-when checks this exercises:
 
 from __future__ import annotations
 
-import os
 from typing import TypedDict
 
 from agents.config import get_settings
-
-
-def _export_langsmith_env() -> None:
-    """Push LangSmith settings into the env so the tracer picks them up."""
-    s = get_settings()
-    if s.langsmith_api_key:
-        os.environ["LANGSMITH_API_KEY"] = s.langsmith_api_key
-        os.environ["LANGSMITH_TRACING"] = "true" if s.langsmith_tracing else "false"
-        os.environ["LANGSMITH_PROJECT"] = s.langsmith_project
-        os.environ["LANGSMITH_ENDPOINT"] = s.langsmith_endpoint
+from agents.tracing import export_langsmith_env
 
 
 class HelloState(TypedDict):
@@ -67,7 +57,7 @@ def check_convex() -> str:
 
 
 def main() -> None:
-    _export_langsmith_env()
+    export_langsmith_env()
 
     app = build_hello_graph()
     result = app.invoke({"question": "Does the stack work?", "answer": ""})

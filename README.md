@@ -36,7 +36,7 @@ CI/CD + evaluation + observability pipeline on the **LangChain / LangGraph / Lan
 deckalization/
 ├── agents/      # Python — reasoning & orchestration (config, state, graph, nodes, tools, ingest)
 ├── convex/      # TypeScript — data layer (schema + functions + crons)
-├── mcp/         # FastMCP server over the same tool layer
+├── mcp_server/  # FastMCP server over the same tool layer (named to avoid the `mcp` pkg clash)
 ├── evals/       # golden datasets, evaluators, runner
 ├── app/         # Streamlit chat UI
 ├── tests/       # unit tests
@@ -75,6 +75,18 @@ uv run pytest                   # unit smoke tests
 npx @langchain/langgraph-cli dev  # or: langgraph dev — serves the graph locally
 ```
 
+### 5. Phase 3 baselines (zero-shot vs RAG)
+```bash
+# Single question — both baselines, traced to LangSmith (deckalization-dev)
+uv run python -m agents.baseline.run --baseline both \
+  --question "Does deathtouch work with trample?"
+
+# Starter fixture set (~10 questions)
+uv run python -m agents.baseline.run --baseline both \
+  --fixture evals/fixtures/sample_questions.jsonl
+```
+Filter LangSmith traces by tags `baseline:zero_shot` or `baseline:rag`.
+
 ## Environments (dev / prod)
 
 Same variable names everywhere; only values differ.
@@ -92,10 +104,10 @@ Prod and CI secrets are wired in **Phase 6 (CI/CD)** and **Phase 7 (deploy)** �
 
 Built **one phase at a time**:
 
-- **Phase 0** — Scaffolding & infra ✅ (this commit)
-- **Phase 1** — Data layer: schema, ingestion & indexing
-- **Phase 2** — Data-access tools & card resolver
-- **Phase 3** — Baseline single-chain RAG
+- **Phase 0** — Scaffolding & infra ✅
+- **Phase 1** — Data layer: schema, ingestion & indexing ✅
+- **Phase 2** — Data-access tools, card resolver & FastMCP server ✅
+- **Phase 3** — Baseline zero-shot + single-chain RAG (traced in LangSmith)
 - **Phase 4** — Multi-agent graph (router + verifier loop)
 - **Phase 5** — Eval harness
 - **Phase 6** — CI/CD quality gate
