@@ -24,9 +24,10 @@ def run_config(
     question: str,
     question_id: str | None = None,
     extra_tags: list[str] | None = None,
+    phase: str = "3",
 ) -> dict[str, Any]:
     """LangGraph/LangChain invoke config with consistent baseline tags."""
-    tags = ["phase:3", f"baseline:{baseline}", *(extra_tags or [])]
+    tags = [f"phase:{phase}", f"baseline:{baseline}", *(extra_tags or [])]
     if question_id:
         tags.append(f"fixture:{question_id}")
     short_q = question[:60] + ("…" if len(question) > 60 else "")
@@ -37,4 +38,22 @@ def run_config(
             "baseline": baseline,
             "question_id": question_id or "",
         },
+    }
+
+
+def referee_run_config(
+    *,
+    question: str,
+    question_id: str | None = None,
+    extra_tags: list[str] | None = None,
+) -> dict[str, Any]:
+    """Invoke config for the Phase 4 referee graph."""
+    tags = ["phase:4", "pipeline:referee", *(extra_tags or [])]
+    if question_id:
+        tags.append(f"fixture:{question_id}")
+    short_q = question[:60] + ("…" if len(question) > 60 else "")
+    return {
+        "tags": tags,
+        "run_name": f"referee: {short_q}",
+        "metadata": {"pipeline": "referee", "question_id": question_id or ""},
     }

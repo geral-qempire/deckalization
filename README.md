@@ -87,6 +87,17 @@ uv run python -m agents.baseline.run --baseline both \
 ```
 Filter LangSmith traces by tags `baseline:zero_shot` or `baseline:rag`.
 
+### 6. Phase 4 referee graph
+```bash
+uv run python -m agents.run_referee --question "Does deathtouch work with trample?"
+
+# Compare against Phase 3 RAG baseline on the same question
+uv run python -m agents.run_referee --question "..." --compare
+
+uv run python -m agents.run_referee --fixture evals/fixtures/sample_questions.jsonl
+```
+Filter LangSmith traces by tag `pipeline:referee`.
+
 ## Environments (dev / prod)
 
 Same variable names everywhere; only values differ.
@@ -108,7 +119,7 @@ Built **one phase at a time**:
 - **Phase 1** — Data layer: schema, ingestion & indexing ✅
 - **Phase 2** — Data-access tools, card resolver & FastMCP server ✅
 - **Phase 3** — Baseline zero-shot + single-chain RAG (traced in LangSmith)
-- **Phase 4** — Multi-agent graph (router + verifier loop)
+- **Phase 4** — Multi-agent graph (router + verifier loop) ✅
 - **Phase 5** — Eval harness
 - **Phase 6** — CI/CD quality gate
 - **Phase 7** — Deploy + monitor

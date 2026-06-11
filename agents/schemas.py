@@ -39,3 +39,25 @@ class CardNameExtraction(BaseModel):
         default_factory=list,
         description="Distinct card names explicitly referenced; empty if none.",
     )
+
+
+class RouterDecision(BaseModel):
+    """Router/triage output — drives conditional graph edges."""
+
+    intent: Literal["rules", "out_of_scope", "needs_format"]
+    game_format: str | None = Field(
+        default=None,
+        description="Inferred format (Standard, Commander, …) if mentioned or obvious.",
+    )
+    reason: str = ""
+
+
+class VerifierVerdict(BaseModel):
+    """Verifier/critic output — grounded-ness check on draft_ruling."""
+
+    verdict: Literal["grounded", "ungrounded"]
+    issues: list[str] = Field(default_factory=list)
+    retrieval_hints: list[str] = Field(
+        default_factory=list,
+        description="Suggested follow-up search queries when ungrounded.",
+    )
