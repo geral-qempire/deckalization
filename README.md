@@ -57,14 +57,15 @@ uv sync
 
 ### 2. Environment variables
 ```bash
-cp .env.example .env
-# Fill in OPENROUTER_API_KEY, LANGSMITH_API_KEY, and CONVEX_URL.
+cp .env.local.example .env.local
+# Fill in OPENROUTER_API_KEY and LANGSMITH_API_KEY.
 ```
+A single `.env.local` holds everything: your secrets plus the Convex-managed vars.
 
 ### 3. Convex (interactive login the first time)
 ```bash
 npx convex dev
-# Logs in via browser, creates the deployment, and writes CONVEX_URL to .env.local.
+# Logs in via browser, creates the deployment, and writes the CONVEX_* vars to .env.local.
 ```
 
 ### 4. Smoke test (Phase 0 done-when)
@@ -80,7 +81,7 @@ Same variable names everywhere; only values differ.
 
 | Concern | dev | prod |
 | --- | --- | --- |
-| OpenRouter key | `deckalization-dev` key in `.env` | `deckalization-prod` key as LangGraph Platform secret |
+| OpenRouter key | `deckalization-dev` key in `.env.local` | `deckalization-prod` key as LangGraph Platform secret |
 | LangSmith project | `deckalization-dev` | `deckalization-prod` |
 | Convex deployment | personal dev deployment (`npx convex dev`) | prod deployment (`npx convex deploy` + deploy key) |
 | CI (PRs) | dev/CI OpenRouter key + Convex preview deploy | — |

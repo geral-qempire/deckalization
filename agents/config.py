@@ -50,9 +50,9 @@ class Thresholds(BaseSettings):
 class Settings(BaseSettings):
     """Top-level application settings, loaded from environment / ``.env``."""
 
-    # `.env.local` is written by `npx convex dev` (CONVEX_URL) and overrides `.env`.
+    # Single local env file: `.env.local` (Convex CLI-managed + your secrets).
     model_config = SettingsConfigDict(
-        env_file=(".env", ".env.local"),
+        env_file=".env.local",
         env_file_encoding="utf-8",
         extra="ignore",
     )
