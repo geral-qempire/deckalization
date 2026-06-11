@@ -107,6 +107,8 @@ function mapCard(raw: any, rulingsByOracle: Map<string, Ruling[]>) {
     keywords: Array.isArray(raw.keywords) ? raw.keywords : [],
     legalities: raw.legalities ?? {},
     rulings: rulingsByOracle.get(oracleId) ?? [],
+    layout: typeof raw.layout === "string" ? raw.layout : undefined,
+    setType: typeof raw.set_type === "string" ? raw.set_type : undefined,
     scryfallId: raw.id,
     updatedAt: Date.now(),
   };

@@ -1,14 +1,12 @@
 import { v } from "convex/values";
-import { internalMutation, query } from "./_generated/server";
+import { internalMutation, mutation } from "./_generated/server";
 
 /**
- * Card-mirror data functions (V8 runtime).
- *
- * The heavy Scryfall bulk download lives in cardsImport.ts ("use node"); this
- * file holds the lightweight mutation it calls plus lookup/verification queries.
+ * Card-mirror mutations (V8 runtime). The heavy Scryfall bulk download lives in
+ * cardsImport.ts ("use node"); read queries live in queries.ts.
  */
 
-// Shape of a card document accepted by the batch upsert.
+// Shape of a card document accepted by the upserts.
 const cardValidator = v.object({
   oracleId: v.string(),
   name: v.string(),
@@ -20,6 +18,8 @@ const cardValidator = v.object({
   keywords: v.array(v.string()),
   legalities: v.any(),
   rulings: v.array(v.any()),
+  layout: v.optional(v.string()),
+  setType: v.optional(v.string()),
   scryfallId: v.optional(v.string()),
   updatedAt: v.number(),
 });
@@ -51,40 +51,24 @@ export const upsertCardsBatch = internalMutation({
   },
 });
 
-/** Exact lookup by normalized name (the resolver's first rung). */
-export const getByNormalizedName = query({
-  args: { normalizedName: v.string() },
-  handler: async (ctx, { normalizedName }) => {
-    return await ctx.db
+/**
+ * Public single-card upsert — used by the resolver's Scryfall fuzzy fallback to
+ * cache a real card that's newer than the last bulk refresh (self-healing
+ * coverage, keeping the "no row, no ruling" guarantee true).
+ */
+export const upsertOne = mutation({
+  args: { card: cardValidator },
+  returns: v.boolean(),
+  handler: async (ctx, { card }) => {
+    const existing = await ctx.db
       .query("cards")
-      .withIndex("by_normalized_name", (q) =>
-        q.eq("normalizedName", normalizedName),
-      )
+      .withIndex("by_oracle_id", (q) => q.eq("oracleId", card.oracleId))
       .first();
-  },
-});
-
-/** Full-text fuzzy name search (the resolver's fuzzy rung). */
-export const searchByName = query({
-  args: { query: v.string(), limit: v.optional(v.number()) },
-  handler: async (ctx, { query, limit }) => {
-    const rows = await ctx.db
-      .query("cards")
-      .withSearchIndex("search_name", (q) => q.search("name", query))
-      .take(limit ?? 10);
-    return rows.map((c) => ({
-      oracleId: c.oracleId,
-      name: c.name,
-      normalizedName: c.normalizedName,
-      typeLine: c.typeLine,
-    }));
-  },
-});
-
-/** A few rows for smoke-testing that ingestion populated the table. */
-export const sample = query({
-  args: { limit: v.optional(v.number()) },
-  handler: async (ctx, { limit }) => {
-    return await ctx.db.query("cards").take(limit ?? 5);
+    if (existing) {
+      await ctx.db.patch(existing._id, card);
+      return false;
+    }
+    await ctx.db.insert("cards", card);
+    return true;
   },
 });

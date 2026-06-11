@@ -14,6 +14,7 @@ import type * as cardsImport from "../cardsImport.js";
 import type * as crons from "../crons.js";
 import type * as hello from "../hello.js";
 import type * as lib_normalize from "../lib/normalize.js";
+import type * as queries from "../queries.js";
 import type * as rules from "../rules.js";
 
 import type {
@@ -29,6 +30,7 @@ declare const fullApi: ApiFromModules<{
   crons: typeof crons;
   hello: typeof hello;
   "lib/normalize": typeof lib_normalize;
+  queries: typeof queries;
   rules: typeof rules;
 }>;
 

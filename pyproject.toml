@@ -13,6 +13,8 @@ dependencies = [
     "pydantic-settings>=2.4.0",
     "python-dotenv>=1.0.1",
     "httpx>=0.27.0",
+    "rapidfuzz>=3.9.0",
+    "fastmcp>=2.0.0",
 ]
 
 [dependency-groups]
@@ -21,6 +23,8 @@ dev = [
     "ruff>=0.6.0",
     "mypy>=1.11.0",
     "langgraph-cli[inmem]>=0.4.28",
+    "ipykernel>=6.29.0",
+    "pandas>=2.2.0",
 ]
 
 # Application (not a library): no build backend, importable from repo root.
@@ -30,7 +34,7 @@ package = false
 [tool.ruff]
 line-length = 100
 target-version = "py312"
-src = ["agents", "evals", "mcp", "app"]
+src = ["agents", "evals", "mcp_server", "app"]
 
 [tool.ruff.lint]
 select = ["E", "F", "I", "UP", "B", "W"]
@@ -41,7 +45,7 @@ warn_unused_configs = true
 warn_redundant_casts = true
 warn_unused_ignores = true
 ignore_missing_imports = true
-files = ["agents", "evals", "mcp"]
+files = ["agents", "evals", "mcp_server"]
 
 [tool.pytest.ini_options]
 testpaths = ["agents", "evals", "tests"]

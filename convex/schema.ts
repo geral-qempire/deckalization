@@ -25,6 +25,10 @@ export default defineSchema({
     keywords: v.array(v.string()),
     legalities: v.any(),
     rulings: v.array(v.any()),
+    // Scryfall layout (e.g. "normal", "token", "art_series") + set type. Used by
+    // the resolver to prefer playable cards over tokens/art among same-name rows.
+    layout: v.optional(v.string()),
+    setType: v.optional(v.string()),
     // Bookkeeping for idempotent bulk refresh.
     scryfallId: v.optional(v.string()),
     updatedAt: v.number(),

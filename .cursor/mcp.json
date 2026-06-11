@@ -3,6 +3,10 @@
     "convex": {
       "command": "npx",
       "args": ["-y", "convex@latest", "mcp", "start"]
+    },
+    "referee": {
+      "command": "uv",
+      "args": ["run", "python", "-m", "mcp_server.server"]
     }
   }
 }
