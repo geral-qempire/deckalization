@@ -1,0 +1,49 @@
+[project]
+name = "deckalization"
+version = "0.1.0"
+description = "MTG rules referee — a multi-agent LangGraph assistant with citations to the Comprehensive Rules and Oracle card text."
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "langgraph>=0.2.0",
+    "langchain>=0.3.0",
+    "langchain-openai>=0.2.0",
+    "langsmith>=0.1.0",
+    "convex>=0.7.0",
+    "sentence-transformers>=3.0.0",
+    "pydantic-settings>=2.4.0",
+    "python-dotenv>=1.0.1",
+]
+
+[dependency-groups]
+dev = [
+    "pytest>=8.0.0",
+    "ruff>=0.6.0",
+    "mypy>=1.11.0",
+]
+
+# Application (not a library): no build backend, importable from repo root.
+[tool.uv]
+package = false
+
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+src = ["agents", "evals", "mcp", "app"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B", "W"]
+
+[tool.mypy]
+python_version = "3.12"
+warn_unused_configs = true
+warn_redundant_casts = true
+warn_unused_ignores = true
+ignore_missing_imports = true
+files = ["agents", "evals", "mcp"]
+
+[tool.pytest.ini_options]
+testpaths = ["agents", "evals", "tests"]
+python_files = ["test_*.py", "*_test.py"]
+pythonpath = ["."]
+addopts = "-q"

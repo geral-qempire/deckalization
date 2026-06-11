@@ -1,0 +1,39 @@
+# ---- Python ----
+__pycache__/
+*.py[cod]
+*.egg-info/
+.eggs/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.venv/
+venv/
+.python-version.local
+
+# ---- uv ----
+# Keep uv.lock committed; ignore caches only
+
+# ---- Env / secrets ----
+.env
+.env.*
+!.env.example
+
+# ---- Node / Convex ----
+node_modules/
+.convex/
+# convex/_generated is committed so generated types/clients are available in CI
+
+# ---- Models / data caches ----
+.cache/
+models/
+data/
+*.bulk.json
+
+# ---- OS / editor ----
+.DS_Store
+*.swp
+.idea/
+.vscode/
+
+# ---- LangGraph ----
+.langgraph_api/

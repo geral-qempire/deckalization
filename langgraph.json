@@ -1,0 +1,7 @@
+{
+  "dependencies": ["."],
+  "graphs": {
+    "hello": "./agents/hello.py:build_hello_graph"
+  },
+  "env": ".env"
+}

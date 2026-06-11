@@ -1,0 +1,17 @@
+{
+  "name": "deckalization-convex",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Convex data layer for deckalization (card mirror + rules vectors).",
+  "type": "module",
+  "scripts": {
+    "dev": "convex dev",
+    "deploy": "convex deploy",
+    "codegen": "convex codegen",
+    "mcp": "convex mcp start"
+  },
+  "devDependencies": {
+    "convex": "^1.16.0",
+    "typescript": "^5.5.0"
+  }
+}
