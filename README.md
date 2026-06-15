@@ -128,9 +128,26 @@ uv run python -m agents.evals.scripts.build_benchmark_manifest
 # Smoke (CI-sized, ~15 cases)
 uv run python -m agents.evals.run --suite smoke --target referee
 
+# Fixed 40-case sample used for CI / model sweeps (set in stone)
+uv run python -m agents.evals.run --suite bench40 --compare baseline_rag referee_v2
+
 # Full benchmark (~125 fixed cases, ~€8–10 for 3-way compare)
-uv run python -m agents.evals.run --suite benchmark --compare zero_shot baseline_rag referee
+uv run python -m agents.evals.run --suite benchmark --compare zero_shot baseline_rag referee_v2
 ```
+
+### 8. CI / quality gate (GitHub Actions)
+
+Two workflows live in `.github/workflows/`:
+
+| Workflow | Trigger | What it does | Secrets |
+| --- | --- | --- | --- |
+| `ci.yml` | every push / PR to `main` | `ruff` + `mypy` + offline `pytest` | none (live tests self-skip) |
+| `eval.yml` | manual (`workflow_dispatch`) | runs the eval suite, uploads a comparison experiment to LangSmith, and fails if any `thresholds.yaml` gate (incl. "referee beats RAG") is missed | `OPENROUTER_API_KEY`, `LANGSMITH_API_KEY`, `CONVEX_URL` |
+
+Run the gate from the repo **Actions** tab → **Eval gate** → **Run workflow** (pick a
+suite; defaults to `bench40`, `referee_v2` vs `baseline_rag`). Set the three secrets under
+**Settings → Secrets and variables → Actions**. CI traces land in the `deckalization-ci`
+project (the workflow sets `DECKALIZATION_ENV=ci`).
 
 ## Environments (dev / prod)
 
@@ -141,9 +158,9 @@ Same variable names everywhere; only values differ.
 | OpenRouter key | `deckalization-dev` key in `.env.local` | `deckalization-prod` key as LangGraph Platform secret |
 | LangSmith project | `deckalization-dev` | `deckalization-prod` |
 | Convex deployment | personal dev deployment (`npx convex dev`) | prod deployment (`npx convex deploy` + deploy key) |
-| CI (PRs) | dev/CI OpenRouter key + Convex preview deploy | — |
+| CI (PRs) | `ci.yml` — secret-free lint/types/tests | `eval.yml` — `OPENROUTER_API_KEY` + `LANGSMITH_API_KEY` + prod `CONVEX_URL` as GitHub Actions secrets |
 
-Prod and CI secrets are wired in **Phase 6 (CI/CD)** and **Phase 7 (deploy)** — dev is all that's needed for Phases 0–5.
+The eval gate (`eval.yml`) points at the **prod** Convex deployment and uploads experiments to the `deckalization-ci` LangSmith project. Prod deploy of `referee_v2` is wired in **Phase 7 (deploy)**.
 
 ## Build plan
 
@@ -155,7 +172,7 @@ Built **one phase at a time**:
 - **Phase 3** — Baseline zero-shot + single-chain RAG (traced in LangSmith)
 - **Phase 4** — Multi-agent graph (router + verifier loop) ✅
 - **Phase 5** — Eval harness (Convex goldens, benchmark suite, evaluators) ✅
-- **Phase 6** — CI/CD quality gate
+- **Phase 6** — CI/CD quality gate ✅
 - **Phase 7** — Deploy + monitor
 
 Tournament policy (MTR/IPG/JAR) and the player-friendly explanation formatter are

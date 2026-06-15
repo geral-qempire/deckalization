@@ -1,0 +1,79 @@
+name: Eval gate
+
+# Manual quality gate. Runs the eval harness against the live data layer,
+# uploads the results to LangSmith as a comparison experiment, and fails the
+# job if any threshold in agents/evals/thresholds.yaml is missed (including the
+# "referee must beat RAG" comparison gate).
+#
+# Trigger from the Actions tab → "Eval gate" → Run workflow.
+#
+# Required repository secrets:
+#   OPENROUTER_API_KEY  — LLM gateway (adjudication, judge, embeddings)
+#   LANGSMITH_API_KEY   — experiment upload + tracing
+#   CONVEX_URL          — production Convex deployment (cards + rules + eval cases)
+# Traces land in the deckalization-ci project (DECKALIZATION_ENV=ci below).
+
+on:
+  workflow_dispatch:
+    inputs:
+      suite:
+        description: Eval suite to run
+        type: choice
+        default: bench40
+        options:
+          - bench40
+          - smoke
+          - benchmark
+      concurrency:
+        description: Parallel cases per experiment
+        type: string
+        default: "4"
+      skip_thresholds:
+        description: Report scores without failing on threshold misses
+        type: boolean
+        default: false
+
+jobs:
+  gate:
+    name: bench • compare • gate
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    env:
+      OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+      LANGSMITH_API_KEY: ${{ secrets.LANGSMITH_API_KEY }}
+      LANGSMITH_TRACING: "true"
+      DECKALIZATION_ENV: ci
+      CONVEX_URL: ${{ secrets.CONVEX_URL }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v5
+        with:
+          enable-cache: true
+
+      - name: Install dependencies
+        run: uv sync --frozen
+
+      - name: Preflight — required secrets present
+        run: |
+          missing=0
+          for var in OPENROUTER_API_KEY LANGSMITH_API_KEY CONVEX_URL; do
+            if [ -z "${!var}" ]; then
+              echo "::error::Missing required secret: $var"
+              missing=1
+            fi
+          done
+          [ "$missing" -eq 0 ] || exit 1
+
+      - name: Run eval gate (referee_v2 vs RAG → LangSmith)
+        run: |
+          extra=""
+          if [ "${{ inputs.skip_thresholds }}" = "true" ]; then
+            extra="--skip-thresholds"
+          fi
+          uv run python -m agents.evals.run \
+            --suite "${{ inputs.suite }}" \
+            --compare baseline_rag referee_v2 \
+            --concurrency "${{ inputs.concurrency }}" \
+            $extra

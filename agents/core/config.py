@@ -98,11 +98,25 @@ class Settings(BaseSettings):
 
     # ---- LangSmith ----
     langsmith_api_key: str = Field(default="", alias="LANGSMITH_API_KEY")
-    langsmith_project: str = Field(default="deckalization-dev", alias="LANGSMITH_PROJECT")
+    # Application (resource-tag) the tracing projects group under in the LangSmith UI.
+    langsmith_app: str = Field(default="deckalization", alias="LANGSMITH_APP")
+    # Which environment THIS process runs as: dev (local), ci, or prod. The single
+    # knob that selects the tracing project — never set the project name directly.
+    deckalization_env: str = Field(default="dev", alias="DECKALIZATION_ENV")
     langsmith_tracing: bool = Field(default=True, alias="LANGSMITH_TRACING")
     langsmith_endpoint: str = Field(
         default="https://api.smith.langchain.com", alias="LANGSMITH_ENDPOINT"
     )
+
+    @property
+    def langsmith_projects(self) -> dict[str, str]:
+        """The `<app>-<env>` tracing projects grouped under the application."""
+        return {env: f"{self.langsmith_app}-{env}" for env in ("dev", "ci", "prod")}
+
+    @property
+    def langsmith_project(self) -> str:
+        """Active tracing project for this process, derived as `<app>-<env>`."""
+        return f"{self.langsmith_app}-{self.deckalization_env}"
 
     # ---- Convex ----
     convex_url: str = Field(default="", alias="CONVEX_URL")

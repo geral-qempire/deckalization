@@ -129,6 +129,20 @@ uv run python -m agents.evals.run --suite smoke --target referee
 Graphs are registered for the LangGraph CLI/Studio in `langgraph.json`; keep that file in
 sync when you add, rename, or move a graph entrypoint.
 
+## CI
+
+`.github/workflows/` holds two jobs that mirror the commands above:
+- `ci.yml` — runs `ruff` + `mypy` + offline `pytest` on every push/PR. It must stay
+  **secret-free**; tests that need the live data layer self-skip via `skipif` (see
+  `tests/test_resolver.py`). Keep new network-dependent tests guarded the same way so CI
+  stays green on forks.
+- `eval.yml` — manual `workflow_dispatch` quality gate. Runs `agents.evals.run`, uploads a
+  LangSmith comparison experiment, and exits non-zero on any `agents/evals/thresholds.yaml`
+  miss. When you add a metric or gate, update `thresholds.yaml` — the workflow needs no edit.
+
+If the green-on-`main` invariant changes (new lint rule, new typed module, new always-on
+test), fix it in the same change that breaks it — don't let CI rot.
+
 ## When you add code, ask:
 
 - Is it shared by >1 architecture? → `agents/core/` (or `core/tools/` for data access).
