@@ -14,7 +14,7 @@ import re
 
 import httpx
 
-from agents.config import get_settings
+from agents.core.config import get_settings
 
 _TXT_LINK = re.compile(r'href=["\']([^"\']+?\.txt)["\']', re.IGNORECASE)
 _USER_AGENT = "deckalization/0.1 (MTG rules referee)"

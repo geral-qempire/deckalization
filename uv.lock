@@ -505,6 +505,7 @@ dependencies = [
     { name = "langsmith" },
     { name = "pydantic-settings" },
     { name = "python-dotenv" },
+    { name = "pyyaml" },
     { name = "rapidfuzz" },
 ]
 
@@ -529,6 +530,7 @@ requires-dist = [
     { name = "langsmith", specifier = ">=0.1.0" },
     { name = "pydantic-settings", specifier = ">=2.4.0" },
     { name = "python-dotenv", specifier = ">=1.0.1" },
+    { name = "pyyaml", specifier = ">=6.0.0" },
     { name = "rapidfuzz", specifier = ">=3.9.0" },
 ]
 

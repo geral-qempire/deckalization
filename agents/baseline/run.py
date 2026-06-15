@@ -8,7 +8,7 @@ Examples:
         --question "Does deathtouch work with trample?"
 
     uv run python -m agents.baseline.run --baseline both \\
-        --fixture evals/fixtures/sample_questions.jsonl
+        --fixture agents/evals/fixtures/sample_questions.jsonl
 """
 
 from __future__ import annotations
@@ -21,8 +21,8 @@ from typing import Any, Literal
 
 from agents.baseline.rag import build_rag_graph
 from agents.baseline.zero_shot import build_zero_shot_graph
-from agents.schemas import RulingResponse
-from agents.tracing import export_langsmith_env, run_config
+from agents.core.schemas import RulingResponse
+from agents.core.tracing import export_langsmith_env, run_config
 
 BaselineName = Literal["zero_shot", "rag", "both"]
 
@@ -126,7 +126,7 @@ def main(argv: list[str] | None = None) -> None:
             except Exception as exc:
                 print(f"\n[{b}] ERROR on {qid or q!r}: {exc}", file=sys.stderr)
 
-    from agents.config import get_settings
+    from agents.core.config import get_settings
 
     s = get_settings()
     if s.langsmith_api_key:

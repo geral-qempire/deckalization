@@ -1,0 +1,79 @@
+# Pass/fail gates for eval suites (Phase 5 local runs; Phase 6 CI).
+# Scores are 0.0–1.0 means across the suite.
+#
+# Metric names (post-revamp):
+#   correctness      — LLM judge vs golden answer
+#   faithfulness     — LLM judge: claims supported by retrieved evidence
+#   rule_recall      — golden rules present in retrieved context
+#   citation_recall  — golden rules cited in the final answer
+#   card_recall      — golden cards resolved by the pipeline
+#
+# Gates calibrated against the bench40 run on 2026-06-12 (Sonnet-4.5 adjudication +
+# judge). Each gate sits a margin below the observed score to absorb judge/run variance
+# while still catching real regressions. Observed → gate shown inline per metric.
+# smoke (15-case CI subset): looser gates than bench40 — small N is noisier.
+smoke:
+  referee_v2:
+    correctness: 0.58
+    faithfulness: 0.70
+    rule_recall: 0.40
+    citation_recall: 0.30
+    card_recall: 0.88
+  baseline_rag:
+    correctness: 0.42
+    faithfulness: 0.62
+    card_recall: 0.85
+  zero_shot:
+    correctness: 0.15
+
+# bench40: fixed 40-case stratified subset of the benchmark (see
+# datasets/benchmark_manifest.json bench40_ids) — cheap repeatable experiments.
+# Calibrated 2026-06-12 (observed → gate):
+bench40:
+  referee_v2:
+    correctness: 0.62       # obs 0.688
+    faithfulness: 0.72      # obs 0.800
+    rule_recall: 0.42       # obs 0.489
+    citation_recall: 0.32   # obs 0.389 (expected to rise with citation prompt nudge)
+    card_recall: 0.90       # obs 0.975
+    citation_validity: 0.92 # obs 0.969
+  baseline_rag:
+    correctness: 0.45       # obs 0.512
+    faithfulness: 0.64      # obs 0.713
+    card_recall: 0.88       # obs 0.963
+    citation_validity: 0.92 # obs 1.000
+    # NOTE: RAG rule_recall (0.097) / citation_recall (0.071) are intentionally
+    # ungated — its single-shot retrieval is the known-weak baseline we compare against.
+  zero_shot:
+    correctness: 0.18       # obs 0.237
+    citation_validity: 0.90 # obs 0.958
+
+# benchmark (full 125): gates extrapolated from the bench40 calibration — tighten
+# once a full 125-case run with the revamped metrics lands.
+benchmark:
+  referee_v2:
+    correctness: 0.62
+    faithfulness: 0.72
+    rule_recall: 0.42
+    citation_recall: 0.32
+    card_recall: 0.90
+    citation_validity: 0.92
+  baseline_rag:
+    correctness: 0.45
+    faithfulness: 0.64
+    card_recall: 0.88
+    citation_validity: 0.92
+  zero_shot:
+    correctness: 0.18
+    citation_validity: 0.90
+
+card_resolution:
+  resolver:
+    card_resolution: 0.85
+    abstention: 0.90
+
+# Referee must beat RAG on these metrics (smoke/benchmark compare runs).
+compare_referee_beats_rag:
+  - faithfulness
+  - rule_recall
+  - citation_recall

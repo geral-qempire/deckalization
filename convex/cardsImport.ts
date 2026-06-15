@@ -92,6 +92,12 @@ function mapCard(raw: any, rulingsByOracle: Map<string, Ruling[]>) {
     raw.mana_cost,
     faces.map((f) => f.mana_cost).filter(Boolean).join(" // "),
   );
+  // P/T/loyalty/defense live on faces for multi-faced cards; join with " // ".
+  const faceStat = (key: string) =>
+    firstString(
+      raw[key],
+      faces.map((f) => f[key]).filter(Boolean).join(" // "),
+    );
   const colors: string[] = Array.isArray(raw.colors)
     ? raw.colors
     : Array.from(new Set(faces.flatMap((f) => f.colors ?? [])));
@@ -103,6 +109,10 @@ function mapCard(raw: any, rulingsByOracle: Map<string, Ruling[]>) {
     oracleText: oracleText ?? "",
     typeLine: typeLine ?? "",
     manaCost,
+    power: faceStat("power"),
+    toughness: faceStat("toughness"),
+    loyalty: faceStat("loyalty"),
+    defense: faceStat("defense"),
     colors,
     keywords: Array.isArray(raw.keywords) ? raw.keywords : [],
     legalities: raw.legalities ?? {},

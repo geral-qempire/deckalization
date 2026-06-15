@@ -12,7 +12,7 @@ from typing import Any
 
 from convex import ConvexClient
 
-from agents.config import get_settings
+from agents.core.config import get_settings
 from agents.ingest.downloader import download_cr_text
 from agents.ingest.embedder import embed_texts
 from agents.ingest.parser import RuleChunk, parse_rules

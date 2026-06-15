@@ -7,13 +7,13 @@ from typing import Any, TypedDict, cast
 from langchain_core.messages import HumanMessage, SystemMessage
 from langgraph.graph import END, START, StateGraph
 
-from agents.baseline.extract import extract_card_names
-from agents.baseline.prompts import RAG_SYSTEM
-from agents.context import format_cards_context, format_rules_context, ground_citations
-from agents.llm import get_chat_model
-from agents.resolver import resolve_card
-from agents.schemas import RulingResponse
-from agents.tools.rules import search_rules
+from agents.core.context import format_cards_context, format_rules_context, ground_citations
+from agents.core.extract import extract_card_names
+from agents.core.llm import get_chat_model
+from agents.core.prompts import GROUNDED_ADJUDICATION_SYSTEM
+from agents.core.resolver import resolve_card
+from agents.core.schemas import RulingResponse
+from agents.core.tools.rules import search_rules
 
 
 class RagState(TypedDict):
@@ -90,7 +90,10 @@ def _answer(state: RagState) -> RagState:
     ruling = cast(
         RulingResponse,
         llm.invoke(
-            [SystemMessage(content=RAG_SYSTEM), HumanMessage(content=user_content)]
+            [
+                SystemMessage(content=GROUNDED_ADJUDICATION_SYSTEM),
+                HumanMessage(content=user_content),
+            ]
         ),
     )
 

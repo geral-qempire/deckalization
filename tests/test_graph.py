@@ -1,9 +1,9 @@
 """Graph routing and verifier unit tests (no LLM)."""
 
-from agents.graph import route_after_lookup, route_after_router, route_after_verifier
-from agents.nodes.verifier import _deterministic_issues
-from agents.schemas import RuleCitation, RulingResponse, VerifierVerdict
-from agents.state import RefereeState, initial_state
+from agents.core.context import ground_citations
+from agents.core.schemas import RuleCitation, RulingResponse, VerifierVerdict
+from agents.referee.routing import route_after_lookup, route_after_router, route_after_verifier
+from agents.referee.state import RefereeState, initial_state
 
 
 def test_route_out_of_scope() -> None:
@@ -18,17 +18,20 @@ def test_route_disambiguate_stops_before_retrieval() -> None:
     assert route_after_lookup(state) == "formatter"
 
 
-def test_verifier_catches_fake_rule_citation() -> None:
-    state: RefereeState = initial_state("test")
-    state["retrieved_rules"] = [{"ruleNumber": "702.2", "text": "deathtouch", "score": 0.9}]
-    state["draft_ruling"] = RulingResponse(
+def test_grounding_drops_fake_rule_citation() -> None:
+    ruling = RulingResponse(
         ruling="Yes.",
         rule_citations=[
+            RuleCitation(rule_number="702.2", excerpt="deathtouch", relevance=""),
             RuleCitation(rule_number="999.999", excerpt="fake", relevance=""),
         ],
     )
-    issues = _deterministic_issues(state)
-    assert any("999.999" in i for i in issues)
+    grounded = ground_citations(
+        ruling, allowed_rules={"702.2"}, allowed_cards=set()
+    )
+    cited = {c.rule_number for c in grounded.rule_citations}
+    assert "702.2" in cited
+    assert "999.999" not in cited
 
 
 def test_verifier_loop_when_ungrounded() -> None:

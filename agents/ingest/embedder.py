@@ -1,7 +1,7 @@
 """Embed text via OpenRouter (OpenAI-compatible Embeddings API).
 
 Same model + dimensions used at ingest time and query time (Phase 2), pinned in
-agents/config.py and matching the Convex vector index. `check_embedding_ctx_length`
+agents/core/config.py and matching the Convex vector index. `check_embedding_ctx_length`
 is disabled so raw strings (not tiktoken token arrays) are sent — required for
 the OpenRouter endpoint.
 """
@@ -13,7 +13,7 @@ from functools import lru_cache
 from langchain_openai import OpenAIEmbeddings
 from pydantic import SecretStr
 
-from agents.config import get_settings
+from agents.core.config import get_settings
 
 
 @lru_cache

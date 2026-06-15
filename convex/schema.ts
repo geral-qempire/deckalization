@@ -21,6 +21,11 @@ export default defineSchema({
     oracleText: v.string(),
     typeLine: v.string(),
     manaCost: v.optional(v.string()),
+    // Scryfall strings ("3", "*", "1+*"); multi-face joined with " // ".
+    power: v.optional(v.string()),
+    toughness: v.optional(v.string()),
+    loyalty: v.optional(v.string()),
+    defense: v.optional(v.string()),
     colors: v.array(v.string()),
     keywords: v.array(v.string()),
     legalities: v.any(),
@@ -61,4 +66,27 @@ export default defineSchema({
     oracleId: v.string(),
     canonicalName: v.string(),
   }).index("by_normalized_alias", ["normalizedAlias"]),
+
+  // Golden eval cases — full RulesGuru corpus + fixed benchmark/smoke subsets.
+  evalCases: defineTable({
+    source: v.string(), // "rulesguru" | "hand"
+    externalId: v.string(),
+    kind: v.union(v.literal("rules_qa"), v.literal("card_resolution")),
+    question: v.string(),
+    expectedAnswer: v.string(),
+    expectedRules: v.array(v.string()),
+    cards: v.array(v.string()),
+    tags: v.array(v.string()),
+    complexity: v.optional(v.string()),
+    level: v.optional(v.string()),
+    sourceUrl: v.optional(v.string()),
+    // card_resolution only
+    expectedStatus: v.optional(v.string()),
+    expectedCardName: v.optional(v.string()),
+    // eval suites this row belongs to: "benchmark", "smoke", etc.
+    suites: v.array(v.string()),
+    updatedAt: v.number(),
+  })
+    .index("by_source_external_id", ["source", "externalId"])
+    .index("by_kind", ["kind"]),
 });

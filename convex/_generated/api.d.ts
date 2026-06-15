@@ -12,6 +12,7 @@ import type * as aliases from "../aliases.js";
 import type * as cards from "../cards.js";
 import type * as cardsImport from "../cardsImport.js";
 import type * as crons from "../crons.js";
+import type * as evalCases from "../evalCases.js";
 import type * as hello from "../hello.js";
 import type * as lib_normalize from "../lib/normalize.js";
 import type * as queries from "../queries.js";
@@ -28,6 +29,7 @@ declare const fullApi: ApiFromModules<{
   cards: typeof cards;
   cardsImport: typeof cardsImport;
   crons: typeof crons;
+  evalCases: typeof evalCases;
   hello: typeof hello;
   "lib/normalize": typeof lib_normalize;
   queries: typeof queries;

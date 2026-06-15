@@ -1,0 +1,11 @@
+[
+  {"externalId": "lightning-bolt", "question": "Lightning Bolt", "expectedStatus": "resolved", "expectedCardName": "Lightning Bolt"},
+  {"externalId": "typo-bolt", "question": "Lightnig Bolt", "expectedStatus": "resolved", "expectedCardName": "Lightning Bolt"},
+  {"externalId": "nickname-bob", "question": "Bob", "expectedStatus": "resolved", "expectedCardName": "Dark Confidant"},
+  {"externalId": "nickname-tarmo", "question": "Tarmo", "expectedStatus": "resolved", "expectedCardName": "Tarmogoyf"},
+  {"externalId": "sol-ring", "question": "Sol Ring", "expectedStatus": "resolved", "expectedCardName": "Sol Ring"},
+  {"externalId": "llanowar-elves", "question": "Llanowar Elves", "expectedStatus": "resolved", "expectedCardName": "Llanowar Elves"},
+  {"externalId": "treasure-token", "question": "Treasure token", "expectedStatus": "rules_concept", "expectedCardName": null},
+  {"externalId": "gibberish", "question": "Qwertyuiop Notarealcard Xyzzy", "expectedStatus": "not_found", "expectedCardName": null},
+  {"externalId": "jace-typo", "question": "Jace, the Mnd Sculptor", "expectedStatus": "resolved", "expectedCardName": "Jace, the Mind Sculptor"}
+]

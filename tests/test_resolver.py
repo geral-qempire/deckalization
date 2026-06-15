@@ -8,8 +8,8 @@ a bare CI checkout without secrets). Phase 6 wires the secrets for CI.
 from __future__ import annotations
 
 import pytest
-from agents.config import get_settings
-from agents.normalize import normalize_name
+from agents.core.config import get_settings
+from agents.core.normalize import normalize_name
 
 _settings = get_settings()
 pytestmark = pytest.mark.skipif(
@@ -19,7 +19,7 @@ pytestmark = pytest.mark.skipif(
 
 
 def test_real_hit() -> None:
-    from agents.resolver import resolve_card
+    from agents.core.resolver import resolve_card
 
     res = resolve_card("Lightning Bolt")
     assert res.status == "resolved"
@@ -30,7 +30,7 @@ def test_real_hit() -> None:
 
 
 def test_typo_resolves() -> None:
-    from agents.resolver import resolve_card
+    from agents.core.resolver import resolve_card
 
     res = resolve_card("Lightnig Bolt")
     assert res.status == "resolved"
@@ -39,7 +39,7 @@ def test_typo_resolves() -> None:
 
 
 def test_nickname_resolves() -> None:
-    from agents.resolver import resolve_card
+    from agents.core.resolver import resolve_card
 
     res = resolve_card("Bob")
     assert res.status == "resolved"
@@ -48,7 +48,7 @@ def test_nickname_resolves() -> None:
 
 
 def test_made_up_abstains() -> None:
-    from agents.resolver import resolve_card
+    from agents.core.resolver import resolve_card
 
     res = resolve_card("Qwertyuiop Notarealcard Xyzzy")
     assert res.status == "not_found"
@@ -56,14 +56,14 @@ def test_made_up_abstains() -> None:
 
 
 def test_rules_concept_routed() -> None:
-    from agents.resolver import resolve_card
+    from agents.core.resolver import resolve_card
 
     res = resolve_card("Treasure token")
     assert res.status == "rules_concept"
 
 
 def test_search_rules_relevance() -> None:
-    from agents.tools.rules import search_rules
+    from agents.core.tools.rules import search_rules
 
     hits = search_rules("combat damage assignment order between blockers", limit=8)
     assert hits

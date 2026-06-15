@@ -1,6 +1,6 @@
 """Schema smoke tests (no LLM calls)."""
 
-from agents.schemas import CardNameExtraction, RulingResponse
+from agents.core.schemas import CardNameExtraction, RulingResponse
 
 
 def test_ruling_response_defaults() -> None:

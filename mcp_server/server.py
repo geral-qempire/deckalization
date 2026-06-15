@@ -18,10 +18,10 @@ from __future__ import annotations
 
 from typing import Any
 
-from agents.normalize import normalize_name
-from agents.resolver import resolve_card
-from agents.tools.cards import get_card_exact
-from agents.tools.rules import get_rule_by_number, search_rules
+from agents.core.normalize import normalize_name
+from agents.core.resolver import resolve_card
+from agents.core.tools.cards import get_card_exact
+from agents.core.tools.rules import get_rule_by_number, search_rules
 from fastmcp import FastMCP
 
 mcp: FastMCP = FastMCP("deckalization-referee")

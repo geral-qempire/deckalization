@@ -8,8 +8,8 @@ from langchain_core.messages import HumanMessage, SystemMessage
 from langgraph.graph import END, START, StateGraph
 
 from agents.baseline.prompts import ZERO_SHOT_SYSTEM
-from agents.llm import get_chat_model
-from agents.schemas import RulingResponse
+from agents.core.llm import get_chat_model
+from agents.core.schemas import RulingResponse
 
 
 class ZeroShotState(TypedDict):

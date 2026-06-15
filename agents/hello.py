@@ -14,8 +14,8 @@ from __future__ import annotations
 
 from typing import TypedDict
 
-from agents.config import get_settings
-from agents.tracing import export_langsmith_env
+from agents.core.config import get_settings
+from agents.core.tracing import export_langsmith_env
 
 
 class HelloState(TypedDict):

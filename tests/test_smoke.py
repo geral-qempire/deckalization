@@ -5,7 +5,7 @@ These validate that the scaffold imports cleanly and the trivial graph runs.
 
 from __future__ import annotations
 
-from agents.config import get_settings
+from agents.core.config import get_settings
 from agents.hello import build_hello_graph
 
 

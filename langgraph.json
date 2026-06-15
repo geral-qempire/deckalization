@@ -4,7 +4,9 @@
     "hello": "./agents/hello.py:build_hello_graph",
     "baseline_zero_shot": "./agents/baseline/zero_shot.py:build_zero_shot_graph",
     "baseline_rag": "./agents/baseline/rag.py:build_rag_graph",
-    "referee": "./agents/graph.py:build_referee_graph"
+    "referee": "./agents/referee/v1/graph.py:build_referee_graph",
+    "referee_no_verifier": "./agents/referee/v1/graph.py:build_referee_no_verifier_graph",
+    "referee_v2": "./agents/referee/v2/graph.py:build_referee_v2_graph"
   },
   "env": ".env.local"
 }

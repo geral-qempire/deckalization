@@ -9,10 +9,10 @@ resolve. Run AFTER the card mirror is populated:
 
 from __future__ import annotations
 
-from agents.config import get_settings
-from agents.normalize import normalize_name
-from agents.tools.cards import get_card_exact
-from agents.tools.convex_client import get_convex_client
+from agents.core.config import get_settings
+from agents.core.normalize import normalize_name
+from agents.core.tools.cards import get_card_exact
+from agents.core.tools.convex_client import get_convex_client
 
 # nickname -> canonical card name (unambiguous community nicknames only).
 ALIASES: dict[str, str] = {

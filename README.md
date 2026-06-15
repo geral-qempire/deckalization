@@ -18,7 +18,7 @@ CI/CD + evaluation + observability pipeline on the **LangChain / LangGraph / Lan
 | Orchestration | LangChain + LangGraph (Python) |
 | Data layer | Convex (TypeScript) — card mirror + rules vectors |
 | LLM gateway | OpenRouter (OpenAI-compatible), config-driven & version-pinned per node |
-| Embeddings | Local `bge-small` (384-dim, CPU) |
+| Embeddings | OpenRouter `text-embedding-3-large` (3072-dim) |
 | Tool interface | MCP — custom FastMCP server + official Convex MCP (dev) |
 | Observability + Evals | LangSmith |
 | CI/CD | GitHub Actions |
@@ -27,19 +27,36 @@ CI/CD + evaluation + observability pipeline on the **LangChain / LangGraph / Lan
 
 - **No row, no ruling** — card lookups return real DB rows or `not_found`; never answer from model memory.
 - **MCP stays off the production hot path** — graph nodes call the Convex tools directly.
-- **Models are config-driven & version-pinned** in `agents/config.py` — never hardcode a model name in a node.
+- **Models are config-driven & version-pinned** in `agents/core/config.py` — never hardcode a model name in a node.
 - **All card lookups hit the local mirror** — the live Scryfall API is a fallback only.
 
 ## Repo layout
 
+See [AGENTS.md](AGENTS.md) for the canonical structure and the rules that keep it that way.
+
 ```
 deckalization/
-├── agents/      # Python — reasoning & orchestration (config, state, graph, nodes, tools, ingest)
-├── convex/      # TypeScript — data layer (schema + functions + crons)
-├── mcp_server/  # FastMCP server over the same tool layer (named to avoid the `mcp` pkg clash)
-├── evals/       # golden datasets, evaluators, runner
-├── app/         # Streamlit chat UI
-├── tests/       # unit tests
+├── AGENTS.md          # canonical repo structure + conventions (read this first)
+├── agents/            # all Python — reasoning, orchestration & evals
+│   ├── core/          # shared across every architecture (config, llm, schemas,
+│   │   │              #   tracing, prompts, resolver, scryfall, normalize, context, extract)
+│   │   └── tools/     # Convex data-access layer
+│   ├── baseline/      # architecture: zero-shot + single-chain RAG
+│   ├── referee/       # architecture: multi-agent referee
+│   │   ├── nodes/     # all referee nodes (shared + v1 + v2 variants)
+│   │   ├── v1/        # v1 graph wiring
+│   │   ├── v2/        # v2 graph wiring (production)
+│   │   ├── routing.py # shared conditional-edge predicates
+│   │   ├── state.py   # shared graph state
+│   │   └── run.py     # referee CLI (defaults to v2)
+│   ├── ingest/        # Comprehensive Rules download/parse/embed/seed
+│   ├── evals/         # golden datasets, evaluators, runner, ingestion scripts
+│   └── hello.py       # phase-0 smoke graph
+├── convex/            # TypeScript — data layer (schema + functions + crons)
+├── mcp_server/        # FastMCP server over the same tool layer (named to avoid the `mcp` pkg clash)
+├── app/               # Streamlit chat UI (future)
+├── docs/              # eval findings & design notes
+├── tests/             # unit tests
 ├── langgraph.json
 └── pyproject.toml
 ```
@@ -83,20 +100,37 @@ uv run python -m agents.baseline.run --baseline both \
 
 # Starter fixture set (~10 questions)
 uv run python -m agents.baseline.run --baseline both \
-  --fixture evals/fixtures/sample_questions.jsonl
+  --fixture agents/evals/fixtures/sample_questions.jsonl
 ```
 Filter LangSmith traces by tags `baseline:zero_shot` or `baseline:rag`.
 
 ### 6. Phase 4 referee graph
 ```bash
-uv run python -m agents.run_referee --question "Does deathtouch work with trample?"
+# Defaults to the v2 graph (production architecture)
+uv run python -m agents.referee.run --question "Does deathtouch work with trample?"
+
+# Run the v1 graph instead (kept as a benchmark comparison)
+uv run python -m agents.referee.run --graph v1 --question "..."
 
 # Compare against Phase 3 RAG baseline on the same question
-uv run python -m agents.run_referee --question "..." --compare
+uv run python -m agents.referee.run --question "..." --compare
 
-uv run python -m agents.run_referee --fixture evals/fixtures/sample_questions.jsonl
+uv run python -m agents.referee.run --fixture agents/evals/fixtures/sample_questions.jsonl
 ```
 Filter LangSmith traces by tag `pipeline:referee`.
+
+### 7. Phase 5 eval harness
+```bash
+# One-time: ingest all RulesGuru → Convex, then build fixed benchmark manifest
+uv run python -m agents.evals.scripts.ingest_rulesguru
+uv run python -m agents.evals.scripts.build_benchmark_manifest
+
+# Smoke (CI-sized, ~15 cases)
+uv run python -m agents.evals.run --suite smoke --target referee
+
+# Full benchmark (~125 fixed cases, ~€8–10 for 3-way compare)
+uv run python -m agents.evals.run --suite benchmark --compare zero_shot baseline_rag referee
+```
 
 ## Environments (dev / prod)
 
@@ -120,7 +154,7 @@ Built **one phase at a time**:
 - **Phase 2** — Data-access tools, card resolver & FastMCP server ✅
 - **Phase 3** — Baseline zero-shot + single-chain RAG (traced in LangSmith)
 - **Phase 4** — Multi-agent graph (router + verifier loop) ✅
-- **Phase 5** — Eval harness
+- **Phase 5** — Eval harness (Convex goldens, benchmark suite, evaluators) ✅
 - **Phase 6** — CI/CD quality gate
 - **Phase 7** — Deploy + monitor
 
