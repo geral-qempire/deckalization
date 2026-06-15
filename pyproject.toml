@@ -28,7 +28,18 @@ dev = [
     "pandas>=2.2.0",
 ]
 
-# Application (not a library): no build backend, importable from repo root.
+# Build backend is only used when the project is installed as a package (e.g. the
+# LangGraph Platform runs `uv pip install -e .` on deploy). Locally we run from the
+# repo root and skip the install entirely (`tool.uv.package = false`), but the
+# backend must still know which dirs are packages — without this, setuptools
+# auto-discovery aborts on the flat layout (agents/mcp_server/app/convex side by side).
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+include = ["agents*", "mcp_server*"]
+
 [tool.uv]
 package = false
 
