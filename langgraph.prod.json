@@ -1,0 +1,7 @@
+{
+  "python_version": "3.12",
+  "dependencies": ["."],
+  "graphs": {
+    "referee_v2": "./agents/referee/v2/graph.py:build_referee_v2_graph"
+  }
+}
