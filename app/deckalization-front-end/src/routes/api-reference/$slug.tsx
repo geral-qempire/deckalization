@@ -158,7 +158,7 @@ function EndpointDetail({ endpoint, groupTitle }: { endpoint: Endpoint; groupTit
                 <ParamField
                   key={p.name}
                   param={p}
-                  value={values[p.name] ?? ""}
+                  value={values[p.name]}
                   editable={runnable}
                   onChange={(v) => setVal(p.name, v)}
                 />
@@ -297,7 +297,7 @@ function SectionLabel({ children }: { children: React.ReactNode }) {
 function buildArgs(params: Param[], values: Record<string, string>): Record<string, unknown> {
   const args: Record<string, unknown> = {}
   for (const p of params) {
-    const raw = (values[p.name] ?? "").trim()
+    const raw = values[p.name].trim()
     if (raw === "") {
       if (p.required) throw new Error(`Missing required parameter: ${p.name}`)
       continue
