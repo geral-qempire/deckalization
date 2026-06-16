@@ -113,6 +113,13 @@ jobs:
       - name: Install Vercel CLI
         run: npm install --global vercel@latest
 
+      # vercel build bundles the app, which imports the Convex client API via
+      # @convex/* — convex/_generated/api.js resolves "convex/server" from the
+      # repo root, so the root (npm) deps must be installed before building.
+      - name: Install root Convex deps (needed to bundle @convex/* imports)
+        working-directory: ${{ github.workspace }}
+        run: npm ci
+
       - name: Pull Vercel project settings + env (production)
         run: vercel pull --yes --environment=production --token="$VERCEL_TOKEN"
 
