@@ -81,9 +81,21 @@ export function GraphCanvas({
       </defs>
 
       {EDGE_LAYOUT.map((e) => {
-        const active =
-          states[e.from] === "done" &&
-          (states[e.to] === "active" || states[e.to] === "done")
+        const ran = (id: RefereeNodeId) =>
+          states[id] === "active" || states[id] === "done"
+        // Base flow: the source finished and the target has started/finished.
+        let active = states[e.from] === "done" && ran(e.to)
+        // Optional paths must not light up just because both endpoints ran on
+        // the happy path — only when the branch was actually taken. The retry
+        // loop (verifier → rules_retrieval) and its patch edges only fire if a
+        // patch occurred; the out-of-scope edges only if that node ran.
+        if (active) {
+          if (e.kind === "loop" || e.from === "patch" || e.to === "patch") {
+            active = ran("patch")
+          } else if (e.from === "out_of_scope" || e.to === "out_of_scope") {
+            active = ran("out_of_scope")
+          }
+        }
         return (
           <path
             key={`${e.from}-${e.to}-${e.kind}`}
