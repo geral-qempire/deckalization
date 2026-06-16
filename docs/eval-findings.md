@@ -296,8 +296,9 @@ a ~0.05 deficit vs RAG into a **+0.16 lead**.
 - **citation_recall lags rule_recall** — retrieved-but-uncited gap; prompt nudge did not
   clearly help (see caveat above).
 - **Adjudication model choice** — bench40 sweep favors gpt-5-mini (value) / gpt-5.5
-  (accuracy); opus underperformance documented above. Default still sonnet-4.5 in config
-  until explicitly switched.
+  (accuracy); opus underperformance documented above. **Default switched to
+  `openai/gpt-5-mini`** in `agents/core/config.py` (best correctness-per-dollar);
+  gpt-5.5 remains the high-accuracy alternative.
 - **125-case confirmation** — bench40 gates calibrated; full benchmark run still pending
   with revamped metrics.
 

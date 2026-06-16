@@ -24,6 +24,18 @@ on:
           - bench40
           - smoke
           - benchmark
+      targets:
+        description: Pipelines to compare (space-separated). Category/complexity slices come from example metadata in LangSmith.
+        type: string
+        default: baseline_rag referee_v2
+      adjudication_model:
+        description: "Optional: override the referee adjudication model (OpenRouter slug) for a model sweep, e.g. openai/gpt-5.5. Blank = config default."
+        type: string
+        default: ""
+      model_label:
+        description: "Optional: short label appended to the experiment name (e.g. gpt55)."
+        type: string
+        default: ""
       concurrency:
         description: Parallel cases per experiment
         type: string
@@ -66,14 +78,20 @@ jobs:
           done
           [ "$missing" -eq 0 ] || exit 1
 
-      - name: Run eval gate (referee_v2 vs RAG → LangSmith)
+      - name: Run eval gate (compare → LangSmith experiments)
         run: |
           extra=""
           if [ "${{ inputs.skip_thresholds }}" = "true" ]; then
             extra="--skip-thresholds"
           fi
+          if [ -n "${{ inputs.adjudication_model }}" ]; then
+            extra="$extra --adjudication-model ${{ inputs.adjudication_model }}"
+          fi
+          if [ -n "${{ inputs.model_label }}" ]; then
+            extra="$extra --model-label ${{ inputs.model_label }}"
+          fi
           uv run python -m agents.evals.run \
             --suite "${{ inputs.suite }}" \
-            --compare baseline_rag referee_v2 \
+            --compare ${{ inputs.targets }} \
             --concurrency "${{ inputs.concurrency }}" \
             $extra

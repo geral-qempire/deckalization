@@ -24,8 +24,11 @@ class ModelConfig(BaseSettings):
     reproducible and CI can gate on a known model.
     """
 
-    # Frontier reasoning model — drafts and adjudicates rulings.
-    adjudication: str = "anthropic/claude-sonnet-4.5"
+    # Reasoning model — drafts and adjudicates rulings. Chosen from the bench40
+    # adjudication sweep: gpt-5-mini gave the best correctness-per-dollar (ties
+    # sonnet-4.5 on correctness, tops both retrieval metrics, ~⅓ the cost). See
+    # docs/eval-findings.md → "Adjudication-model sweep".
+    adjudication: str = "openai/gpt-5-mini"
     # Cheap model — triage/routing classification.
     router: str = "openai/gpt-4o-mini"
     # Cheap model — card-name span extraction and lookup helpers.

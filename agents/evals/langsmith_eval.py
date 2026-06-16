@@ -17,6 +17,7 @@ from langsmith import Client
 from langsmith.utils import LangSmithNotFoundError
 
 from agents.core.tracing import export_langsmith_env
+from agents.evals.categories import categorize
 from agents.evals.evaluators import langsmith_resolver_evaluators, langsmith_rules_evaluators
 from agents.evals.pipelines import TargetName, run_target, target_trace_tag
 
@@ -46,10 +47,15 @@ def _example_payload(case: dict[str, Any]) -> dict[str, Any]:
             "kind": case.get("kind"),
             "cards": case.get("cards") or [],
         },
+        # Metadata drives the LangSmith compare view's "group by" — slice scores
+        # by interaction category or complexity without re-running anything.
         "metadata": {
             "case_id": _case_id(case),
             "source": case.get("source"),
             "external_id": case.get("externalId"),
+            "category": categorize(case.get("tags")),
+            "complexity": case.get("complexity") or "Unknown",
+            "level": case.get("level") or "Unknown",
         },
         # Dataset splits: smoke / benchmark / card_resolution (drives suite selection).
         "split": case.get("suites") or [],

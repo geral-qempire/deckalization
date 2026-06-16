@@ -97,6 +97,19 @@ not by bolting onto an existing one.
 The eval harness, datasets, fixtures, and ingestion scripts are under `agents/evals/`.
 Eval pipelines may import from any architecture and from `core`.
 
+**Evals are LangSmith experiments, run via the `eval.yml` GitHub Action — not local
+one-off scripts.** The canonical, citable numbers come from `agents.evals.run` (which
+uploads experiments to LangSmith and gates on `thresholds.yaml`), triggered from the
+Actions tab against the live Convex data layer. `--local` exists only for quick dev
+iteration; never treat a local run as the source of truth, and don't add bespoke
+local-only result scripts.
+
+Per-case **slices** (interaction category, complexity, level) are NOT computed by a
+separate script — they ride along as **LangSmith dataset example metadata** set in
+`langsmith_eval._example_payload` (category taxonomy in `agents/evals/categories.py`).
+Slice scores in the LangSmith compare view by grouping on `metadata.category` etc. A
+model sweep is the same Action with the `adjudication_model` input set.
+
 ### 7. MCP is off the production hot path
 `mcp_server/` wraps the same `agents/core/tools` functions for external MCP clients.
 Graph nodes call the Python tool functions directly — never route the hot path through MCP.
