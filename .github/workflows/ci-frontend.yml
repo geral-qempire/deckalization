@@ -124,6 +124,11 @@ jobs:
         run: vercel pull --yes --environment=production --token="$VERCEL_TOKEN"
 
       - name: Build (prebuilt output)
+        # Force Nitro's Vercel preset so the build emits the Build Output API
+        # (.vercel/output) instead of the node preset (.output). CI doesn't
+        # always auto-detect the Vercel environment the way local runs do.
+        env:
+          SERVER_PRESET: vercel
         run: vercel build --prod --token="$VERCEL_TOKEN"
 
       - name: Deploy to Vercel (production)
