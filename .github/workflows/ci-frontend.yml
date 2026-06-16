@@ -58,6 +58,13 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
+      # The app imports typed Convex APIs via the @convex/* alias, so tsc also
+      # type-checks the Convex source at the repo root — which needs the root
+      # (npm) devDeps (convex, @types/node, typescript) resolvable from there.
+      - name: Install root Convex deps (for typed @convex/* imports)
+        working-directory: ${{ github.workspace }}
+        run: npm ci
+
       - name: ESLint (lint)
         run: pnpm lint
 
