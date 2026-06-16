@@ -1,0 +1,787 @@
+{
+  "slug": "bolt-vs-giant-growth",
+  "question": "I cast Lightning Bolt targeting my opponent's Grizzly Bears, and they respond with Giant Growth on it. Does the Grizzly Bears survive?",
+  "blurb": "Stack resolution & combat math",
+  "events": [
+    {
+      "type": "start",
+      "question": "I cast Lightning Bolt targeting my opponent's Grizzly Bears, and they respond with Giant Growth on it. Does the Grizzly Bears survive?",
+      "mode": "replay"
+    },
+    {
+      "type": "node",
+      "node": "router",
+      "delta": {
+        "router_decision": {
+          "intent": "rules",
+          "game_format": null,
+          "reason": "This question is about the interaction between Lightning Bolt and Giant Growth, which involves understanding how damage and power/toughness changes work in Magic: The Gathering."
+        },
+        "route": "rules",
+        "game_format": null
+      },
+      "index": 0
+    },
+    {
+      "type": "node",
+      "node": "card_lookup",
+      "delta": {
+        "card_names": [
+          "Lightning Bolt",
+          "Grizzly Bears",
+          "Giant Growth"
+        ],
+        "resolved_cards": [
+          {
+            "query": "Lightning Bolt",
+            "method": "exact",
+            "confidence": 1.0,
+            "card": {
+              "_creationTime": 1781187107440.609,
+              "_id": "j97aa4mjkbe5769n38ha5na1a988fq9a",
+              "colors": [
+                "R"
+              ],
+              "keywords": [],
+              "layout": "normal",
+              "legalities": {
+                "alchemy": "not_legal",
+                "brawl": "legal",
+                "commander": "legal",
+                "duel": "legal",
+                "future": "not_legal",
+                "gladiator": "legal",
+                "historic": "banned",
+                "legacy": "legal",
+                "modern": "legal",
+                "oathbreaker": "legal",
+                "oldschool": "not_legal",
+                "pauper": "legal",
+                "paupercommander": "legal",
+                "penny": "not_legal",
+                "pioneer": "not_legal",
+                "predh": "legal",
+                "premodern": "legal",
+                "standard": "not_legal",
+                "standardbrawl": "not_legal",
+                "timeless": "legal",
+                "tlr": "legal",
+                "vintage": "legal"
+              },
+              "manaCost": "{R}",
+              "name": "Lightning Bolt",
+              "normalizedName": "lightning bolt",
+              "oracleId": "4457ed35-7c10-48c8-9776-456485fdf070",
+              "oracleText": "Lightning Bolt deals 3 damage to any target.",
+              "rulings": [],
+              "scryfallId": "7673784e-db4b-43a1-8d55-1bb9fc1e284f",
+              "setType": "commander",
+              "typeLine": "Instant",
+              "updatedAt": 1781603580319.0
+            }
+          },
+          {
+            "query": "Grizzly Bears",
+            "method": "exact",
+            "confidence": 1.0,
+            "card": {
+              "_creationTime": 1781187082787.7207,
+              "_id": "j970k0dnv9bfc01ydve18p2s5x88f60d",
+              "colors": [
+                "G"
+              ],
+              "keywords": [],
+              "layout": "normal",
+              "legalities": {
+                "alchemy": "not_legal",
+                "brawl": "legal",
+                "commander": "legal",
+                "duel": "legal",
+                "future": "not_legal",
+                "gladiator": "legal",
+                "historic": "legal",
+                "legacy": "legal",
+                "modern": "legal",
+                "oathbreaker": "legal",
+                "oldschool": "not_legal",
+                "pauper": "legal",
+                "paupercommander": "legal",
+                "penny": "legal",
+                "pioneer": "not_legal",
+                "predh": "legal",
+                "premodern": "legal",
+                "standard": "not_legal",
+                "standardbrawl": "not_legal",
+                "timeless": "legal",
+                "tlr": "legal",
+                "vintage": "legal"
+              },
+              "manaCost": "{1}{G}",
+              "name": "Grizzly Bears",
+              "normalizedName": "grizzly bears",
+              "oracleId": "14c8f55d-d177-4c25-a931-ebeb9e6062a0",
+              "oracleText": "",
+              "power": "2",
+              "rulings": [],
+              "scryfallId": "409f9b88-f03e-40b6-9883-68c14c37c0de",
+              "setType": "core",
+              "toughness": "2",
+              "typeLine": "Creature — Bear",
+              "updatedAt": 1781603535715.0
+            }
+          },
+          {
+            "query": "Giant Growth",
+            "method": "exact",
+            "confidence": 1.0,
+            "card": {
+              "_creationTime": 1781187117983.5405,
+              "_id": "j97a1ankr359jnq7nc7j1ceex188enc5",
+              "colors": [
+                "G"
+              ],
+              "keywords": [],
+              "layout": "normal",
+              "legalities": {
+                "alchemy": "legal",
+                "brawl": "legal",
+                "commander": "legal",
+                "duel": "legal",
+                "future": "legal",
+                "gladiator": "legal",
+                "historic": "legal",
+                "legacy": "legal",
+                "modern": "legal",
+                "oathbreaker": "legal",
+                "oldschool": "not_legal",
+                "pauper": "legal",
+                "paupercommander": "legal",
+                "penny": "legal",
+                "pioneer": "legal",
+                "predh": "legal",
+                "premodern": "legal",
+                "standard": "legal",
+                "standardbrawl": "legal",
+                "timeless": "legal",
+                "tlr": "legal",
+                "vintage": "legal"
+              },
+              "manaCost": "{G}",
+              "name": "Giant Growth",
+              "normalizedName": "giant growth",
+              "oracleId": "5748ebf1-24e3-499d-ab7c-c2cebd462a24",
+              "oracleText": "Target creature gets +3/+3 until end of turn.",
+              "rulings": [],
+              "scryfallId": "fd1f95bf-48ea-455a-8a6c-0249b11c8900",
+              "setType": "expansion",
+              "typeLine": "Instant",
+              "updatedAt": 1781603599437.0
+            }
+          }
+        ],
+        "unresolved_notes": [],
+        "disambiguation": []
+      },
+      "index": 1
+    },
+    {
+      "type": "node",
+      "node": "decompose",
+      "delta": {
+        "subqueries": [
+          "damage calculation with power increase",
+          "replacement effects and damage assignment",
+          "timing of spell resolution",
+          "state-based actions after damage is dealt"
+        ]
+      },
+      "index": 2
+    },
+    {
+      "type": "node",
+      "node": "rules_retrieval",
+      "delta": {
+        "retrieval_query": "I cast Lightning Bolt targeting my opponent's Grizzly Bears, and they respond with Giant Growth on it. Does the Grizzly Bears survive? | damage calculation with power increase | replacement effects and damage assignment | timing of spell resolution | state-based actions after damage is dealt",
+        "retrieved_rules": [
+          {
+            "_creationTime": 1781187251337.8635,
+            "_id": "jd79bs0vkn3zfhbqv2psd720bn88fdxy",
+            "ruleNumber": "608.2g",
+            "rulesVersion": "April 17, 2026",
+            "score": 0.6577712297439575,
+            "section": "608. Resolving Spells and Abilities",
+            "text": "If an effect gives a player the option to pay mana, they may activate mana abilities before taking that action. If an effect specifically instructs or allows a player to cast a spell during resolution, they do so by following the steps in rules 601.2a–i, except no player receives priority after it’s cast. That spell becomes the topmost object on the stack, and the currently resolving spell or ability continues to resolve, which may include casting other spells this way. No other spells can normally be cast and no other abilities can normally be activated during resolution."
+          },
+          {
+            "_creationTime": 1781187239261.604,
+            "_id": "jd75aqxevw5y5jdh3nt29wzksh88fhwb",
+            "ruleNumber": "117.2e",
+            "rulesVersion": "April 17, 2026",
+            "score": 0.6479654312133789,
+            "section": "117. Timing and Priority",
+            "text": "Resolving spells and abilities may instruct players to make choices or take actions, or may allow players to activate mana abilities. Even if a player is doing so, no player has priority while a spell or ability is resolving. See rule 608, “Resolving Spells and Abilities.”"
+          },
+          {
+            "_creationTime": 1781187252864.4019,
+            "_id": "jd73xs50yyme13aqt5v7ywyqz588fsm5",
+            "ruleNumber": "614.7a",
+            "rulesVersion": "April 17, 2026",
+            "score": 0.631531298160553,
+            "section": "614. Replacement Effects",
+            "text": "If a source would deal 0 damage, it does not deal damage at all. Replacement effects that would increase the damage dealt by that source, or would have that source deal that damage to a different object or player, have no event to replace, so they have no effect."
+          },
+          {
+            "_creationTime": 1781187251337.8618,
+            "_id": "jd7fmwgrzs783vwyc0zhe5wcad88egh5",
+            "ruleNumber": "608.2",
+            "rulesVersion": "April 17, 2026",
+            "score": 0.6303761005401611,
+            "section": "608. Resolving Spells and Abilities",
+            "text": "If the object that’s resolving is an instant spell, a sorcery spell, or an ability, its resolution may involve several steps. The steps described in rules 608.2a and 608.2b are followed first. The steps described in rules 608.2c–m are then followed as appropriate, in no specific order. The steps described in rule 608.2n and 608.2p are followed last."
+          },
+          {
+            "_creationTime": 1781187252864.4023,
+            "_id": "jd741nzgxt2hwtb19rm3e5h2nn88fb2j",
+            "ruleNumber": "614.9",
+            "rulesVersion": "April 17, 2026",
+            "score": 0.6279508471488953,
+            "section": "614. Replacement Effects",
+            "text": "Some effects replace damage dealt to one battle, creature, planeswalker, or player with the same damage dealt to another battle, creature, planeswalker, or player; such effects are called redirection effects. If one of those permanents is no longer on the battlefield when the damage would be redirected, or is no longer a battle, creature, or planeswalker when the damage would be redirected, the effect does nothing. If damage would be redirected to or from a player who has left the game, the effect does nothing."
+          },
+          {
+            "_creationTime": 1781187248333.3503,
+            "_id": "jd7c5rb04fmxkr2sr1wqfsgs8d88fjz5",
+            "ruleNumber": "510.3a",
+            "rulesVersion": "April 17, 2026",
+            "score": 0.6242333054542542,
+            "section": "510. Combat Damage Step",
+            "text": "Any abilities that triggered on damage being dealt or while state-based actions are performed afterward are put onto the stack before the active player gets priority; the order in which they triggered doesn’t matter. (See rule 603, “Handling Triggered Abilities.”)"
+          },
+          {
+            "_creationTime": 1781187252864.4004,
+            "_id": "jd7d3ke71vxb1r7gmxtwhabe5s88fkkr",
+            "ruleNumber": "614.2",
+            "rulesVersion": "April 17, 2026",
+            "score": 0.6084269285202026,
+            "section": "614. Replacement Effects",
+            "text": "Some replacement effects apply to damage from a source. See rule 609.7."
+          },
+          {
+            "_creationTime": 1781187240021.0718,
+            "_id": "jd7a89v3yxp34g6a3dkzcx18jx88ec0f",
+            "ruleNumber": "120.4b",
+            "rulesVersion": "April 17, 2026",
+            "score": 0.584754467010498,
+            "section": "120. Damage",
+            "text": "Second, damage is dealt, as modified by replacement and prevention effects that interact with damage. (See rule 614, “Replacement Effects,” and rule 615, “Prevention Effects.”) Abilities that trigger when damage is dealt trigger now and wait to be put on the stack."
+          },
+          {
+            "_creationTime": 1781187270116.5684,
+            "_id": "jd7ac6rey006y6kwmy6hj22fvs88fzk0",
+            "ruleNumber": "704.1",
+            "rulesVersion": "April 17, 2026",
+            "score": 0.5840386152267456,
+            "section": "704. State-Based Actions",
+            "text": "State-based actions are game actions that happen automatically whenever certain conditions (listed below) are met. State-based actions don’t use the stack."
+          },
+          {
+            "_creationTime": 1781187240021.0713,
+            "_id": "jd7fxfhk3ph8fbaht33awre9rh88e7a3",
+            "ruleNumber": "120.4",
+            "rulesVersion": "April 17, 2026",
+            "score": 0.4789590835571289,
+            "section": "120. Damage",
+            "text": "Damage is processed in a four-part sequence."
+          },
+          {
+            "_creationTime": 1781187255130.776,
+            "_id": "jd74xgxcfmfx6ez9tcakpg8apd88eaeg",
+            "ruleNumber": "701.10g",
+            "rulesVersion": "April 17, 2026",
+            "score": 0.4761596918106079,
+            "section": "701. Keyword Actions",
+            "text": "To double an amount of damage a source would deal, that source instead deals twice that much damage. This is a replacement effect."
+          },
+          {
+            "_creationTime": 1781187240021.069,
+            "_id": "jd7fg3tbx6h452msd2rdngryg188ek91",
+            "ruleNumber": "120.3",
+            "rulesVersion": "April 17, 2026",
+            "score": 0.47509223222732544,
+            "section": "120. Damage",
+            "text": "Damage may have one or more of the following results, depending on whether the recipient of the damage is a player or permanent, the characteristics of the damage’s source, and the characteristics of the damage’s recipient (if it’s a permanent)."
+          },
+          {
+            "_creationTime": 1781187240021.0725,
+            "_id": "jd78e28mq23ytkk06ecznm8zs188fd4d",
+            "ruleNumber": "120.5",
+            "rulesVersion": "April 17, 2026",
+            "score": 0.4221147894859314,
+            "section": "120. Damage",
+            "text": "Damage dealt to a creature, planeswalker, or battle doesn’t destroy it. Likewise, the source of that damage doesn’t destroy it. Rather, state-based actions may destroy a creature or otherwise put a permanent into its owner’s graveyard, due to the results of the damage dealt to that permanent. See rule 704.\nExample: A player casts Lightning Bolt, an instant that says “Lightning Bolt deals 3 damage to any target,” targeting a 2/2 creature. After Lightning Bolt deals 3 damage to that creature, the creature is destroyed as a state-based action. Neither Lightning Bolt nor the damage dealt by Lightning Bolt destroyed that creature."
+          },
+          {
+            "_creationTime": 1781187248333.349,
+            "_id": "jd7ax5mp19w93tk17zzsngr4cn88fx0e",
+            "ruleNumber": "510.1c",
+            "rulesVersion": "April 17, 2026",
+            "score": 0.3790012300014496,
+            "section": "510. Combat Damage Step",
+            "text": "A blocked creature assigns its combat damage to the creatures blocking it. If no creatures are currently blocking it (if, for example, they were destroyed or removed from combat), it assigns no combat damage. If exactly one creature is blocking it, it assigns all its combat damage to that creature. If two or more creatures are blocking it, it assigns its combat damage to those creatures divided as its controller chooses among them.\nExample: An attacking Elvish Regrower (a 4/3 creature) is blocked by Vampire Spawn (a 2/3 creature) and Helpful Hunter (a 1/1 creature). Elvish Regrower’s controller can assign all 4 damage to the Hunter, 1 damage to the Spawn and 3 damage to the Hunter, 2 damage to each creature, 3 damage to the Spawn and 1 damage to the Hunter, or all 4 damage to the Spawn."
+          },
+          {
+            "_creationTime": 1781187251337.864,
+            "_id": "jd759f2r2az3fkdzf7zhczdz2188f3c9",
+            "ruleNumber": "608.2i",
+            "rulesVersion": "April 17, 2026",
+            "score": 0.3774905800819397,
+            "section": "608. Resolving Spells and Abilities",
+            "text": "Some effects look back in time and require information about previous game states and actions rather than considering the current game state. If such an effect requires information from the game about an object or group of objects, and that effect is not taking any actions on those objects, they don’t need to be currently in the zone they were in at the time of that previous game state or action, nor do they need to currently meet the criteria described in the action, as long as they did so at the specified time. This is an exception to 608.2h.\nExample: A player attacks with Bear Cub. Later in the turn, an effect causes Bear Cub to become a noncreature permanent. The same player then casts Search Party Captain, a spell that says in part “This spell costs {1} less to cast for each creature you attacked with this turn.” That spell costs {1} less because the player attacked with a creature, even though the Bear Cub they attacked with is no longer a creature."
+          },
+          {
+            "score": 0.0,
+            "_creationTime": 1781187251337.862,
+            "_id": "jd7b2bf5naxv4b3yz7wdjhqcth88e326",
+            "ruleNumber": "608.2a",
+            "rulesVersion": "April 17, 2026",
+            "section": "608. Resolving Spells and Abilities",
+            "text": "If a triggered ability has an intervening “if” clause, it checks whether the clause’s condition is true. If it isn’t, the ability is removed from the stack and does nothing. Otherwise, it continues to resolve. See rule 603.4."
+          },
+          {
+            "score": 0.0,
+            "_creationTime": 1781187251337.8625,
+            "_id": "jd7bhndswmyjgrfz06fbvp6mg188ec4a",
+            "ruleNumber": "608.2c",
+            "rulesVersion": "April 17, 2026",
+            "section": "608. Resolving Spells and Abilities",
+            "text": "The controller of the spell or ability follows its instructions in the order written. However, replacement effects may modify these actions. In some cases, later text on the card may modify the meaning of earlier text (for example, “Destroy target creature. It can’t be regenerated” or “Counter target spell. If that spell is countered this way, put it on top of its owner’s library instead of into its owner’s graveyard.”) Don’t just apply effects step by step without thinking in these cases—read the whole text and apply the rules of English to the text."
+          }
+        ],
+        "loop_count": 0
+      },
+      "index": 3
+    },
+    {
+      "type": "node",
+      "node": "adjudication",
+      "delta": {
+        "draft_ruling": {
+          "ruling": "Looking at this interaction step by step:\n\n**The Stack and Resolution Order:**\n\nWhen you cast Lightning Bolt targeting Grizzly Bears and your opponent responds with Giant Growth, the stack looks like this (top to bottom):\n- Giant Growth (targeting Grizzly Bears)\n- Lightning Bolt (targeting Grizzly Bears)\n\nBy CR 608.2, spells resolve one at a time, starting from the top of the stack.\n\n**Giant Growth Resolves First:**\n\nGiant Growth resolves, giving Grizzly Bears +3/+3 until end of turn (per its Oracle text). The Grizzly Bears is now a 5/5 creature (2/2 base + 3/+3 = 5/5).\n\n**Lightning Bolt Resolves:**\n\nLightning Bolt then resolves, dealing 3 damage to the Grizzly Bears (per its Oracle text).\n\n**Checking for Destruction:**\n\nBy CR 120.5, \"Damage dealt to a creature, planeswalker, or battle doesn't destroy it. Likewise, the source of that damage doesn't destroy it. Rather, state-based actions may destroy a creature or otherwise put a permanent into its owner's graveyard, due to the results of the damage dealt to that permanent.\"\n\nBy CR 704.5g (a state-based action rule for creatures, though not fully quoted in the context), a creature is destroyed if it has damage marked on it greater than or equal to its toughness.\n\nThe Grizzly Bears now has:\n- 5 toughness (from being 5/5)\n- 3 damage marked on it\n\nSince 3 damage is less than 5 toughness, state-based actions will not destroy the Grizzly Bears.\n\n**Answer: Yes, the Grizzly Bears survives.** It ends up as a 5/5 creature with 3 damage marked on it, which is not lethal damage.",
+          "rule_citations": [
+            {
+              "rule_number": "608.2",
+              "excerpt": "spells resolve one at a time, starting from the top of the stack.",
+              "relevance": "This rule explains the order in which spells resolve on the stack."
+            },
+            {
+              "rule_number": "120.5",
+              "excerpt": "Damage dealt to a creature, planeswalker, or battle doesn't destroy it.",
+              "relevance": "This rule clarifies that damage alone does not destroy a creature."
+            }
+          ],
+          "card_citations": [
+            {
+              "name": "Lightning Bolt",
+              "oracle_excerpt": "Lightning Bolt deals 3 damage to any target.",
+              "relevance": "The analysis relies on the damage dealt by Lightning Bolt to determine if Grizzly Bears survives."
+            },
+            {
+              "name": "Giant Growth",
+              "oracle_excerpt": "Target creature gets +3/+3 until end of turn.",
+              "relevance": "The analysis relies on the effect of Giant Growth to increase the toughness of Grizzly Bears."
+            }
+          ],
+          "confidence": "high",
+          "notes": null
+        }
+      },
+      "index": 4
+    },
+    {
+      "type": "node",
+      "node": "verifier",
+      "delta": {
+        "verdict": {
+          "verdict": "ungrounded",
+          "issues": [
+            "The draft ruling cites CR 704.5g as 'a state-based action rule for creatures' that destroys creatures with damage greater than or equal to toughness, but CR 704.5g is not present in the retrieved rules context and cannot be verified",
+            "While CR 120.5 is correctly cited and present, the specific state-based action rule (704.5g) that actually determines when a creature is destroyed by lethal damage is referenced but not provided in the evidence"
+          ],
+          "retrieval_hints": [
+            "704.5g creature lethal damage toughness",
+            "state-based actions creature damage marked",
+            "creature destroyed damage equal toughness"
+          ]
+        }
+      },
+      "index": 5
+    },
+    {
+      "type": "node",
+      "node": "rules_retrieval",
+      "delta": {
+        "retrieval_query": "I cast Lightning Bolt targeting my opponent's Grizzly Bears, and they respond with Giant Growth on it. Does the Grizzly Bears survive? | damage calculation with power increase | replacement effects and damage assignment | timing of spell resolution | state-based actions after damage is dealt | 704.5g creature lethal damage toughness | state-based actions creature damage marked | creature destroyed damage equal toughness",
+        "retrieved_rules": [
+          {
+            "_creationTime": 1781187270116.5713,
+            "_id": "jd76v16gf4rvs59rexg9hh6pmh88epf6",
+            "ruleNumber": "704.5g",
+            "rulesVersion": "April 17, 2026",
+            "score": 0.7331808805465698,
+            "section": "704. State-Based Actions",
+            "text": "If a creature has toughness greater than 0, it has damage marked on it, and the total damage marked on it is greater than or equal to its toughness, that creature has been dealt lethal damage and is destroyed. Regeneration can replace this event."
+          },
+          {
+            "_creationTime": 1781187243755.1252,
+            "_id": "jd76d0jw4q32erfskckagdwr8188fr0q",
+            "ruleNumber": "302.7",
+            "rulesVersion": "April 17, 2026",
+            "score": 0.6860182285308838,
+            "section": "302. Creatures",
+            "text": "Damage dealt to a creature by a source with neither wither nor infect is marked on that creature (see rule 120.3). If the total damage marked on that creature is greater than or equal to its toughness, that creature has been dealt lethal damage and is destroyed as a state-based action (see rule 704). All damage marked on a creature is removed when it regenerates (see rule 701.19, “Regenerate”) and during the cleanup step (see rule 514.2)."
+          },
+          {
+            "_creationTime": 1781187251337.8635,
+            "_id": "jd79bs0vkn3zfhbqv2psd720bn88fdxy",
+            "ruleNumber": "608.2g",
+            "rulesVersion": "April 17, 2026",
+            "score": 0.6577712297439575,
+            "section": "608. Resolving Spells and Abilities",
+            "text": "If an effect gives a player the option to pay mana, they may activate mana abilities before taking that action. If an effect specifically instructs or allows a player to cast a spell during resolution, they do so by following the steps in rules 601.2a–i, except no player receives priority after it’s cast. That spell becomes the topmost object on the stack, and the currently resolving spell or ability continues to resolve, which may include casting other spells this way. No other spells can normally be cast and no other abilities can normally be activated during resolution."
+          },
+          {
+            "_creationTime": 1781187270116.5715,
+            "_id": "jd71f3sw7dmq0s05s5v77zy3gd88e3jr",
+            "ruleNumber": "704.5h",
+            "rulesVersion": "April 17, 2026",
+            "score": 0.6499430537223816,
+            "section": "704. State-Based Actions",
+            "text": "If a creature has toughness greater than 0, and it’s been dealt damage by a source with deathtouch since the last time state-based actions were checked, that creature is destroyed. Regeneration can replace this event."
+          },
+          {
+            "_creationTime": 1781187239261.604,
+            "_id": "jd75aqxevw5y5jdh3nt29wzksh88fhwb",
+            "ruleNumber": "117.2e",
+            "rulesVersion": "April 17, 2026",
+            "score": 0.6479654312133789,
+            "section": "117. Timing and Priority",
+            "text": "Resolving spells and abilities may instruct players to make choices or take actions, or may allow players to activate mana abilities. Even if a player is doing so, no player has priority while a spell or ability is resolving. See rule 608, “Resolving Spells and Abilities.”"
+          },
+          {
+            "_creationTime": 1781187252864.4019,
+            "_id": "jd73xs50yyme13aqt5v7ywyqz588fsm5",
+            "ruleNumber": "614.7a",
+            "rulesVersion": "April 17, 2026",
+            "score": 0.631531298160553,
+            "section": "614. Replacement Effects",
+            "text": "If a source would deal 0 damage, it does not deal damage at all. Replacement effects that would increase the damage dealt by that source, or would have that source deal that damage to a different object or player, have no event to replace, so they have no effect."
+          },
+          {
+            "_creationTime": 1781187251337.8618,
+            "_id": "jd7fmwgrzs783vwyc0zhe5wcad88egh5",
+            "ruleNumber": "608.2",
+            "rulesVersion": "April 17, 2026",
+            "score": 0.6303761005401611,
+            "section": "608. Resolving Spells and Abilities",
+            "text": "If the object that’s resolving is an instant spell, a sorcery spell, or an ability, its resolution may involve several steps. The steps described in rules 608.2a and 608.2b are followed first. The steps described in rules 608.2c–m are then followed as appropriate, in no specific order. The steps described in rule 608.2n and 608.2p are followed last."
+          },
+          {
+            "_creationTime": 1781187252864.4023,
+            "_id": "jd741nzgxt2hwtb19rm3e5h2nn88fb2j",
+            "ruleNumber": "614.9",
+            "rulesVersion": "April 17, 2026",
+            "score": 0.6279508471488953,
+            "section": "614. Replacement Effects",
+            "text": "Some effects replace damage dealt to one battle, creature, planeswalker, or player with the same damage dealt to another battle, creature, planeswalker, or player; such effects are called redirection effects. If one of those permanents is no longer on the battlefield when the damage would be redirected, or is no longer a battle, creature, or planeswalker when the damage would be redirected, the effect does nothing. If damage would be redirected to or from a player who has left the game, the effect does nothing."
+          },
+          {
+            "_creationTime": 1781187248333.3503,
+            "_id": "jd7c5rb04fmxkr2sr1wqfsgs8d88fjz5",
+            "ruleNumber": "510.3a",
+            "rulesVersion": "April 17, 2026",
+            "score": 0.6242333054542542,
+            "section": "510. Combat Damage Step",
+            "text": "Any abilities that triggered on damage being dealt or while state-based actions are performed afterward are put onto the stack before the active player gets priority; the order in which they triggered doesn’t matter. (See rule 603, “Handling Triggered Abilities.”)"
+          },
+          {
+            "_creationTime": 1781187243014.098,
+            "_id": "jd737dh3525petngprqsytw63188f1f6",
+            "ruleNumber": "302.4b",
+            "rulesVersion": "April 17, 2026",
+            "score": 0.6133584976196289,
+            "section": "302. Creatures",
+            "text": "A creature’s toughness is the amount of damage needed to destroy it."
+          },
+          {
+            "_creationTime": 1781187240021.0728,
+            "_id": "jd779xcm39jj617rxc4stqjxbd88fykd",
+            "ruleNumber": "120.6",
+            "rulesVersion": "April 17, 2026",
+            "score": 0.6106014251708984,
+            "section": "120. Damage",
+            "text": "Damage marked on a creature remains until the cleanup step, even if that permanent stops being a creature. If the total damage marked on a creature is greater than or equal to its toughness, that creature has been dealt lethal damage and is destroyed as a state-based action (see rule 704). All damage marked on a permanent is removed when it regenerates (see rule 701.19, “Regenerate”) and during the cleanup step (see rule 514.2)."
+          },
+          {
+            "_creationTime": 1781187252864.4004,
+            "_id": "jd7d3ke71vxb1r7gmxtwhabe5s88fkkr",
+            "ruleNumber": "614.2",
+            "rulesVersion": "April 17, 2026",
+            "score": 0.6084269285202026,
+            "section": "614. Replacement Effects",
+            "text": "Some replacement effects apply to damage from a source. See rule 609.7."
+          },
+          {
+            "_creationTime": 1781187240021.0718,
+            "_id": "jd7a89v3yxp34g6a3dkzcx18jx88ec0f",
+            "ruleNumber": "120.4b",
+            "rulesVersion": "April 17, 2026",
+            "score": 0.584754467010498,
+            "section": "120. Damage",
+            "text": "Second, damage is dealt, as modified by replacement and prevention effects that interact with damage. (See rule 614, “Replacement Effects,” and rule 615, “Prevention Effects.”) Abilities that trigger when damage is dealt trigger now and wait to be put on the stack."
+          },
+          {
+            "_creationTime": 1781187270116.5684,
+            "_id": "jd7ac6rey006y6kwmy6hj22fvs88fzk0",
+            "ruleNumber": "704.1",
+            "rulesVersion": "April 17, 2026",
+            "score": 0.5840386152267456,
+            "section": "704. State-Based Actions",
+            "text": "State-based actions are game actions that happen automatically whenever certain conditions (listed below) are met. State-based actions don’t use the stack."
+          },
+          {
+            "_creationTime": 1781187240021.0713,
+            "_id": "jd7fxfhk3ph8fbaht33awre9rh88e7a3",
+            "ruleNumber": "120.4",
+            "rulesVersion": "April 17, 2026",
+            "score": 0.4789590835571289,
+            "section": "120. Damage",
+            "text": "Damage is processed in a four-part sequence."
+          },
+          {
+            "_creationTime": 1781187255130.776,
+            "_id": "jd74xgxcfmfx6ez9tcakpg8apd88eaeg",
+            "ruleNumber": "701.10g",
+            "rulesVersion": "April 17, 2026",
+            "score": 0.4761596918106079,
+            "section": "701. Keyword Actions",
+            "text": "To double an amount of damage a source would deal, that source instead deals twice that much damage. This is a replacement effect."
+          },
+          {
+            "_creationTime": 1781187240021.069,
+            "_id": "jd7fg3tbx6h452msd2rdngryg188ek91",
+            "ruleNumber": "120.3",
+            "rulesVersion": "April 17, 2026",
+            "score": 0.47509223222732544,
+            "section": "120. Damage",
+            "text": "Damage may have one or more of the following results, depending on whether the recipient of the damage is a player or permanent, the characteristics of the damage’s source, and the characteristics of the damage’s recipient (if it’s a permanent)."
+          },
+          {
+            "_creationTime": 1781187240021.0725,
+            "_id": "jd78e28mq23ytkk06ecznm8zs188fd4d",
+            "ruleNumber": "120.5",
+            "rulesVersion": "April 17, 2026",
+            "score": 0.4221147894859314,
+            "section": "120. Damage",
+            "text": "Damage dealt to a creature, planeswalker, or battle doesn’t destroy it. Likewise, the source of that damage doesn’t destroy it. Rather, state-based actions may destroy a creature or otherwise put a permanent into its owner’s graveyard, due to the results of the damage dealt to that permanent. See rule 704.\nExample: A player casts Lightning Bolt, an instant that says “Lightning Bolt deals 3 damage to any target,” targeting a 2/2 creature. After Lightning Bolt deals 3 damage to that creature, the creature is destroyed as a state-based action. Neither Lightning Bolt nor the damage dealt by Lightning Bolt destroyed that creature."
+          },
+          {
+            "_creationTime": 1781187248333.349,
+            "_id": "jd7ax5mp19w93tk17zzsngr4cn88fx0e",
+            "ruleNumber": "510.1c",
+            "rulesVersion": "April 17, 2026",
+            "score": 0.3790012300014496,
+            "section": "510. Combat Damage Step",
+            "text": "A blocked creature assigns its combat damage to the creatures blocking it. If no creatures are currently blocking it (if, for example, they were destroyed or removed from combat), it assigns no combat damage. If exactly one creature is blocking it, it assigns all its combat damage to that creature. If two or more creatures are blocking it, it assigns its combat damage to those creatures divided as its controller chooses among them.\nExample: An attacking Elvish Regrower (a 4/3 creature) is blocked by Vampire Spawn (a 2/3 creature) and Helpful Hunter (a 1/1 creature). Elvish Regrower’s controller can assign all 4 damage to the Hunter, 1 damage to the Spawn and 3 damage to the Hunter, 2 damage to each creature, 3 damage to the Spawn and 1 damage to the Hunter, or all 4 damage to the Spawn."
+          },
+          {
+            "_creationTime": 1781187251337.864,
+            "_id": "jd759f2r2az3fkdzf7zhczdz2188f3c9",
+            "ruleNumber": "608.2i",
+            "rulesVersion": "April 17, 2026",
+            "score": 0.3774905800819397,
+            "section": "608. Resolving Spells and Abilities",
+            "text": "Some effects look back in time and require information about previous game states and actions rather than considering the current game state. If such an effect requires information from the game about an object or group of objects, and that effect is not taking any actions on those objects, they don’t need to be currently in the zone they were in at the time of that previous game state or action, nor do they need to currently meet the criteria described in the action, as long as they did so at the specified time. This is an exception to 608.2h.\nExample: A player attacks with Bear Cub. Later in the turn, an effect causes Bear Cub to become a noncreature permanent. The same player then casts Search Party Captain, a spell that says in part “This spell costs {1} less to cast for each creature you attacked with this turn.” That spell costs {1} less because the player attacked with a creature, even though the Bear Cub they attacked with is no longer a creature."
+          },
+          {
+            "score": 0.0,
+            "_creationTime": 1781187251337.862,
+            "_id": "jd7b2bf5naxv4b3yz7wdjhqcth88e326",
+            "ruleNumber": "608.2a",
+            "rulesVersion": "April 17, 2026",
+            "section": "608. Resolving Spells and Abilities",
+            "text": "If a triggered ability has an intervening “if” clause, it checks whether the clause’s condition is true. If it isn’t, the ability is removed from the stack and does nothing. Otherwise, it continues to resolve. See rule 603.4."
+          },
+          {
+            "score": 0.0,
+            "_creationTime": 1781187251337.8625,
+            "_id": "jd7bhndswmyjgrfz06fbvp6mg188ec4a",
+            "ruleNumber": "608.2c",
+            "rulesVersion": "April 17, 2026",
+            "section": "608. Resolving Spells and Abilities",
+            "text": "The controller of the spell or ability follows its instructions in the order written. However, replacement effects may modify these actions. In some cases, later text on the card may modify the meaning of earlier text (for example, “Destroy target creature. It can’t be regenerated” or “Counter target spell. If that spell is countered this way, put it on top of its owner’s library instead of into its owner’s graveyard.”) Don’t just apply effects step by step without thinking in these cases—read the whole text and apply the rules of English to the text."
+          },
+          {
+            "score": 0.0,
+            "_creationTime": 1781187255130.7854,
+            "_id": "jd7a6chrn36kpna4cfxxgph6ax88e6x0",
+            "ruleNumber": "701.19",
+            "rulesVersion": "April 17, 2026",
+            "section": "701. Keyword Actions",
+            "text": "Regenerate"
+          },
+          {
+            "score": 0.0,
+            "_creationTime": 1781187249060.3186,
+            "_id": "jd76787esfypefv90vzrkrmbb588fn7y",
+            "ruleNumber": "514.2",
+            "rulesVersion": "April 17, 2026",
+            "section": "514. Cleanup Step",
+            "text": "Second, the following actions happen simultaneously: all damage marked on permanents (including phased-out permanents) is removed and all “until end of turn” and “this turn” effects end. This turn-based action doesn’t use the stack."
+          },
+          {
+            "score": 0.0,
+            "_creationTime": 1781187249833.9126,
+            "_id": "jd78byyadqg47gpeh6wj14fzd588ezcv",
+            "ruleNumber": "603.4",
+            "rulesVersion": "April 17, 2026",
+            "section": "603. Handling Triggered Abilities",
+            "text": "A triggered ability may read “When/Whenever/At [trigger event], if [condition], [effect].” When the trigger event occurs, the ability checks whether the stated condition is true. The ability triggers only if it is; otherwise it does nothing. If the ability triggers, it checks the stated condition again as it resolves. If the condition isn’t true at that time, the ability is removed from the stack and does nothing. Note that this mirrors the check for legal targets. This rule is referred to as the “intervening ‘if’ clause” rule. (The word “if” has only its normal English meaning anywhere else in the text of a card; this rule only applies to an “if” that immediately follows a trigger condition.)\nExample: Felidar Sovereign reads, “At the beginning of your upkeep, if you have 40 or more life, you win the game.” Its controller’s life total is checked as that player’s upkeep begins. If that player has 39 or less life, the ability doesn’t trigger at all. If that player has 40 or more life, the ability triggers and goes on the stack. As the ability resolves, that player’s life total is checked again. If that player has 39 or less life at this time, the ability is removed from the stack and has no effect. If that player has 40 or more life at this time, the ability resolves and that player wins the game."
+          }
+        ],
+        "loop_count": 1
+      },
+      "index": 6
+    },
+    {
+      "type": "node",
+      "node": "patch",
+      "delta": {
+        "draft_ruling": {
+          "ruling": "Looking at this interaction step by step:\n\n**The Stack and Resolution Order:**\n\nWhen you cast Lightning Bolt targeting Grizzly Bears and your opponent responds with Giant Growth, the stack looks like this (top to bottom):\n- Giant Growth (targeting Grizzly Bears)\n- Lightning Bolt (targeting Grizzly Bears)\n\nBy CR 608.2, spells resolve one at a time, starting from the top of the stack.\n\n**Giant Growth Resolves First:**\n\nGiant Growth resolves, giving Grizzly Bears +3/+3 until end of turn (per its Oracle text). The Grizzly Bears is now a 5/5 creature (2/2 base + 3/+3 = 5/5).\n\n**Lightning Bolt Resolves:**\n\nLightning Bolt then resolves, dealing 3 damage to the Grizzly Bears (per its Oracle text).\n\n**Checking for Destruction:**\n\nBy CR 120.5, \"Damage dealt to a creature, planeswalker, or battle doesn't destroy it. Likewise, the source of that damage doesn't destroy it. Rather, state-based actions may destroy a creature or otherwise put a permanent into its owner's graveyard, due to the results of the damage dealt to that permanent.\"\n\nBy CR 704.5g, \"If a creature has toughness greater than 0, it has damage marked on it, and the total damage marked on it is greater than or equal to its toughness, that creature has been dealt lethal damage and is destroyed.\"\n\nThe Grizzly Bears now has:\n- 5 toughness (from being 5/5)\n- 3 damage marked on it\n\nSince 3 damage is less than 5 toughness, state-based actions will not destroy the Grizzly Bears.\n\n**Answer: Yes, the Grizzly Bears survives.** It ends up as a 5/5 creature with 3 damage marked on it, which is not lethal damage.",
+          "rule_citations": [
+            {
+              "rule_number": "608.2",
+              "excerpt": "spells resolve one at a time, starting from the top of the stack.",
+              "relevance": "This rule explains the order in which spells resolve on the stack."
+            },
+            {
+              "rule_number": "120.5",
+              "excerpt": "Damage dealt to a creature, planeswalker, or battle doesn't destroy it.",
+              "relevance": "This rule clarifies that damage alone does not destroy a creature."
+            },
+            {
+              "rule_number": "704.5g",
+              "excerpt": "If a creature has toughness greater than 0, it has damage marked on it, and the total damage marked on it is greater than or equal to its toughness, that creature has been dealt lethal damage and is destroyed.",
+              "relevance": "This rule defines lethal damage and when a creature is destroyed."
+            }
+          ],
+          "card_citations": [
+            {
+              "name": "Lightning Bolt",
+              "oracle_excerpt": "Lightning Bolt deals 3 damage to any target.",
+              "relevance": "The analysis relies on the damage dealt by Lightning Bolt to determine the fate of Grizzly Bears."
+            },
+            {
+              "name": "Giant Growth",
+              "oracle_excerpt": "Target creature gets +3/+3 until end of turn.",
+              "relevance": "The analysis relies on the effect of Giant Growth to increase the toughness of Grizzly Bears."
+            }
+          ],
+          "confidence": "high",
+          "notes": null
+        }
+      },
+      "index": 7
+    },
+    {
+      "type": "node",
+      "node": "verifier",
+      "delta": {
+        "verdict": {
+          "verdict": "grounded",
+          "issues": [],
+          "retrieval_hints": []
+        }
+      },
+      "index": 8
+    },
+    {
+      "type": "node",
+      "node": "formatter",
+      "delta": {
+        "final_response": {
+          "ruling": "Looking at this interaction step by step:\n\n**The Stack and Resolution Order:**\n\nWhen you cast Lightning Bolt targeting Grizzly Bears and your opponent responds with Giant Growth, the stack looks like this (top to bottom):\n- Giant Growth (targeting Grizzly Bears)\n- Lightning Bolt (targeting Grizzly Bears)\n\nBy CR 608.2, spells resolve one at a time, starting from the top of the stack.\n\n**Giant Growth Resolves First:**\n\nGiant Growth resolves, giving Grizzly Bears +3/+3 until end of turn (per its Oracle text). The Grizzly Bears is now a 5/5 creature (2/2 base + 3/+3 = 5/5).\n\n**Lightning Bolt Resolves:**\n\nLightning Bolt then resolves, dealing 3 damage to the Grizzly Bears (per its Oracle text).\n\n**Checking for Destruction:**\n\nBy CR 120.5, \"Damage dealt to a creature, planeswalker, or battle doesn't destroy it. Likewise, the source of that damage doesn't destroy it. Rather, state-based actions may destroy a creature or otherwise put a permanent into its owner's graveyard, due to the results of the damage dealt to that permanent.\"\n\nBy CR 704.5g, \"If a creature has toughness greater than 0, it has damage marked on it, and the total damage marked on it is greater than or equal to its toughness, that creature has been dealt lethal damage and is destroyed.\"\n\nThe Grizzly Bears now has:\n- 5 toughness (from being 5/5)\n- 3 damage marked on it\n\nSince 3 damage is less than 5 toughness, state-based actions will not destroy the Grizzly Bears.\n\n**Answer: Yes, the Grizzly Bears survives.** It ends up as a 5/5 creature with 3 damage marked on it, which is not lethal damage.",
+          "rule_citations": [
+            {
+              "rule_number": "608.2",
+              "excerpt": "spells resolve one at a time, starting from the top of the stack.",
+              "relevance": "This rule explains the order in which spells resolve on the stack."
+            },
+            {
+              "rule_number": "120.5",
+              "excerpt": "Damage dealt to a creature, planeswalker, or battle doesn't destroy it.",
+              "relevance": "This rule clarifies that damage alone does not destroy a creature."
+            },
+            {
+              "rule_number": "704.5g",
+              "excerpt": "If a creature has toughness greater than 0, it has damage marked on it, and the total damage marked on it is greater than or equal to its toughness, that creature has been dealt lethal damage and is destroyed.",
+              "relevance": "This rule defines lethal damage and when a creature is destroyed."
+            }
+          ],
+          "card_citations": [
+            {
+              "name": "Lightning Bolt",
+              "oracle_excerpt": "Lightning Bolt deals 3 damage to any target.",
+              "relevance": "The analysis relies on the damage dealt by Lightning Bolt to determine the fate of Grizzly Bears."
+            },
+            {
+              "name": "Giant Growth",
+              "oracle_excerpt": "Target creature gets +3/+3 until end of turn.",
+              "relevance": "The analysis relies on the effect of Giant Growth to increase the toughness of Grizzly Bears."
+            }
+          ],
+          "confidence": "high",
+          "notes": null
+        }
+      },
+      "index": 9
+    },
+    {
+      "type": "final",
+      "response": {
+        "ruling": "Looking at this interaction step by step:\n\n**The Stack and Resolution Order:**\n\nWhen you cast Lightning Bolt targeting Grizzly Bears and your opponent responds with Giant Growth, the stack looks like this (top to bottom):\n- Giant Growth (targeting Grizzly Bears)\n- Lightning Bolt (targeting Grizzly Bears)\n\nBy CR 608.2, spells resolve one at a time, starting from the top of the stack.\n\n**Giant Growth Resolves First:**\n\nGiant Growth resolves, giving Grizzly Bears +3/+3 until end of turn (per its Oracle text). The Grizzly Bears is now a 5/5 creature (2/2 base + 3/+3 = 5/5).\n\n**Lightning Bolt Resolves:**\n\nLightning Bolt then resolves, dealing 3 damage to the Grizzly Bears (per its Oracle text).\n\n**Checking for Destruction:**\n\nBy CR 120.5, \"Damage dealt to a creature, planeswalker, or battle doesn't destroy it. Likewise, the source of that damage doesn't destroy it. Rather, state-based actions may destroy a creature or otherwise put a permanent into its owner's graveyard, due to the results of the damage dealt to that permanent.\"\n\nBy CR 704.5g, \"If a creature has toughness greater than 0, it has damage marked on it, and the total damage marked on it is greater than or equal to its toughness, that creature has been dealt lethal damage and is destroyed.\"\n\nThe Grizzly Bears now has:\n- 5 toughness (from being 5/5)\n- 3 damage marked on it\n\nSince 3 damage is less than 5 toughness, state-based actions will not destroy the Grizzly Bears.\n\n**Answer: Yes, the Grizzly Bears survives.** It ends up as a 5/5 creature with 3 damage marked on it, which is not lethal damage.",
+        "rule_citations": [
+          {
+            "rule_number": "608.2",
+            "excerpt": "spells resolve one at a time, starting from the top of the stack.",
+            "relevance": "This rule explains the order in which spells resolve on the stack."
+          },
+          {
+            "rule_number": "120.5",
+            "excerpt": "Damage dealt to a creature, planeswalker, or battle doesn't destroy it.",
+            "relevance": "This rule clarifies that damage alone does not destroy a creature."
+          },
+          {
+            "rule_number": "704.5g",
+            "excerpt": "If a creature has toughness greater than 0, it has damage marked on it, and the total damage marked on it is greater than or equal to its toughness, that creature has been dealt lethal damage and is destroyed.",
+            "relevance": "This rule defines lethal damage and when a creature is destroyed."
+          }
+        ],
+        "card_citations": [
+          {
+            "name": "Lightning Bolt",
+            "oracle_excerpt": "Lightning Bolt deals 3 damage to any target.",
+            "relevance": "The analysis relies on the damage dealt by Lightning Bolt to determine the fate of Grizzly Bears."
+          },
+          {
+            "name": "Giant Growth",
+            "oracle_excerpt": "Target creature gets +3/+3 until end of turn.",
+            "relevance": "The analysis relies on the effect of Giant Growth to increase the toughness of Grizzly Bears."
+          }
+        ],
+        "confidence": "high",
+        "notes": null
+      }
+    }
+  ]
+}

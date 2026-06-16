@@ -28,6 +28,9 @@ node_modules/
 models/
 data/
 *.bulk.json
+# The frontend bundles static data modules under src/data — not an ML cache.
+!app/deckalization-front-end/src/data/
+!app/deckalization-front-end/src/data/**
 
 # ---- OS / editor ----
 .DS_Store

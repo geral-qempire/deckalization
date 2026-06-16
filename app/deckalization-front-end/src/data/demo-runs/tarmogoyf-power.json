@@ -1,0 +1,382 @@
+{
+  "slug": "tarmogoyf-power",
+  "question": "How are Tarmogoyf's power and toughness determined, and can they change in the middle of combat as cards are put into graveyards?",
+  "blurb": "Characteristic-defining ability",
+  "events": [
+    {
+      "type": "start",
+      "question": "How are Tarmogoyf's power and toughness determined, and can they change in the middle of combat as cards are put into graveyards?",
+      "mode": "replay"
+    },
+    {
+      "type": "node",
+      "node": "router",
+      "delta": {
+        "router_decision": {
+          "intent": "rules",
+          "game_format": null,
+          "reason": "The question is about the rules governing Tarmogoyf's power and toughness, which involves card interactions and timing."
+        },
+        "route": "rules",
+        "game_format": null
+      },
+      "index": 0
+    },
+    {
+      "type": "node",
+      "node": "card_lookup",
+      "delta": {
+        "card_names": [
+          "Tarmogoyf"
+        ],
+        "resolved_cards": [
+          {
+            "query": "Tarmogoyf",
+            "method": "exact",
+            "confidence": 0.95,
+            "card": {
+              "_creationTime": 1781187108617.8882,
+              "_id": "j973rah9h7hn4q0rz60m73z12h88fe88",
+              "colors": [
+                "G"
+              ],
+              "keywords": [],
+              "layout": "normal",
+              "legalities": {
+                "alchemy": "not_legal",
+                "brawl": "legal",
+                "commander": "legal",
+                "duel": "legal",
+                "future": "not_legal",
+                "gladiator": "legal",
+                "historic": "legal",
+                "legacy": "legal",
+                "modern": "legal",
+                "oathbreaker": "legal",
+                "oldschool": "not_legal",
+                "pauper": "not_legal",
+                "paupercommander": "not_legal",
+                "penny": "not_legal",
+                "pioneer": "not_legal",
+                "predh": "legal",
+                "premodern": "not_legal",
+                "standard": "not_legal",
+                "standardbrawl": "not_legal",
+                "timeless": "legal",
+                "tlr": "legal",
+                "vintage": "legal"
+              },
+              "manaCost": "{1}{G}",
+              "name": "Tarmogoyf",
+              "normalizedName": "tarmogoyf",
+              "oracleId": "45900b2f-f6a9-4c42-9642-008f3c1cf6dd",
+              "oracleText": "Tarmogoyf's power is equal to the number of card types among cards in all graveyards and its toughness is equal to that number plus 1.",
+              "power": "*",
+              "rulings": [
+                {
+                  "comment": "Tarmogoyf counts card types, not cards. If the only card in all graveyards is a single artifact creature, Tarmogoyf will be 2/3. If the only cards in all graveyards are ten artifact creatures, Tarmogoyf will still be 2/3.",
+                  "published_at": "2021-03-19",
+                  "source": "wotc"
+                },
+                {
+                  "comment": "The ability that defines Tarmogoyf's power and toughness works in all zones, not just the battlefield. If Tarmogoyf is in your graveyard, it will count itself.",
+                  "published_at": "2021-03-19",
+                  "source": "wotc"
+                },
+                {
+                  "comment": "The card types that can appear on cards in a graveyard are artifact, battle, creature, enchantment, instant, kindred, land, planeswalker, and sorcery. Legendary, basic, and snow are supertypes, not card types.",
+                  "published_at": "2021-03-19",
+                  "source": "wotc"
+                },
+                {
+                  "comment": "If an instant or sorcery spell deals damage to Tarmogoyf or lowers its toughness, that spell is put into its owner's graveyard before state-based actions are performed. If that card is the first of its type to enter a graveyard, it will raise Tarmogoyf's toughness before the game checks to see if Tarmogoyf dies.",
+                  "published_at": "2021-03-19",
+                  "source": "wotc"
+                },
+                {
+                  "comment": "Some older printings of this card reference the \"tribal\" card type in their reminder text. That card type's name has been replaced with \"kindred\". This change does not affect the gameplay function of those cards or of Tarmogoyf. (The same older printings of this card also fail to reference the \"battle\" card type, which didn't exist at the time, but Tarmogoyf's ability still counts that card type.)",
+                  "published_at": "2024-06-07",
+                  "source": "wotc"
+                }
+              ],
+              "scryfallId": "69daba76-96e8-4bcc-ab79-2f00189ad8fb",
+              "setType": "masters",
+              "toughness": "1+*",
+              "typeLine": "Creature — Lhurgoyf",
+              "updatedAt": 1781603582138.0
+            }
+          }
+        ],
+        "unresolved_notes": [],
+        "disambiguation": []
+      },
+      "index": 1
+    },
+    {
+      "type": "node",
+      "node": "decompose",
+      "delta": {
+        "subqueries": [
+          "power and toughness calculation",
+          "Tarmogoyf power toughness changes",
+          "combat damage step and state-based actions",
+          "cards leaving the battlefield and Tarmogoyf"
+        ]
+      },
+      "index": 2
+    },
+    {
+      "type": "node",
+      "node": "rules_retrieval",
+      "delta": {
+        "retrieval_query": "How are Tarmogoyf's power and toughness determined, and can they change in the middle of combat as cards are put into graveyards? | power and toughness calculation | Tarmogoyf power toughness changes | combat damage step and state-based actions | cards leaving the battlefield and Tarmogoyf",
+        "retrieved_rules": [
+          {
+            "_creationTime": 1781187248333.3503,
+            "_id": "jd7c5rb04fmxkr2sr1wqfsgs8d88fjz5",
+            "ruleNumber": "510.3a",
+            "rulesVersion": "April 17, 2026",
+            "score": 0.7308653593063354,
+            "section": "510. Combat Damage Step",
+            "text": "Any abilities that triggered on damage being dealt or while state-based actions are performed afterward are put onto the stack before the active player gets priority; the order in which they triggered doesn’t matter. (See rule 603, “Handling Triggered Abilities.”)"
+          },
+          {
+            "_creationTime": 1781187243014.0864,
+            "_id": "jd7ee3vezewgvwgs6hn65xsghh88f6tr",
+            "ruleNumber": "208.1",
+            "rulesVersion": "April 17, 2026",
+            "score": 0.7005264163017273,
+            "section": "208. Power/Toughness",
+            "text": "A creature card has two numbers separated by a slash printed in its lower right corner. The first number is its power (the amount of damage it deals in combat); the second is its toughness (the amount of damage needed to destroy it). For example, 2/3 means the object has power 2 and toughness 3. Power and toughness can be modified or set to particular values by effects."
+          },
+          {
+            "_creationTime": 1781187243014.0886,
+            "_id": "jd7ex7trgk8a4j7hd6sh7mhaj588f23k",
+            "ruleNumber": "208.5",
+            "rulesVersion": "April 17, 2026",
+            "score": 0.6751503348350525,
+            "section": "208. Power/Toughness",
+            "text": "If a creature somehow has no value for its power, its power is 0. The same is true for toughness."
+          },
+          {
+            "_creationTime": 1781187243014.088,
+            "_id": "jd7btza8m79jb6hdztdrhgkv0d88fyrv",
+            "ruleNumber": "208.4",
+            "rulesVersion": "April 17, 2026",
+            "score": 0.6694382429122925,
+            "section": "208. Power/Toughness",
+            "text": "Some effects refer to a creature’s “base power,” “base toughness,” or “base power and toughness.”"
+          },
+          {
+            "_creationTime": 1781187248333.3499,
+            "_id": "jd7f6f4gnh95f8ge5gs401atys88evr3",
+            "ruleNumber": "510.2",
+            "rulesVersion": "April 17, 2026",
+            "score": 0.6571862697601318,
+            "section": "510. Combat Damage Step",
+            "text": "Second, all combat damage that’s been assigned is dealt simultaneously. This turn-based action doesn’t use the stack. No player has the chance to cast spells or activate abilities between the time combat damage is assigned and the time it’s dealt."
+          },
+          {
+            "_creationTime": 1781187248333.3489,
+            "_id": "jd75hdhexpfh4eknnntz520nr188fcm0",
+            "ruleNumber": "510.1b",
+            "rulesVersion": "April 17, 2026",
+            "score": 0.6403933763504028,
+            "section": "510. Combat Damage Step",
+            "text": "An unblocked creature assigns its combat damage to the player, planeswalker, or battle it’s attacking. If it isn’t currently attacking anything (if, for example, it was attacking a planeswalker that has left the battlefield), it assigns no combat damage."
+          },
+          {
+            "_creationTime": 1781187243014.087,
+            "_id": "jd72s0x5z0ht8mbyn7gw74ke1x88fxny",
+            "ruleNumber": "208.2a",
+            "rulesVersion": "April 17, 2026",
+            "score": 0.5591731071472168,
+            "section": "208. Power/Toughness",
+            "text": "The card may have a characteristic-defining ability that sets its power and/or toughness according to some stated condition. (See rule 604.3.) Such an ability is worded “[This creature’s] [power or toughness] is equal to . . .” or “[This creature’s] power and toughness are each equal to . . .” This ability functions everywhere, even outside the game. If the ability needs to use a number that can’t be determined, including inside a calculation, use 0 instead of that number.\nExample: Lost Order of Jarkeld has power and toughness each equal to 1+*. It has the abilities “As this creature enters, choose an opponent” and “Lost Order of Jarkeld’s power and toughness are each equal to 1 plus the number of creatures the chosen player controls.” While Lost Order of Jarkeld isn’t on the battlefield, there won’t be a chosen player. Its power and toughness will each be equal to 1 plus 0, so it’s 1/1."
+          },
+          {
+            "_creationTime": 1781187243014.0872,
+            "_id": "jd73veqege7jqhabgx13v4rgwn88ey1g",
+            "ruleNumber": "208.2b",
+            "rulesVersion": "April 17, 2026",
+            "score": 0.5562483668327332,
+            "section": "208. Power/Toughness",
+            "text": "The card may have a static ability that creates a replacement effect that sets the creature’s power and toughness to one of a number of specific values as it enters the battlefield or is turned face up. (See rule 614, “Replacement Effects.”) Such an ability is worded “As [this creature] enters . . . ,” “As [this creature] is turned face up . . . ,” or “[This creature] enters as . . .” and lists two or more specific power and toughness values (and may also list additional characteristics). The characteristics chosen or determined with these effects affect the creature’s copiable values. (See rule 707.2.) While the card isn’t on the battlefield, its power and toughness are each considered to be 0."
+          },
+          {
+            "_creationTime": 1781187243014.0881,
+            "_id": "jd73nh0ddxev30rvseceypnhzh88edxw",
+            "ruleNumber": "208.4a",
+            "rulesVersion": "April 17, 2026",
+            "score": 0.5311492681503296,
+            "section": "208. Power/Toughness",
+            "text": "Effects that set a creature’s power and/or toughness to specific values may refer to base power and/or toughness. Other continuous effects may further modify the creature’s power and toughness. See rule 613, “Interaction of Continuous Effects.”"
+          },
+          {
+            "_creationTime": 1781187273216.977,
+            "_id": "jd75xeqzk3wk52xyb3sfd40ebn88e5ja",
+            "ruleNumber": "712.21",
+            "rulesVersion": "April 17, 2026",
+            "score": 0.5179572701454163,
+            "section": "712. Double-Faced Cards",
+            "text": "If a melded permanent leaves the battlefield, one permanent leaves the battlefield and two cards are put into the appropriate zone.\nExample: Chittering Host, a melded permanent, dies. An ability that triggers “whenever a creature dies” triggers once. An ability that triggers “whenever a card is put into a graveyard from anywhere” triggers twice."
+          },
+          {
+            "_creationTime": 1781187273216.9778,
+            "_id": "jd791jcch7a2d4cxzjrm47yycn88f7tn",
+            "ruleNumber": "712.21c",
+            "rulesVersion": "April 17, 2026",
+            "score": 0.4668082296848297,
+            "section": "712. Double-Faced Cards",
+            "text": "If an effect can find the new object that a melded permanent becomes as it leaves the battlefield, it finds both cards. (See rule 400.7.) If that effect causes actions to be taken upon those cards, the same actions are taken upon each of them.\nExample: Otherworldly Journey is an instant that reads “Exile target creature. At the beginning of the next end step, return that card to the battlefield under its owner’s control with a +1/+1 counter on it.” A player casts Otherworldly Journey targeting Chittering Host, a melded permanent. Chittering Host is exiled. At the beginning of the next end step, Midnight Scavengers and Graf Rats are both returned to the battlefield, each with a +1/+1 counter on it.\nExample: False Demise is an Aura with the ability “When enchanted creature dies, return that card to the battlefield under your control.” A Chittering Host enchanted by False Demise dies. The triggered ability returns both Midnight Scavengers and Graf Rats to the battlefield.\nExample: Mimic Vat is an artifact that reads, in part, “Whenever a nontoken creature dies, you may exile that card.” A Chittering Host dies. As Mimic Vat’s triggered ability resolves, its controller makes a single choice and both cards that represented Chittering Host are either exiled or not."
+          },
+          {
+            "_creationTime": 1781187249833.9138,
+            "_id": "jd7cm9e5k8wmn7f2cjmjzcwkbx88ftdx",
+            "ruleNumber": "603.6c",
+            "rulesVersion": "April 17, 2026",
+            "score": 0.45703941583633423,
+            "section": "603. Handling Triggered Abilities",
+            "text": "Leaves-the-battlefield abilities trigger when a permanent moves from the battlefield to another zone, or when a phased-in permanent leaves the game because its owner leaves the game. These are written as, but aren’t limited to, “When [this object] leaves the battlefield, . . .” or “Whenever [something] is put into a graveyard from the battlefield, . . . .” (See also rule 603.10.) An ability that attempts to do something to the card that left the battlefield checks for it only in the first zone that it went to. An ability that triggers when a card is put into a certain zone “from anywhere” is never treated as a leaves-the-battlefield ability, even if an object is put into that zone from the battlefield."
+          },
+          {
+            "score": 0.0,
+            "_creationTime": 1781187245195.403,
+            "_id": "jd7490bnd4x8cbwk1r1zadkkwh88ew3s",
+            "ruleNumber": "400.7",
+            "rulesVersion": "April 17, 2026",
+            "section": "400. General",
+            "text": "An object that moves from one zone to another becomes a new object with no memory of, or relation to, its previous existence. This rule has the following exceptions."
+          },
+          {
+            "score": 0.0,
+            "_creationTime": 1781187250564.9111,
+            "_id": "jd77dej626b6hzq8ry4pxx202d88ea5y",
+            "ruleNumber": "604.3",
+            "rulesVersion": "April 17, 2026",
+            "section": "604. Handling Static Abilities",
+            "text": "Some static abilities are characteristic-defining abilities. A characteristic-defining ability conveys information about an object’s characteristics that would normally be found elsewhere on that object (such as in its mana cost, type line, or power/toughness box). Characteristic-defining abilities can add to or override information found elsewhere on that object. Characteristic-defining abilities function in all zones. They also function outside the game and before the game begins."
+          },
+          {
+            "score": 0.0,
+            "_creationTime": 1781187270866.589,
+            "_id": "jd7cq3qe3a0mfeqq5bmj8rkj2s88fcwa",
+            "ruleNumber": "707.2",
+            "rulesVersion": "April 17, 2026",
+            "section": "707. Copying Objects",
+            "text": "When copying an object, the copy acquires the copiable values of the original object’s characteristics and, for an object on the stack, choices made when casting or activating it (mode, targets, the value of X, whether it was kicked, how it will affect multiple targets, and so on). The copiable values are the values derived from the text printed on the object (that text being name, mana cost, color indicator, card type, subtype, supertype, rules text, power, toughness, and/or loyalty), as modified by other copy effects, by its face-down status, and by “as . . . enters” and “as . . . is turned face up” abilities that set power and toughness (and may also set additional characteristics). Other effects (including type-changing and text-changing effects), status, counters, and stickers are not copied.\nExample: Chimeric Staff is an artifact that reads, “{X}: This artifact becomes an X/X Construct artifact creature until end of turn.” Clone is a creature that reads, “You may have this creature enter as a copy of any creature on the battlefield.” After a Staff has become a 5/5 Construct artifact creature, a Clone enters the battlefield as a copy of it. The Clone is an artifact, not a 5/5 Construct artifact creature. (The copy has the Staff’s ability, however, and will become a creature if that ability is activated.)\nExample: Clone enters the battlefield as a copy of a face-down Grinning Demon (a creature with morph {2}{B}{B}). The Clone is a colorless 2/2 creature with no name, no types, no abilities, and no mana cost. It will still be face up. Its controller can’t pay {2}{B}{B} to turn it face up."
+          },
+          {
+            "score": 0.0,
+            "_creationTime": 1781187249833.9172,
+            "_id": "jd7fzsp8fvctcpsf2fdr4bqja988fkhk",
+            "ruleNumber": "603.10",
+            "rulesVersion": "April 17, 2026",
+            "section": "603. Handling Triggered Abilities",
+            "text": "Normally, objects that exist immediately after an event are checked to see if the event matched any trigger conditions, and continuous effects that exist at that time are used to determine what the trigger conditions are and what the objects involved in the event look like. However, some triggered abilities are exceptions to this rule; the game “looks back in time” to determine if those abilities trigger, using the existence of those abilities and the appearance of objects immediately prior to the event. The list of exceptions is as follows:"
+          }
+        ],
+        "loop_count": 0
+      },
+      "index": 3
+    },
+    {
+      "type": "node",
+      "node": "adjudication",
+      "delta": {
+        "draft_ruling": {
+          "ruling": "# Answer\n\n**How Tarmogoyf's power and toughness are determined:**\n\nTarmogoyf's power and toughness are determined by a **characteristic-defining ability** (by CR 604.3, which states that characteristic-defining abilities \"convey information about an object's characteristics that would normally be found elsewhere on that object\"). Specifically, by CR 208.2a, Tarmogoyf has an ability worded as \"[This creature's] [power or toughness] is equal to...\" which \"functions everywhere, even outside the game.\"\n\nThe ability counts the **number of different card types** among cards in all graveyards:\n- Power = number of card types\n- Toughness = number of card types + 1\n\nAs stated in the rulings, the possible card types are: artifact, battle, creature, enchantment, instant, kindred, land, planeswalker, and sorcery. The ability counts types, not individual cards—ten artifact creatures would still only contribute two types (artifact and creature).\n\n**Can they change in the middle of combat?**\n\n**Yes, absolutely.** Tarmogoyf's power and toughness can change during combat as cards enter graveyards.\n\nHere's why:\n\n1. **The ability works continuously**: By CR 604.3, characteristic-defining abilities \"function in all zones,\" meaning Tarmogoyf's ability constantly updates based on the current game state.\n\n2. **Combat damage creates opportunities for changes**: By CR 510.2, \"all combat damage that's been assigned is dealt simultaneously.\" After damage is dealt, state-based actions are checked, and creatures that received lethal damage die and are put into graveyards.\n\n3. **The timing matters**: The rulings explicitly address this: \"If an instant or sorcery spell deals damage to Tarmogoyf or lowers its toughness, that spell is put into its owner's graveyard before state-based actions are performed. If that card is the first of its type to enter a graveyard, it will raise Tarmogoyf's toughness before the game checks to see if Tarmogoyf dies.\"\n\n**Example scenario**: If Tarmogoyf is 3/4 (three card types in graveyards) and blocks a 4/4 creature, both deal damage simultaneously. If a creature dies from this combat and goes to the graveyard with a new card type, Tarmogoyf immediately becomes 4/5 before state-based actions check for lethal damage—potentially saving it from dying.",
+          "rule_citations": [
+            {
+              "rule_number": "604.3",
+              "excerpt": "characteristic-defining abilities 'convey information about an object's characteristics that would normally be found elsewhere on that object'",
+              "relevance": "This rule explains how Tarmogoyf's power and toughness are determined."
+            },
+            {
+              "rule_number": "208.2a",
+              "excerpt": "[This creature's] [power or toughness] is equal to... which 'functions everywhere, even outside the game.'",
+              "relevance": "This rule specifies that Tarmogoyf's ability is characteristic-defining and functions continuously."
+            },
+            {
+              "rule_number": "510.2",
+              "excerpt": "all combat damage that's been assigned is dealt simultaneously.",
+              "relevance": "This rule clarifies the timing of damage dealing and state-based actions during combat."
+            }
+          ],
+          "card_citations": [],
+          "confidence": "high",
+          "notes": null
+        }
+      },
+      "index": 4
+    },
+    {
+      "type": "node",
+      "node": "verifier",
+      "delta": {
+        "verdict": {
+          "verdict": "grounded",
+          "issues": [],
+          "retrieval_hints": []
+        }
+      },
+      "index": 5
+    },
+    {
+      "type": "node",
+      "node": "formatter",
+      "delta": {
+        "final_response": {
+          "ruling": "# Answer\n\n**How Tarmogoyf's power and toughness are determined:**\n\nTarmogoyf's power and toughness are determined by a **characteristic-defining ability** (by CR 604.3, which states that characteristic-defining abilities \"convey information about an object's characteristics that would normally be found elsewhere on that object\"). Specifically, by CR 208.2a, Tarmogoyf has an ability worded as \"[This creature's] [power or toughness] is equal to...\" which \"functions everywhere, even outside the game.\"\n\nThe ability counts the **number of different card types** among cards in all graveyards:\n- Power = number of card types\n- Toughness = number of card types + 1\n\nAs stated in the rulings, the possible card types are: artifact, battle, creature, enchantment, instant, kindred, land, planeswalker, and sorcery. The ability counts types, not individual cards—ten artifact creatures would still only contribute two types (artifact and creature).\n\n**Can they change in the middle of combat?**\n\n**Yes, absolutely.** Tarmogoyf's power and toughness can change during combat as cards enter graveyards.\n\nHere's why:\n\n1. **The ability works continuously**: By CR 604.3, characteristic-defining abilities \"function in all zones,\" meaning Tarmogoyf's ability constantly updates based on the current game state.\n\n2. **Combat damage creates opportunities for changes**: By CR 510.2, \"all combat damage that's been assigned is dealt simultaneously.\" After damage is dealt, state-based actions are checked, and creatures that received lethal damage die and are put into graveyards.\n\n3. **The timing matters**: The rulings explicitly address this: \"If an instant or sorcery spell deals damage to Tarmogoyf or lowers its toughness, that spell is put into its owner's graveyard before state-based actions are performed. If that card is the first of its type to enter a graveyard, it will raise Tarmogoyf's toughness before the game checks to see if Tarmogoyf dies.\"\n\n**Example scenario**: If Tarmogoyf is 3/4 (three card types in graveyards) and blocks a 4/4 creature, both deal damage simultaneously. If a creature dies from this combat and goes to the graveyard with a new card type, Tarmogoyf immediately becomes 4/5 before state-based actions check for lethal damage—potentially saving it from dying.",
+          "rule_citations": [
+            {
+              "rule_number": "604.3",
+              "excerpt": "characteristic-defining abilities 'convey information about an object's characteristics that would normally be found elsewhere on that object'",
+              "relevance": "This rule explains how Tarmogoyf's power and toughness are determined."
+            },
+            {
+              "rule_number": "208.2a",
+              "excerpt": "[This creature's] [power or toughness] is equal to... which 'functions everywhere, even outside the game.'",
+              "relevance": "This rule specifies that Tarmogoyf's ability is characteristic-defining and functions continuously."
+            },
+            {
+              "rule_number": "510.2",
+              "excerpt": "all combat damage that's been assigned is dealt simultaneously.",
+              "relevance": "This rule clarifies the timing of damage dealing and state-based actions during combat."
+            }
+          ],
+          "card_citations": [],
+          "confidence": "high",
+          "notes": null
+        }
+      },
+      "index": 6
+    },
+    {
+      "type": "final",
+      "response": {
+        "ruling": "# Answer\n\n**How Tarmogoyf's power and toughness are determined:**\n\nTarmogoyf's power and toughness are determined by a **characteristic-defining ability** (by CR 604.3, which states that characteristic-defining abilities \"convey information about an object's characteristics that would normally be found elsewhere on that object\"). Specifically, by CR 208.2a, Tarmogoyf has an ability worded as \"[This creature's] [power or toughness] is equal to...\" which \"functions everywhere, even outside the game.\"\n\nThe ability counts the **number of different card types** among cards in all graveyards:\n- Power = number of card types\n- Toughness = number of card types + 1\n\nAs stated in the rulings, the possible card types are: artifact, battle, creature, enchantment, instant, kindred, land, planeswalker, and sorcery. The ability counts types, not individual cards—ten artifact creatures would still only contribute two types (artifact and creature).\n\n**Can they change in the middle of combat?**\n\n**Yes, absolutely.** Tarmogoyf's power and toughness can change during combat as cards enter graveyards.\n\nHere's why:\n\n1. **The ability works continuously**: By CR 604.3, characteristic-defining abilities \"function in all zones,\" meaning Tarmogoyf's ability constantly updates based on the current game state.\n\n2. **Combat damage creates opportunities for changes**: By CR 510.2, \"all combat damage that's been assigned is dealt simultaneously.\" After damage is dealt, state-based actions are checked, and creatures that received lethal damage die and are put into graveyards.\n\n3. **The timing matters**: The rulings explicitly address this: \"If an instant or sorcery spell deals damage to Tarmogoyf or lowers its toughness, that spell is put into its owner's graveyard before state-based actions are performed. If that card is the first of its type to enter a graveyard, it will raise Tarmogoyf's toughness before the game checks to see if Tarmogoyf dies.\"\n\n**Example scenario**: If Tarmogoyf is 3/4 (three card types in graveyards) and blocks a 4/4 creature, both deal damage simultaneously. If a creature dies from this combat and goes to the graveyard with a new card type, Tarmogoyf immediately becomes 4/5 before state-based actions check for lethal damage—potentially saving it from dying.",
+        "rule_citations": [
+          {
+            "rule_number": "604.3",
+            "excerpt": "characteristic-defining abilities 'convey information about an object's characteristics that would normally be found elsewhere on that object'",
+            "relevance": "This rule explains how Tarmogoyf's power and toughness are determined."
+          },
+          {
+            "rule_number": "208.2a",
+            "excerpt": "[This creature's] [power or toughness] is equal to... which 'functions everywhere, even outside the game.'",
+            "relevance": "This rule specifies that Tarmogoyf's ability is characteristic-defining and functions continuously."
+          },
+          {
+            "rule_number": "510.2",
+            "excerpt": "all combat damage that's been assigned is dealt simultaneously.",
+            "relevance": "This rule clarifies the timing of damage dealing and state-based actions during combat."
+          }
+        ],
+        "card_citations": [],
+        "confidence": "high",
+        "notes": null
+      }
+    }
+  ]
+}

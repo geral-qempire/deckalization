@@ -1,0 +1,267 @@
+{
+  "slug": "deathtouch-trample",
+  "question": "If a creature with both deathtouch and trample attacks and is blocked by a single 5/5 creature, how much damage does the attacker need to assign to the blocker before the rest can trample over?",
+  "blurb": "Two combat keywords interacting",
+  "events": [
+    {
+      "type": "start",
+      "question": "If a creature with both deathtouch and trample attacks and is blocked by a single 5/5 creature, how much damage does the attacker need to assign to the blocker before the rest can trample over?",
+      "mode": "replay"
+    },
+    {
+      "type": "node",
+      "node": "router",
+      "delta": {
+        "router_decision": {
+          "intent": "rules",
+          "game_format": null,
+          "reason": "The question pertains to the interaction of deathtouch and trample, which is a rules question."
+        },
+        "route": "rules",
+        "game_format": null
+      },
+      "index": 0
+    },
+    {
+      "type": "node",
+      "node": "card_lookup",
+      "delta": {
+        "card_names": [],
+        "resolved_cards": [],
+        "unresolved_notes": [],
+        "disambiguation": []
+      },
+      "index": 1
+    },
+    {
+      "type": "node",
+      "node": "decompose",
+      "delta": {
+        "subqueries": [
+          "deathtouch damage assignment",
+          "trample damage assignment rules",
+          "damage assignment order for trample",
+          "blocked creature toughness and damage requirements"
+        ]
+      },
+      "index": 2
+    },
+    {
+      "type": "node",
+      "node": "rules_retrieval",
+      "delta": {
+        "retrieval_query": "If a creature with both deathtouch and trample attacks and is blocked by a single 5/5 creature, how much damage does the attacker need to assign to the blocker before the rest can trample over? | deathtouch damage assignment | trample damage assignment rules | damage assignment order for trample | blocked creature toughness and damage requirements",
+        "retrieved_rules": [
+          {
+            "_creationTime": 1781187260368.9185,
+            "_id": "jd76g74peg2472n2dcqcp0ddxh88fdz7",
+            "ruleNumber": "702.19b",
+            "rulesVersion": "April 17, 2026",
+            "score": 0.6655052304267883,
+            "section": "702. Keyword Abilities",
+            "text": "The controller of an attacking creature with trample first assigns damage to the creature(s) blocking it. Once all those blocking creatures are assigned lethal damage, any excess damage is assigned as its controller chooses among those blocking creatures and the player, planeswalker, or battle the creature is attacking. When checking for assigned lethal damage, take into account damage already marked on the creature and damage from other creatures that’s being assigned during the same combat damage step, but not any abilities or effects that might change the amount of damage that’s actually dealt. The attacking creature’s controller need not assign lethal damage to all those blocking creatures but in that case can’t assign any damage to the player or planeswalker it’s attacking.\nExample: A 2/2 creature that can block an additional creature blocks two attackers: a 1/1 with no abilities and a 3/3 with trample. The active player could assign 1 damage from the first attacker and 1 damage from the second to the blocking creature, and 2 damage to the defending player from the creature with trample.\nExample: A 6/6 green creature with trample is blocked by a 2/2 creature with protection from green. The attacking creature’s controller must assign at least 2 damage to the blocker, even though that damage will be prevented by the blocker’s protection ability. The attacking creature’s controller can divide the rest of the damage as they choose between the blocking creature and the defending player."
+          },
+          {
+            "_creationTime": 1781187260368.9192,
+            "_id": "jd767xtnfkykm082mrkykjek8n88fd3v",
+            "ruleNumber": "702.19e",
+            "rulesVersion": "April 17, 2026",
+            "score": 0.6517676115036011,
+            "section": "702. Keyword Abilities",
+            "text": "If a creature with trample over planeswalkers is attacking a planeswalker and that planeswalker is removed from combat, the creature’s damage may be assigned to the defending player once all blocking creatures have been dealt lethal damage or, if there are no blocking creatures when damage is assigned, all its damage is assigned to the defending player. This is an exception to rule 506.4c, and it does not cause the creature to be attacking that player."
+          },
+          {
+            "_creationTime": 1781187260368.9187,
+            "_id": "jd79a9yh05kwmth2jcd5vvdkas88e0w2",
+            "ruleNumber": "702.19c",
+            "rulesVersion": "April 17, 2026",
+            "score": 0.6373370885848999,
+            "section": "702. Keyword Abilities",
+            "text": "Trample over planeswalkers is a variant of trample that modifies the rules for assigning combat damage to planeswalkers. The controller of a creature with trample over planeswalkers assigns that creature’s combat damage as described in rule 702.19b, with one exception. If that creature is attacking a planeswalker, after lethal damage is assigned to all blocking creatures and damage at least equal to the loyalty of the planeswalker the creature is attacking is assigned to that planeswalker, further excess damage may be assigned as the attacking creature’s controller chooses among those blocking creatures, that planeswalker, and that planeswalker’s controller. When checking for assigned damage equal to a planeswalker’s loyalty, take into account damage from other creatures that’s being assigned during the same combat damage step, but not any abilities or effects that might change the amount of damage that’s actually dealt.\nExample: A player controls a planeswalker with three loyalty counters that is being attacked by a 1/1 with no abilities and a 7/7 with trample over planeswalkers. The active player could assign 1 damage from the first attacker and 2 damage from the second to the planeswalker and 5 damage to the defending player from the creature with trample over planeswalkers."
+          },
+          {
+            "_creationTime": 1781187270116.5715,
+            "_id": "jd71f3sw7dmq0s05s5v77zy3gd88e3jr",
+            "ruleNumber": "704.5h",
+            "rulesVersion": "April 17, 2026",
+            "score": 0.6213892698287964,
+            "section": "704. State-Based Actions",
+            "text": "If a creature has toughness greater than 0, and it’s been dealt damage by a source with deathtouch since the last time state-based actions were checked, that creature is destroyed. Regeneration can replace this event."
+          },
+          {
+            "_creationTime": 1781187258916.2097,
+            "_id": "jd7603vxqgmty5kwj49sertths88em1f",
+            "ruleNumber": "702.2c",
+            "rulesVersion": "April 17, 2026",
+            "score": 0.6181471347808838,
+            "section": "702. Keyword Abilities",
+            "text": "Any nonzero amount of combat damage assigned to a creature by a source with deathtouch is considered to be lethal damage for the purposes of determining if excess damage is being dealt."
+          },
+          {
+            "_creationTime": 1781187260368.919,
+            "_id": "jd7d39gb1mmkt6md2rrd6yjc4n88ep1f",
+            "ruleNumber": "702.19d",
+            "rulesVersion": "April 17, 2026",
+            "score": 0.6127273440361023,
+            "section": "702. Keyword Abilities",
+            "text": "If an attacking creature with trample or trample over planeswalkers is blocked, but there are no creatures blocking it when damage is assigned, its damage is assigned to the defending player and/or planeswalker as though all blocking creatures have been assigned lethal damage."
+          },
+          {
+            "_creationTime": 1781187258916.2095,
+            "_id": "jd7c0ehwf2jkv95n3ffhpb70w188f8h0",
+            "ruleNumber": "702.2b",
+            "rulesVersion": "April 17, 2026",
+            "score": 0.6040782332420349,
+            "section": "702. Keyword Abilities",
+            "text": "A creature with toughness greater than 0 that’s been dealt damage by a source with deathtouch since the last time state-based actions were checked is destroyed as a state-based action. See rule 704."
+          },
+          {
+            "_creationTime": 1781187248333.349,
+            "_id": "jd7ax5mp19w93tk17zzsngr4cn88fx0e",
+            "ruleNumber": "510.1c",
+            "rulesVersion": "April 17, 2026",
+            "score": 0.5585052967071533,
+            "section": "510. Combat Damage Step",
+            "text": "A blocked creature assigns its combat damage to the creatures blocking it. If no creatures are currently blocking it (if, for example, they were destroyed or removed from combat), it assigns no combat damage. If exactly one creature is blocking it, it assigns all its combat damage to that creature. If two or more creatures are blocking it, it assigns its combat damage to those creatures divided as its controller chooses among them.\nExample: An attacking Elvish Regrower (a 4/3 creature) is blocked by Vampire Spawn (a 2/3 creature) and Helpful Hunter (a 1/1 creature). Elvish Regrower’s controller can assign all 4 damage to the Hunter, 1 damage to the Spawn and 3 damage to the Hunter, 2 damage to each creature, 3 damage to the Spawn and 1 damage to the Hunter, or all 4 damage to the Spawn."
+          },
+          {
+            "_creationTime": 1781187243014.098,
+            "_id": "jd737dh3525petngprqsytw63188f1f6",
+            "ruleNumber": "302.4b",
+            "rulesVersion": "April 17, 2026",
+            "score": 0.4740765392780304,
+            "section": "302. Creatures",
+            "text": "A creature’s toughness is the amount of damage needed to destroy it."
+          },
+          {
+            "_creationTime": 1781187248333.3435,
+            "_id": "jd73zvh5q2tmns80cxdrxwm0j188fy7t",
+            "ruleNumber": "509.1c",
+            "rulesVersion": "April 17, 2026",
+            "score": 0.4498019218444824,
+            "section": "509. Declare Blockers Step",
+            "text": "The defending player checks each creature they control to see whether it’s affected by any requirements (effects that say a creature must block, or that it must block if some condition is met). If the number of requirements that are being obeyed is fewer than the maximum possible number of requirements that could be obeyed without disobeying any restrictions, the declaration of blockers is illegal. If a creature can’t block unless a player pays a cost, that player is not required to pay that cost, even if blocking with that creature would increase the number of requirements being obeyed. If a requirement that says a creature blocks if able during a certain turn refers to a turn with multiple combat phases, the creature blocks if able during each declare blockers step in that turn.\nExample: A player controls one creature that “blocks if able” and another creature with no abilities. If a creature with menace attacks that player, the player must block with both creatures. Having only the first creature block violates the restriction created by menace (the attacking creature can’t be blocked except by two or more creatures). Having only the second creature block violates both the menace restriction and the first creature’s blocking requirement. Having neither creature block fulfills the restriction but not the requirement."
+          },
+          {
+            "_creationTime": 1781187248333.3433,
+            "_id": "jd71yn8zs0khc8kw79caxb5sgn88e601",
+            "ruleNumber": "509.1b",
+            "rulesVersion": "April 17, 2026",
+            "score": 0.4330311715602875,
+            "section": "509. Declare Blockers Step",
+            "text": "The defending player checks each creature they control to see whether it’s affected by any restrictions (effects that say a creature can’t block, or that it can’t block unless some condition is met). If any restrictions are being disobeyed, the declaration of blockers is illegal.\nA restriction may be created by an evasion ability (a static ability an attacking creature has that restricts what can block it). If an attacking creature gains or loses an evasion ability after a legal block has been declared, it doesn’t affect that block. Different evasion abilities are cumulative.\nExample: An attacking creature with flying and shadow can’t be blocked by a creature with flying but without shadow."
+          },
+          {
+            "score": 0.0,
+            "_creationTime": 1781187247530.9307,
+            "_id": "jd7b2b3gps3m8y9524kpqkr3v588ecnh",
+            "ruleNumber": "506.4c",
+            "rulesVersion": "April 17, 2026",
+            "section": "506. Combat Phase",
+            "text": "If a creature is attacking a planeswalker or battle, removing that planeswalker or battle from combat doesn’t remove that creature from combat. It continues to be an attacking creature, although it is not attacking any player, planeswalker, or battle. It may be blocked. If it is unblocked, it will deal no combat damage."
+          }
+        ],
+        "loop_count": 0
+      },
+      "index": 3
+    },
+    {
+      "type": "node",
+      "node": "adjudication",
+      "delta": {
+        "draft_ruling": {
+          "ruling": "Looking at this interaction between deathtouch and trample, I need to examine how these abilities interact when assigning combat damage.\n\n## Key Rules Analysis\n\n**Deathtouch's effect on lethal damage:**\nBy **CR 702.2c**: \"Any nonzero amount of combat damage assigned to a creature by a source with deathtouch is considered to be lethal damage for the purposes of determining if excess damage is being dealt.\"\n\nThis is the critical rule. It explicitly modifies what counts as \"lethal damage\" when a deathtouch source is involved.\n\n**Trample's damage assignment:**\nBy **CR 702.19b**: \"The controller of an attacking creature with trample first assigns damage to the creature(s) blocking it. Once all those blocking creatures are assigned lethal damage, any excess damage is assigned as its controller chooses among those blocking creatures and the player, planeswalker, or battle the creature is attacking.\"\n\nTrample requires assigning \"lethal damage\" to blockers before trampling over.\n\n**What constitutes lethal damage normally:**\nBy **CR 302.4b**: \"A creature's toughness is the amount of damage needed to destroy it.\"\n\nNormally, a 5/5 creature would need 5 damage assigned to it to be lethal damage.\n\n## The Interaction\n\nWhen a creature has **both** deathtouch and trample:\n\n1. The attacker must assign lethal damage to the blocker before trampling over (by 702.19b)\n2. Because the attacker has deathtouch, **any nonzero amount** counts as lethal damage (by 702.2c)\n3. Therefore, assigning just **1 damage** to the 5/5 blocker satisfies the \"lethal damage\" requirement\n\n## Answer\n\n**The attacker needs to assign only 1 damage to the 5/5 blocker.** The rest of the attacker's damage can trample over to the defending player (or planeswalker/battle being attacked).\n\nThis is because deathtouch modifies the definition of \"lethal damage\" for trample's purposes—any nonzero amount (minimum 1) from a deathtouch source is considered lethal, regardless of the blocker's toughness.",
+          "rule_citations": [
+            {
+              "rule_number": "702.2c",
+              "excerpt": "Any nonzero amount of combat damage assigned to a creature by a source with deathtouch is considered to be lethal damage for the purposes of determining if excess damage is being dealt.",
+              "relevance": "This rule explains how deathtouch modifies what counts as lethal damage."
+            },
+            {
+              "rule_number": "702.19b",
+              "excerpt": "The controller of an attacking creature with trample first assigns damage to the creature(s) blocking it. Once all those blocking creatures are assigned lethal damage, any excess damage is assigned as its controller chooses among those blocking creatures and the player, planeswalker, or battle the creature is attacking.",
+              "relevance": "This rule outlines the requirement for assigning damage to blockers before any excess damage can be assigned elsewhere."
+            },
+            {
+              "rule_number": "302.4b",
+              "excerpt": "A creature's toughness is the amount of damage needed to destroy it.",
+              "relevance": "This rule defines what lethal damage is in terms of a creature's toughness."
+            }
+          ],
+          "card_citations": [],
+          "confidence": "high",
+          "notes": null
+        }
+      },
+      "index": 4
+    },
+    {
+      "type": "node",
+      "node": "verifier",
+      "delta": {
+        "verdict": {
+          "verdict": "grounded",
+          "issues": [],
+          "retrieval_hints": []
+        }
+      },
+      "index": 5
+    },
+    {
+      "type": "node",
+      "node": "formatter",
+      "delta": {
+        "final_response": {
+          "ruling": "Looking at this interaction between deathtouch and trample, I need to examine how these abilities interact when assigning combat damage.\n\n## Key Rules Analysis\n\n**Deathtouch's effect on lethal damage:**\nBy **CR 702.2c**: \"Any nonzero amount of combat damage assigned to a creature by a source with deathtouch is considered to be lethal damage for the purposes of determining if excess damage is being dealt.\"\n\nThis is the critical rule. It explicitly modifies what counts as \"lethal damage\" when a deathtouch source is involved.\n\n**Trample's damage assignment:**\nBy **CR 702.19b**: \"The controller of an attacking creature with trample first assigns damage to the creature(s) blocking it. Once all those blocking creatures are assigned lethal damage, any excess damage is assigned as its controller chooses among those blocking creatures and the player, planeswalker, or battle the creature is attacking.\"\n\nTrample requires assigning \"lethal damage\" to blockers before trampling over.\n\n**What constitutes lethal damage normally:**\nBy **CR 302.4b**: \"A creature's toughness is the amount of damage needed to destroy it.\"\n\nNormally, a 5/5 creature would need 5 damage assigned to it to be lethal damage.\n\n## The Interaction\n\nWhen a creature has **both** deathtouch and trample:\n\n1. The attacker must assign lethal damage to the blocker before trampling over (by 702.19b)\n2. Because the attacker has deathtouch, **any nonzero amount** counts as lethal damage (by 702.2c)\n3. Therefore, assigning just **1 damage** to the 5/5 blocker satisfies the \"lethal damage\" requirement\n\n## Answer\n\n**The attacker needs to assign only 1 damage to the 5/5 blocker.** The rest of the attacker's damage can trample over to the defending player (or planeswalker/battle being attacked).\n\nThis is because deathtouch modifies the definition of \"lethal damage\" for trample's purposes—any nonzero amount (minimum 1) from a deathtouch source is considered lethal, regardless of the blocker's toughness.",
+          "rule_citations": [
+            {
+              "rule_number": "702.2c",
+              "excerpt": "Any nonzero amount of combat damage assigned to a creature by a source with deathtouch is considered to be lethal damage for the purposes of determining if excess damage is being dealt.",
+              "relevance": "This rule explains how deathtouch modifies what counts as lethal damage."
+            },
+            {
+              "rule_number": "702.19b",
+              "excerpt": "The controller of an attacking creature with trample first assigns damage to the creature(s) blocking it. Once all those blocking creatures are assigned lethal damage, any excess damage is assigned as its controller chooses among those blocking creatures and the player, planeswalker, or battle the creature is attacking.",
+              "relevance": "This rule outlines the requirement for assigning damage to blockers before any excess damage can be assigned elsewhere."
+            },
+            {
+              "rule_number": "302.4b",
+              "excerpt": "A creature's toughness is the amount of damage needed to destroy it.",
+              "relevance": "This rule defines what lethal damage is in terms of a creature's toughness."
+            }
+          ],
+          "card_citations": [],
+          "confidence": "high",
+          "notes": null
+        }
+      },
+      "index": 6
+    },
+    {
+      "type": "final",
+      "response": {
+        "ruling": "Looking at this interaction between deathtouch and trample, I need to examine how these abilities interact when assigning combat damage.\n\n## Key Rules Analysis\n\n**Deathtouch's effect on lethal damage:**\nBy **CR 702.2c**: \"Any nonzero amount of combat damage assigned to a creature by a source with deathtouch is considered to be lethal damage for the purposes of determining if excess damage is being dealt.\"\n\nThis is the critical rule. It explicitly modifies what counts as \"lethal damage\" when a deathtouch source is involved.\n\n**Trample's damage assignment:**\nBy **CR 702.19b**: \"The controller of an attacking creature with trample first assigns damage to the creature(s) blocking it. Once all those blocking creatures are assigned lethal damage, any excess damage is assigned as its controller chooses among those blocking creatures and the player, planeswalker, or battle the creature is attacking.\"\n\nTrample requires assigning \"lethal damage\" to blockers before trampling over.\n\n**What constitutes lethal damage normally:**\nBy **CR 302.4b**: \"A creature's toughness is the amount of damage needed to destroy it.\"\n\nNormally, a 5/5 creature would need 5 damage assigned to it to be lethal damage.\n\n## The Interaction\n\nWhen a creature has **both** deathtouch and trample:\n\n1. The attacker must assign lethal damage to the blocker before trampling over (by 702.19b)\n2. Because the attacker has deathtouch, **any nonzero amount** counts as lethal damage (by 702.2c)\n3. Therefore, assigning just **1 damage** to the 5/5 blocker satisfies the \"lethal damage\" requirement\n\n## Answer\n\n**The attacker needs to assign only 1 damage to the 5/5 blocker.** The rest of the attacker's damage can trample over to the defending player (or planeswalker/battle being attacked).\n\nThis is because deathtouch modifies the definition of \"lethal damage\" for trample's purposes—any nonzero amount (minimum 1) from a deathtouch source is considered lethal, regardless of the blocker's toughness.",
+        "rule_citations": [
+          {
+            "rule_number": "702.2c",
+            "excerpt": "Any nonzero amount of combat damage assigned to a creature by a source with deathtouch is considered to be lethal damage for the purposes of determining if excess damage is being dealt.",
+            "relevance": "This rule explains how deathtouch modifies what counts as lethal damage."
+          },
+          {
+            "rule_number": "702.19b",
+            "excerpt": "The controller of an attacking creature with trample first assigns damage to the creature(s) blocking it. Once all those blocking creatures are assigned lethal damage, any excess damage is assigned as its controller chooses among those blocking creatures and the player, planeswalker, or battle the creature is attacking.",
+            "relevance": "This rule outlines the requirement for assigning damage to blockers before any excess damage can be assigned elsewhere."
+          },
+          {
+            "rule_number": "302.4b",
+            "excerpt": "A creature's toughness is the amount of damage needed to destroy it.",
+            "relevance": "This rule defines what lethal damage is in terms of a creature's toughness."
+          }
+        ],
+        "card_citations": [],
+        "confidence": "high",
+        "notes": null
+      }
+    }
+  ]
+}
