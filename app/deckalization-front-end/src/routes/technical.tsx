@@ -250,7 +250,7 @@ function Technical() {
           subtitle="bench40, gpt-5-mini adjudication. zero-shot is the documented floor; RAG and referee_v2 are one coherent run."
           id="results"
         >
-          <div className="grid gap-6 lg:grid-cols-2">
+          <div className="grid gap-6 lg:grid-cols-2 [&>*]:min-w-0">
             <Card className="border-border/60">
               <CardHeader>
                 <CardTitle className="text-base">Quality metrics</CardTitle>
@@ -395,7 +395,7 @@ function Technical() {
           subtitle="Only the stage-1 reasoning model varies on referee_v2; verifier, format and judge are held fixed."
           id="models"
         >
-          <div className="grid gap-6 lg:grid-cols-2">
+          <div className="grid gap-6 lg:grid-cols-2 [&>*]:min-w-0">
             <Card className="border-border/60">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2 text-base">
