@@ -4,6 +4,7 @@ import { TanStackDevtools } from "@tanstack/react-devtools"
 import type { QueryClient } from "@tanstack/react-query"
 import { TooltipProvider } from "@/components/ui/tooltip"
 import { SiteNav } from "@/components/site-nav"
+import { SiteFooter } from "@/components/site-footer"
 
 import appCss from "../styles.css?url"
 
@@ -59,6 +60,7 @@ function RootDocument({ children }: { children: React.ReactNode }) {
           <div className="flex min-h-svh flex-col">
             <SiteNav />
             <div className="flex-1">{children}</div>
+            <SiteFooter />
           </div>
         </TooltipProvider>
         <TanStackDevtools
