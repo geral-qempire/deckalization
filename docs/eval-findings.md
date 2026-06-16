@@ -203,6 +203,52 @@ below observed to absorb judge variance). The must-beat-RAG compare gate
 
 ---
 
+## Update 2026-06-16 — gpt-5-mini default + category/complexity slices
+
+`openai/gpt-5-mini` is now the pinned adjudication default (sweep winner on
+correctness-per-dollar). A fresh `bench40` RAG-vs-referee_v2 run on this config was
+executed **via the Eval gate GitHub Action** (LangSmith experiments
+`bench40-rag-fec40ed9`, `bench40-referee_v2-798f6c55`), and per-case scores are now
+sliceable by **interaction category** and **complexity** — these ride on LangSmith
+dataset example metadata (`metadata.category` / `complexity`, set in
+`langsmith_eval._example_payload`; taxonomy in `agents/evals/categories.py`). No local
+one-off scripts: snapshot extracted read-only with `agents.evals.scripts.export_results`.
+
+Overall (gpt-5-mini):
+
+| metric | baseline_rag | **referee_v2** |
+|---|---|---|
+| correctness | 0.575 | **0.700** |
+| faithfulness | 0.825 | **0.850** |
+| rule_recall | 0.097 | **0.340** |
+| citation_recall | 0.097 | **0.287** |
+| citation_validity | 1.000 | 1.000 |
+| card_recall | 0.963 | 0.963 |
+
+Correctness by interaction category (RAG → v2, n):
+
+| category | RAG | v2 | n |
+|---|---|---|---|
+| Costs, casting & mana | 0.375 | **0.750** | 8 |
+| Replacement & prevention | 0.500 | **0.750** | 6 |
+| Triggers, abilities & the stack | 0.727 | **0.773** | 11 |
+| Layers & continuous effects | 0.727 | 0.727 | 11 |
+| Combat, zones & state | 0.250 | 0.250 | 4 |
+
+Correctness by complexity (RAG → v2, n): Simple 0.571 → **0.750** (28); Intermediate
+0.667 → 0.667 (9); Complicated 0.333 → 0.333 (3).
+
+Takeaways:
+
+- v2's win over RAG (+0.125 overall) concentrates in **retrieval-bottlenecked**
+  categories (costs/casting, replacement) and in **Simple** questions; it **ties** RAG
+  on layers and on the hardest cases, where the bottleneck is multi-step deduction, not
+  evidence. Honest "where the graph helps" story.
+- bench40 buckets are small (n=3–11) — directional, not significant. Confirm on the
+  full 125-case benchmark when run with the revamped metrics.
+
+---
+
 ## The pipelines compared
 
 - **zero_shot** — single LLM call, no retrieval. Answers from model memory only.

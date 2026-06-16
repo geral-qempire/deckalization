@@ -37,3 +37,6 @@ data/
 
 # ---- LangGraph ----
 .langgraph_api/
+
+# ---- Eval artifacts (regenerable from LangSmith; not a source of truth) ----
+agents/evals/datasets/experiment_snapshot.json
