@@ -1,8 +1,20 @@
 import { createFileRoute, Link } from "@tanstack/react-router"
 import { ArrowRight, GitCompare, Network, ShieldCheck } from "lucide-react"
 import { Button } from "@/components/ui/button"
-import { Card, CardContent } from "@/components/ui/card"
-import { HEADLINE_STATS } from "@/data/scores"
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card"
+import {
+  CostCorrectnessScatter,
+  MetricBars,
+  PipelineLegend,
+} from "@/components/charts"
+import type { ScatterPoint } from "@/components/charts"
+import { BENCH40_QUALITY, HEADLINE_STATS, MODEL_SWEEP } from "@/data/scores"
 
 export const Route = createFileRoute("/")({ component: Home })
 
@@ -47,6 +59,68 @@ function Home() {
             </CardContent>
           </Card>
         ))}
+      </section>
+
+      <section className="mt-20">
+        <div className="flex items-end justify-between gap-4">
+          <div>
+            <h2 className="text-2xl font-semibold tracking-tight sm:text-3xl">
+              Proven on a golden benchmark
+            </h2>
+            <p className="mt-2 max-w-2xl text-sm text-muted-foreground">
+              40 expert-curated rules questions, judged by an LLM against reference
+              answers. The multi-agent referee leads on correctness — and the best
+              reasoning model to power it turned out to be a small one, not a frontier one.
+            </p>
+          </div>
+          <Button asChild variant="ghost" className="hidden shrink-0 sm:inline-flex">
+            <Link to="/technical">
+              Full results
+              <ArrowRight className="size-4" />
+            </Link>
+          </Button>
+        </div>
+
+        <div className="mt-6 grid gap-4 lg:grid-cols-2">
+          <Card className="border-border/60">
+            <CardHeader>
+              <CardTitle className="text-base">Quality across architectures</CardTitle>
+              <CardDescription>
+                <PipelineLegend />
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <MetricBars rows={BENCH40_QUALITY.slice(0, 3)} />
+            </CardContent>
+          </Card>
+
+          <Card className="border-border/60">
+            <CardHeader>
+              <CardTitle className="text-base">Cost vs. correctness</CardTitle>
+              <CardDescription>
+                Adjudication-model sweep — up and to the left is better.
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="flex items-center justify-center">
+              <CostCorrectnessScatter
+                points={MODEL_SWEEP.map<ScatterPoint>((r) => ({
+                  label: r.label,
+                  x: r.cost,
+                  y: r.correctness,
+                  tone: r.tagTone,
+                  ...(r.label === "gpt-5-mini"
+                    ? { labelDx: -10, labelAnchor: "end" as const }
+                    : {}),
+                  ...(r.label === "sonnet-4.5"
+                    ? { labelDx: 10, labelAnchor: "start" as const }
+                    : {}),
+                }))}
+                xLabel="Cost ($/case)"
+                yLabel="Correctness"
+              />
+            </CardContent>
+          </Card>
+        </div>
       </section>
 
       <section className="mt-16 grid gap-4 md:grid-cols-2">

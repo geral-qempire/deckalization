@@ -1,5 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router"
-import { Sparkles } from "lucide-react"
+import { FlaskConical, Gauge, Layers, Scale, Sparkles, TrendingUp } from "lucide-react"
+import type { LucideIcon } from "lucide-react"
 import {
   Card,
   CardContent,
@@ -14,25 +15,21 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { cn } from "@/lib/utils"
 import {
   ComparisonBars,
   CostCorrectnessScatter,
   MetricBars,
-  PipelineLegend
-  
+  PipelineLegend,
 } from "@/components/charts"
-import type {ScatterPoint} from "@/components/charts";
+import type { ScatterPoint } from "@/components/charts"
 import { ScoreTable } from "@/components/score-table"
 import { ModelSweepTable } from "@/components/model-sweep-table"
-import {
-  ARCHITECTURES,
-  KEY_FINDINGS,
-  MODELS_NOTE,
-  REFEREE_V2_CHANGES
-  
-} from "@/data/architectures"
-import type {Architecture} from "@/data/architectures";
+import { ArchitectureGraph } from "@/components/architecture-graph"
+import type { ArchitectureDiagram } from "@/components/architecture-graph"
+import { ARCHITECTURES, MODELS_NOTE } from "@/data/architectures"
+import type { Architecture } from "@/data/architectures"
 import { METRICS } from "@/data/metrics"
 import {
   BENCH40_EFFICIENCY,
@@ -40,287 +37,448 @@ import {
   CATEGORY_BREAKDOWN,
   COMPLEXITY_BREAKDOWN,
   EXPERIMENT_META,
-  HEADLINE_STATS,
   MODEL_SWEEP,
+  PIPELINES,
 } from "@/data/scores"
+import {
+  EDGE_LAYOUT,
+  NODE_LAYOUT,
+  VIEWBOX,
+} from "@/lib/graph-layout"
 
 export const Route = createFileRoute("/technical")({ component: Technical })
 
+// ---- Per-architecture flow diagrams (live-demo styling) -------------------
+
+const ROW = 64
+
+const ZERO_SHOT_DIAGRAM: ArchitectureDiagram = {
+  viewBox: { w: 568, h: 128 },
+  nodes: [
+    { id: "q", label: "Question", blurb: "Rules question", x: 94, y: ROW },
+    { id: "llm", label: "LLM", blurb: "Answer from memory", x: 284, y: ROW },
+    { id: "a", label: "Answer", blurb: "Ungrounded ruling", x: 474, y: ROW },
+  ],
+  edges: [
+    { from: "q", to: "llm", kind: "main" },
+    { from: "llm", to: "a", kind: "main" },
+  ],
+}
+
+const RAG_DIAGRAM: ArchitectureDiagram = {
+  viewBox: { w: 728, h: 128 },
+  nodes: [
+    { id: "extract", label: "Extract", blurb: "Find card names", x: 94, y: ROW },
+    { id: "resolve", label: "Resolve", blurb: "→ Oracle text", x: 274, y: ROW },
+    { id: "search", label: "Search rules", blurb: "One CR query", x: 454, y: ROW },
+    { id: "answer", label: "Answer", blurb: "Grounded ruling", x: 634, y: ROW },
+  ],
+  edges: [
+    { from: "extract", to: "resolve", kind: "main" },
+    { from: "resolve", to: "search", kind: "main" },
+    { from: "search", to: "answer", kind: "main" },
+  ],
+}
+
+const V1_DIAGRAM: ArchitectureDiagram = {
+  viewBox: { w: 968, h: 220 },
+  nodes: [
+    { id: "router", label: "Router", blurb: "Classify intent", x: 74, y: ROW },
+    { id: "card_lookup", label: "Card lookup", blurb: "Resolve cards", x: 234, y: ROW },
+    { id: "rules", label: "Rules retrieval", blurb: "Search rules", x: 394, y: ROW },
+    { id: "adjudication", label: "Adjudication", blurb: "Draft & format", x: 554, y: ROW },
+    { id: "verifier", label: "Verifier", blurb: "Grounded? re-draft", x: 714, y: ROW },
+    { id: "formatter", label: "Formatter", blurb: "Final ruling", x: 874, y: ROW },
+    { id: "out_of_scope", label: "Out of scope", blurb: "Not a rules Q", x: 234, y: 162 },
+  ],
+  edges: [
+    { from: "router", to: "card_lookup", kind: "main" },
+    { from: "card_lookup", to: "rules", kind: "main" },
+    { from: "rules", to: "adjudication", kind: "main" },
+    { from: "adjudication", to: "verifier", kind: "main" },
+    { from: "verifier", to: "formatter", kind: "main" },
+    { from: "verifier", to: "rules", kind: "loop" },
+    { from: "router", to: "out_of_scope", kind: "branch" },
+    { from: "out_of_scope", to: "formatter", kind: "branch" },
+  ],
+}
+
+const V2_DIAGRAM: ArchitectureDiagram = {
+  viewBox: VIEWBOX,
+  nodes: NODE_LAYOUT.map((n) => ({
+    id: n.id,
+    label: n.label,
+    blurb: n.blurb,
+    x: n.x,
+    y: n.y,
+  })),
+  edges: EDGE_LAYOUT.map((e) => ({ from: e.from, to: e.to, kind: e.kind })),
+}
+
+const DIAGRAMS: Record<string, ArchitectureDiagram> = {
+  zero_shot: ZERO_SHOT_DIAGRAM,
+  baseline_rag: RAG_DIAGRAM,
+  referee_v1: V1_DIAGRAM,
+  referee_v2: V2_DIAGRAM,
+}
+
+// ---------------------------------------------------------------------------
+
 function Technical() {
+  const correctness = BENCH40_QUALITY.find((r) => r.key === "correctness")!
+
   return (
-    <main className="mx-auto max-w-6xl px-4 py-12">
-      <header className="flex flex-col gap-3">
-        <h1 className="text-3xl font-semibold tracking-tight sm:text-4xl">
-          Technical results
-        </h1>
-        <p className="max-w-3xl text-muted-foreground">
-          Four architectures for answering Magic: The Gathering rules questions, the
-          metrics built to grade them, and the scores each earned on{" "}
-          <code className="rounded bg-muted px-1.5 py-0.5 text-sm">
-            {EXPERIMENT_META.suite}
-          </code>{" "}
-          — {EXPERIMENT_META.suiteDescription} Judge:{" "}
-          <span className="font-medium text-foreground">{EXPERIMENT_META.judge}</span>.
-        </p>
-      </header>
-
-      <div className="mt-8 grid gap-3 sm:grid-cols-3">
-        {HEADLINE_STATS.map((s) => (
-          <Card key={s.label} className="border-border/60 bg-primary/[0.03]">
-            <CardContent className="flex flex-col gap-1 p-5">
-              <span className="text-3xl font-semibold tracking-tight text-primary">
-                {s.value}
+    <main className="pb-24">
+      {/* Hero + headline scoreboard */}
+      <div className="relative overflow-hidden border-b border-border/60">
+        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(60%_120%_at_50%_-10%,color-mix(in_oklab,var(--color-primary)_14%,transparent),transparent)]" />
+        <div className="relative mx-auto max-w-6xl px-4 py-14">
+          <span className="inline-flex items-center gap-1.5 rounded-full border border-primary/30 bg-primary/10 px-3 py-1 text-xs font-medium text-primary">
+            <FlaskConical className="size-3.5" />
+            Evaluation
+          </span>
+          <h1 className="mt-4 max-w-3xl text-4xl font-semibold tracking-tight sm:text-5xl">
+            Does a multi-agent referee actually beat plain RAG?
+          </h1>
+          <p className="mt-4 max-w-2xl text-lg text-muted-foreground">
+            Four architectures, a purpose-built metric suite, and the scores each earned on
+            a 40-case golden benchmark. Here&apos;s how they stack up — and the surprises
+            along the way.
+          </p>
+          <div className="mt-6 flex flex-wrap gap-2 text-xs">
+            {[
+              `suite · ${EXPERIMENT_META.suite} (40 cases)`,
+              `judge · ${EXPERIMENT_META.judge}`,
+              `adjudication · ${EXPERIMENT_META.adjudicationDefault}`,
+              `gateway · ${EXPERIMENT_META.gateway}`,
+            ].map((chip) => (
+              <span
+                key={chip}
+                className="rounded-md border border-border/60 bg-card/60 px-2.5 py-1 text-muted-foreground"
+              >
+                {chip}
               </span>
-              <span className="text-sm font-medium">{s.label}</span>
-              <span className="text-xs text-muted-foreground">{s.detail}</span>
-            </CardContent>
-          </Card>
-        ))}
-      </div>
+            ))}
+          </div>
 
-      <Section title="The architectures compared" id="architectures">
-        <div className="grid gap-4 md:grid-cols-2">
-          {ARCHITECTURES.map((a) => (
-            <ArchitectureCard key={a.key} a={a} />
-          ))}
-        </div>
-        <p className="mt-4 text-xs text-muted-foreground">{MODELS_NOTE}</p>
-      </Section>
-
-      <Section
-        title="What made referee_v2 win"
-        subtitle="Four targeted changes turned a deficit vs. RAG into a decisive lead."
-        id="changes"
-      >
-        <div className="grid gap-3 sm:grid-cols-2">
-          {REFEREE_V2_CHANGES.map((c, i) => (
-            <Card
-              key={c.title}
-              className={cn("border-border/60", c.decisive && "border-primary/50")}
-            >
-              <CardContent className="flex flex-col gap-2 p-5">
-                <div className="flex items-center gap-2">
-                  <span className="flex size-6 items-center justify-center rounded-md bg-muted text-xs font-semibold">
-                    {i + 1}
-                  </span>
-                  <span className="font-medium">{c.title}</span>
-                  {c.decisive && (
-                    <Badge className="ml-auto gap-1 bg-primary/15 text-primary">
-                      <Sparkles className="size-3" />
-                      decisive
-                    </Badge>
-                  )}
-                </div>
-                <p className="text-sm text-muted-foreground">{c.body}</p>
-              </CardContent>
-            </Card>
-          ))}
-        </div>
-      </Section>
-
-      <Section
-        title="The metrics"
-        subtitle="What each metric means and how it is measured."
-        id="metrics"
-      >
-        <div className="grid gap-3 sm:grid-cols-2">
-          {METRICS.map((m) => (
-            <Card key={m.key} className="border-border/60">
-              <CardContent className="flex flex-col gap-2 p-5">
-                <div className="flex items-center justify-between gap-2">
-                  <span className="font-medium">{m.name}</span>
-                  <Badge
-                    variant="outline"
+          {/* Headline scoreboard */}
+          <div className="mt-10">
+            <div className="flex items-center gap-2 text-xs font-medium uppercase tracking-wide text-muted-foreground">
+              <span>Headline result</span>
+              <span className="h-px flex-1 bg-border/60" />
+              <span className="normal-case tracking-normal">correctness · bench40</span>
+            </div>
+            <div className="mt-3 grid gap-3 sm:grid-cols-3">
+              {PIPELINES.map((p) => {
+                const v = correctness[p.key]
+                const isWinner = p.key === "referee_v2"
+                const ragVal = correctness.baseline_rag
+                const delta =
+                  isWinner && v !== null && ragVal !== null ? v - ragVal : null
+                return (
+                  <div
+                    key={p.key}
                     className={cn(
-                      "shrink-0 text-[10px]",
-                      m.kind === "LLM judge"
-                        ? "border-primary/40 text-primary"
-                        : "border-chart-2/40 text-muted-foreground",
+                      "rounded-2xl border p-5 backdrop-blur-sm",
+                      isWinner
+                        ? "border-primary/50 bg-primary/[0.07]"
+                        : "border-border/60 bg-card/60",
                     )}
                   >
-                    {m.kind}
-                  </Badge>
-                </div>
-                <p className="text-sm">{m.summary}</p>
-                <p className="text-xs text-muted-foreground">{m.howMeasured}</p>
-                <span className="text-[10px] text-muted-foreground">
-                  Range: {m.range}
-                </span>
-              </CardContent>
-            </Card>
-          ))}
-        </div>
-      </Section>
-
-      <Section
-        title="Scores — zero-shot vs RAG vs referee_v2"
-        subtitle="The 40-case benchmark, gpt-5-mini adjudication. Higher is better for quality metrics; best in each row is highlighted. zero-shot is the documented floor."
-        id="scores"
-      >
-        <div className="grid gap-8 lg:grid-cols-2">
-          <Card className="border-border/60">
-            <CardHeader>
-              <CardTitle className="text-base">Quality metrics</CardTitle>
-              <CardDescription>
-                <PipelineLegend />
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <MetricBars rows={BENCH40_QUALITY.slice(0, 4)} />
-            </CardContent>
-          </Card>
-          <div className="flex flex-col gap-4">
-            <ScoreTable rows={BENCH40_QUALITY} />
-            <div>
-              <h3 className="mb-2 text-sm font-medium text-muted-foreground">
-                Efficiency (lower is better)
-              </h3>
-              <ScoreTable rows={BENCH40_EFFICIENCY} />
+                    <div className="flex items-center justify-between">
+                      <span className="text-sm font-medium">{p.label}</span>
+                      {isWinner && (
+                        <Badge className="gap-1 bg-primary/15 text-primary">
+                          <Sparkles className="size-3" />
+                          winner
+                        </Badge>
+                      )}
+                    </div>
+                    <div
+                      className={cn(
+                        "mt-3 text-4xl font-semibold tabular-nums",
+                        isWinner ? "text-primary" : "text-foreground",
+                      )}
+                    >
+                      {v !== null ? v.toFixed(3) : "—"}
+                    </div>
+                    <p className="mt-1 text-xs text-muted-foreground">
+                      {delta !== null
+                        ? `+${delta.toFixed(3)} vs RAG · ${p.blurb}`
+                        : p.blurb}
+                    </p>
+                  </div>
+                )
+              })}
             </div>
           </div>
         </div>
-      </Section>
+      </div>
 
-      <Section
-        title="Where the graph helps — and where it doesn't"
-        subtitle="Correctness by interaction category, RAG vs referee_v2 (sliced from LangSmith example metadata). Buckets are small — read them as directional."
-        id="by-category"
-      >
-        <div className="grid gap-8 lg:grid-cols-2">
-          <Card className="border-border/60">
-            <CardHeader>
-              <CardTitle className="text-base">Correctness by category</CardTitle>
-              <CardDescription>
-                <PipelineLegend />
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <ComparisonBars buckets={CATEGORY_BREAKDOWN} />
-            </CardContent>
-          </Card>
-          <div className="flex flex-col gap-3 text-sm text-muted-foreground lg:pt-4">
-            <p>
-              The gains concentrate where retrieval is the bottleneck:{" "}
-              <span className="font-medium text-foreground">costs &amp; casting</span>{" "}
-              (0.38 → 0.75) and{" "}
-              <span className="font-medium text-foreground">
-                replacement &amp; prevention
-              </span>{" "}
-              (0.50 → 0.75) — exactly the questions where pulling the precise
-              Comprehensive Rule decides the answer.
-            </p>
-            <p>
-              On{" "}
-              <span className="font-medium text-foreground">
-                layers &amp; continuous effects
-              </span>{" "}
-              the two tie (0.73): both already retrieve enough, and the remaining
-              misses are genuine multi-step reasoning flips that more retrieval
-              doesn&apos;t fix.
-            </p>
-            <p>
-              <span className="font-medium text-foreground">Combat, zones &amp; state</span>{" "}
-              is a shared weak spot (0.25 for both, n=4) — a small, adversarial
-              bucket worth a closer look at scale.
-            </p>
+      <div className="mx-auto max-w-6xl px-4">
+        {/* Architectures */}
+        <Section
+          n="01"
+          title="The architectures compared"
+          subtitle="From a single model call to a five-stage multi-agent graph. referee_v2 — highlighted in gold — is what ships."
+          id="architectures"
+        >
+          <Tabs defaultValue="referee_v2">
+            <TabsList className="flex-wrap">
+              {ARCHITECTURES.map((a) => (
+                <TabsTrigger key={a.key} value={a.key} className="gap-1.5">
+                  {a.status === "production" && (
+                    <span className="size-1.5 rounded-full bg-primary" />
+                  )}
+                  {a.name}
+                </TabsTrigger>
+              ))}
+            </TabsList>
+            {ARCHITECTURES.map((a) => (
+              <TabsContent key={a.key} value={a.key} className="pt-4">
+                <ArchTab a={a} />
+              </TabsContent>
+            ))}
+          </Tabs>
+          <p className="mt-4 text-xs leading-relaxed text-muted-foreground">{MODELS_NOTE}</p>
+        </Section>
+
+        {/* Results */}
+        <Section
+          n="02"
+          title="The results"
+          subtitle="bench40, gpt-5-mini adjudication. zero-shot is the documented floor; RAG and referee_v2 are one coherent run."
+          id="results"
+        >
+          <div className="grid gap-6 lg:grid-cols-2">
+            <Card className="border-border/60">
+              <CardHeader>
+                <CardTitle className="text-base">Quality metrics</CardTitle>
+                <CardDescription>
+                  <PipelineLegend />
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <MetricBars rows={BENCH40_QUALITY.slice(0, 4)} />
+              </CardContent>
+            </Card>
+            <Card className="border-border/60">
+              <CardHeader>
+                <CardTitle className="text-base">Full scorecard</CardTitle>
+                <CardDescription>
+                  Best in each row highlighted. Efficiency is contention-free.
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <Tabs defaultValue="quality">
+                  <TabsList>
+                    <TabsTrigger value="quality">Quality</TabsTrigger>
+                    <TabsTrigger value="efficiency">Efficiency</TabsTrigger>
+                  </TabsList>
+                  <TabsContent value="quality" className="pt-3">
+                    <ScoreTable rows={BENCH40_QUALITY} emphasizeKey="referee_v2" />
+                  </TabsContent>
+                  <TabsContent value="efficiency" className="pt-3">
+                    <ScoreTable rows={BENCH40_EFFICIENCY} />
+                    <p className="mt-3 text-xs leading-relaxed text-muted-foreground">
+                      referee_v2 costs ~1.7× RAG and is ~4× slower at the median — the
+                      price of decomposition, retrieval and a verifier loop.
+                    </p>
+                  </TabsContent>
+                </Tabs>
+              </CardContent>
+            </Card>
           </div>
-        </div>
-      </Section>
 
-      <Section
-        title="…and by question complexity"
-        subtitle="RulesGuru's own difficulty label. The graph's lift is largest on Simple questions; the hardest cases remain hard."
-        id="by-complexity"
-      >
-        <div className="grid gap-8 lg:grid-cols-2">
-          <Card className="border-border/60">
+          {/* Where it helps */}
+          <Card className="mt-6 border-border/60">
             <CardHeader>
-              <CardTitle className="text-base">Correctness by complexity</CardTitle>
+              <CardTitle className="text-base">Where the graph helps — and where it doesn&apos;t</CardTitle>
               <CardDescription>
-                <PipelineLegend />
+                Correctness sliced from LangSmith example metadata. Buckets are small (n
+                shown) — read them as directional.
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <ComparisonBars buckets={COMPLEXITY_BREAKDOWN} />
+              <Tabs defaultValue="category">
+                <TabsList>
+                  <TabsTrigger value="category">By interaction type</TabsTrigger>
+                  <TabsTrigger value="complexity">By complexity</TabsTrigger>
+                </TabsList>
+                <TabsContent value="category" className="grid gap-6 pt-4 lg:grid-cols-2">
+                  <ComparisonBars buckets={CATEGORY_BREAKDOWN} />
+                  <div className="flex flex-col justify-center gap-3 text-sm leading-relaxed text-muted-foreground">
+                    <p>
+                      Gains concentrate where retrieval is the bottleneck:{" "}
+                      <Em>costs &amp; casting</Em> (0.38 → 0.75) and{" "}
+                      <Em>replacement &amp; prevention</Em> (0.50 → 0.75) — questions where
+                      pulling the precise rule decides the answer.
+                    </p>
+                    <p>
+                      On <Em>layers &amp; continuous effects</Em> the two tie (0.73): both
+                      retrieve enough, and the misses left are genuine multi-step reasoning
+                      flips that more retrieval won&apos;t fix.
+                    </p>
+                  </div>
+                </TabsContent>
+                <TabsContent value="complexity" className="grid gap-6 pt-4 lg:grid-cols-2">
+                  <ComparisonBars buckets={COMPLEXITY_BREAKDOWN} />
+                  <div className="flex flex-col justify-center gap-3 text-sm leading-relaxed text-muted-foreground">
+                    <p>
+                      referee_v2 lifts <Em>Simple</Em> questions 0.57 → 0.75 — the bulk of
+                      the benchmark (n=28) and the bulk of the overall win.
+                    </p>
+                    <p>
+                      On <Em>Intermediate</Em> and <Em>Complicated</Em> cases it matches RAG
+                      rather than beating it: these are reasoning puzzles where the
+                      bottleneck is deduction, not evidence.
+                    </p>
+                  </div>
+                </TabsContent>
+              </Tabs>
             </CardContent>
           </Card>
-          <div className="flex flex-col gap-3 text-sm text-muted-foreground lg:pt-4">
-            <p>
-              referee_v2 lifts{" "}
-              <span className="font-medium text-foreground">Simple</span> questions
-              from 0.57 → 0.75 — the bulk of the benchmark (n=28) and the bulk of the
-              overall win.
-            </p>
-            <p>
-              On{" "}
-              <span className="font-medium text-foreground">Intermediate</span> and{" "}
-              <span className="font-medium text-foreground">Complicated</span> cases
-              it matches RAG rather than beating it: these are the genuine
-              reasoning puzzles where the bottleneck is deduction, not evidence.
-              With n=9 and n=3 these are directional only.
-            </p>
+        </Section>
+
+        {/* Metrics (condensed) */}
+        <Section
+          n="03"
+          title="What the metrics mean"
+          subtitle="Two LLM judges for quality, deterministic checks for retrieval and citations. Glance the one-liners; expand any row for how it's computed."
+          id="metrics"
+        >
+          <div className="mb-3 flex flex-wrap gap-4 text-xs text-muted-foreground">
+            <span className="inline-flex items-center gap-1.5">
+              <span className="size-2.5 rounded-full bg-primary" />
+              LLM judge
+            </span>
+            <span className="inline-flex items-center gap-1.5">
+              <span className="size-2.5 rounded-full bg-chart-2" />
+              Deterministic
+            </span>
           </div>
-        </div>
-      </Section>
+          <Accordion
+            type="single"
+            collapsible
+            className="rounded-xl border border-border/60 px-4"
+          >
+            {METRICS.map((m) => (
+              <AccordionItem key={m.key} value={m.key} className="last:border-b-0">
+                <AccordionTrigger className="py-3 hover:no-underline">
+                  <div className="flex flex-1 items-center gap-3 pr-3 text-left">
+                    <span
+                      className={cn(
+                        "size-2.5 shrink-0 rounded-full",
+                        m.kind === "LLM judge" ? "bg-primary" : "bg-chart-2",
+                      )}
+                    />
+                    <span className="w-32 shrink-0 font-medium">{m.name}</span>
+                    <span className="hidden text-sm text-muted-foreground sm:block">
+                      {m.summary}
+                    </span>
+                  </div>
+                </AccordionTrigger>
+                <AccordionContent className="text-sm leading-relaxed text-muted-foreground">
+                  <p className="sm:hidden mb-2 text-foreground">{m.summary}</p>
+                  {m.howMeasured}
+                  <span className="mt-2 block text-xs">Range: {m.range}</span>
+                </AccordionContent>
+              </AccordionItem>
+            ))}
+          </Accordion>
+        </Section>
 
-      <Section
-        title="Adjudication model sweep"
-        subtitle="Only the stage-1 reasoning model varies on referee_v2; verifier, format and judge are held fixed."
-        id="model-sweep"
-      >
-        <div className="grid gap-8 lg:grid-cols-2">
-          <ModelSweepTable />
-          <Card className="border-border/60">
-            <CardHeader>
-              <CardTitle className="text-base">Cost vs. correctness</CardTitle>
-              <CardDescription>
-                Bubble = adjudication model. Up and to the left is better.
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <CostCorrectnessScatter
-                points={MODEL_SWEEP.map<ScatterPoint>((r) => ({
-                  label: r.label,
-                  x: r.cost,
-                  y: r.correctness,
-                  tone: r.tagTone,
-                }))}
-                xLabel="Cost ($/case)"
-                yLabel="Correctness"
-              />
-            </CardContent>
-          </Card>
-        </div>
-        <p className="mt-4 text-sm text-muted-foreground">
-          Counter-intuitively, the longest answers score worst: opus-4.8 averages 2,891
-          characters at 0.600 correctness, while the concise gpt-5.5 (1,336 chars) leads
-          at 0.838. More tokens lock in an early wrong framing on trap questions.
-        </p>
-      </Section>
+        {/* Model sweep */}
+        <Section
+          n="04"
+          title="Choosing the adjudication model"
+          subtitle="Only the stage-1 reasoning model varies on referee_v2; verifier, format and judge are held fixed."
+          id="models"
+        >
+          <div className="grid gap-6 lg:grid-cols-2">
+            <Card className="border-border/60">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2 text-base">
+                  <Gauge className="size-4 text-primary" />
+                  Cost vs. correctness
+                </CardTitle>
+                <CardDescription>
+                  Each point is an adjudication model. Up and to the left is better.
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <CostCorrectnessScatter
+                  points={MODEL_SWEEP.map<ScatterPoint>((r) => ({
+                    label: r.label,
+                    x: r.cost,
+                    y: r.correctness,
+                    tone: r.tagTone,
+                    // gpt-5-mini and sonnet-4.5 share y=0.70 and sit close on x —
+                    // push their labels apart so they don't overlap.
+                    ...(r.label === "gpt-5-mini"
+                      ? { labelDx: -10, labelAnchor: "end" as const }
+                      : {}),
+                    ...(r.label === "sonnet-4.5"
+                      ? { labelDx: 10, labelAnchor: "start" as const }
+                      : {}),
+                  }))}
+                  xLabel="Cost ($/case)"
+                  yLabel="Correctness"
+                />
+              </CardContent>
+            </Card>
+            <div className="flex flex-col gap-4">
+              <ModelSweepTable />
+              <p className="text-sm leading-relaxed text-muted-foreground">
+                Counter-intuitively, the longest answers score worst: opus-4.8 averages
+                2,891 characters at 0.600 correctness, while the concise gpt-5.5 (1,336
+                chars) leads at 0.838. At temperature 0, verbose derivation on trap
+                questions locks in an early wrong framing. <Em>gpt-5-mini</Em> ties
+                sonnet-4.5 on correctness at the lowest cost — the production pick.
+              </p>
+            </div>
+          </div>
+        </Section>
 
-      <Section
-        title="Key findings"
-        subtitle="The story behind the numbers."
-        id="findings"
-      >
-        <Accordion type="single" collapsible className="rounded-xl border border-border/60 px-4">
-          {KEY_FINDINGS.map((f, i) => (
-            <AccordionItem key={f.title} value={`f${i}`} className="last:border-b-0">
-              <AccordionTrigger className="text-left text-sm font-medium">
-                {f.title}
-              </AccordionTrigger>
-              <AccordionContent className="text-sm text-muted-foreground">
-                {f.body}
-              </AccordionContent>
-            </AccordionItem>
-          ))}
-        </Accordion>
-      </Section>
+        {/* Conclusions */}
+        <Section
+          n="05"
+          title="Conclusions"
+          subtitle="What the benchmark actually shows."
+          id="conclusions"
+        >
+          <div className="grid gap-4 md:grid-cols-3">
+            <VerdictCard
+              icon={TrendingUp}
+              kicker="Finding 1"
+              title="The graph wins — at a price"
+              body="referee_v2 leads correctness (0.70 vs RAG's 0.575) and triples rule retrieval, while tying on card resolution and citation validity. But it costs ~1.7× and runs ~4× slower — a premium you pay when answer quality matters more than latency."
+            />
+            <VerdictCard
+              icon={Layers}
+              kicker="Finding 2"
+              title="It helps evidence, not deduction"
+              body="The gains concentrate where retrieval is the bottleneck — costs & casting, replacement & prevention, and simple questions. On layers, continuous effects and harder reasoning puzzles it only ties RAG: more machinery finds better rules, it doesn't reason better."
+            />
+            <VerdictCard
+              icon={Scale}
+              kicker="Finding 3"
+              title="Bigger model ≠ better referee"
+              body="On the adjudication sweep the frontier opus model ranked last; the concise gpt-5.5 led, and gpt-5-mini tied sonnet-4.5 on correctness at the lowest cost in the field — so gpt-5-mini is the production default."
+            />
+          </div>
+        </Section>
+      </div>
     </main>
   )
 }
 
-function ArchitectureCard({ a }: { a: Architecture }) {
+function Em({ children }: { children: React.ReactNode }) {
+  return <span className="font-medium text-foreground">{children}</span>
+}
+
+function ArchTab({ a }: { a: Architecture }) {
+  const isProd = a.status === "production"
   const statusLabel =
     a.status === "production"
       ? "production"
@@ -331,58 +489,88 @@ function ArchitectureCard({ a }: { a: Architecture }) {
     <Card
       className={cn(
         "border-border/60",
-        a.status === "production" && "border-primary/50 bg-primary/[0.03]",
+        isProd && "border-primary/50 bg-primary/[0.03]",
       )}
     >
-      <CardContent className="flex flex-col gap-3 p-5">
-        <div className="flex items-center justify-between gap-2">
+      <CardHeader>
+        <div className="flex items-start justify-between gap-2">
           <div>
-            <h3 className="font-semibold">{a.name}</h3>
-            <p className="text-xs text-muted-foreground">{a.tagline}</p>
+            <CardTitle className="text-lg">{a.name}</CardTitle>
+            <CardDescription>{a.tagline}</CardDescription>
           </div>
           <Badge
             variant="outline"
             className={cn(
               "shrink-0 text-[10px]",
-              a.status === "production"
-                ? "border-primary/40 text-primary"
-                : "text-muted-foreground",
+              isProd ? "border-primary/40 text-primary" : "text-muted-foreground",
             )}
           >
             {statusLabel}
           </Badge>
         </div>
-        <div className="flex flex-wrap items-center gap-1">
-          {a.steps.map((s, i) => (
-            <span key={s} className="flex items-center gap-1">
-              <span className="rounded-md bg-muted px-2 py-0.5 text-[11px] text-muted-foreground">
-                {s}
-              </span>
-              {i < a.steps.length - 1 && (
-                <span className="text-muted-foreground/50">→</span>
-              )}
-            </span>
-          ))}
+      </CardHeader>
+      <CardContent>
+        <div className="rounded-xl border border-border/50 bg-muted/15 p-4">
+          <div className="mx-auto" style={{ maxWidth: DIAGRAMS[a.key].viewBox.w }}>
+            <ArchitectureGraph diagram={DIAGRAMS[a.key]} accent={isProd} />
+          </div>
         </div>
-        <p className="text-sm text-muted-foreground">{a.description}</p>
+        <p className="mt-4 max-w-3xl text-sm leading-relaxed text-muted-foreground">
+          {a.description}
+        </p>
+      </CardContent>
+    </Card>
+  )
+}
+
+function VerdictCard({
+  icon: Icon,
+  kicker,
+  title,
+  body,
+}: {
+  icon: LucideIcon
+  kicker: string
+  title: string
+  body: string
+}) {
+  return (
+    <Card className="border-border/60">
+      <CardContent className="flex flex-col gap-2 p-6">
+        <div className="flex items-center gap-2">
+          <span className="flex size-9 items-center justify-center rounded-lg bg-primary/10 text-primary">
+            <Icon className="size-5" />
+          </span>
+          <span className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
+            {kicker}
+          </span>
+        </div>
+        <h3 className="text-lg font-semibold tracking-tight">{title}</h3>
+        <p className="text-sm leading-relaxed text-muted-foreground">{body}</p>
       </CardContent>
     </Card>
   )
 }
 
 function Section(props: {
+  n: string
   title: string
   subtitle?: string
   id?: string
   children: React.ReactNode
 }) {
   return (
-    <section id={props.id} className="mt-14 scroll-mt-20">
-      <h2 className="text-xl font-semibold tracking-tight">{props.title}</h2>
-      {props.subtitle && (
-        <p className="mt-1 text-sm text-muted-foreground">{props.subtitle}</p>
-      )}
-      <div className="mt-5">{props.children}</div>
+    <section id={props.id} className="scroll-mt-28 pt-16">
+      <div className="flex items-baseline gap-3">
+        <span className="text-sm font-semibold tabular-nums text-primary/70">{props.n}</span>
+        <div>
+          <h2 className="text-2xl font-semibold tracking-tight">{props.title}</h2>
+          {props.subtitle && (
+            <p className="mt-1 max-w-3xl text-sm text-muted-foreground">{props.subtitle}</p>
+          )}
+        </div>
+      </div>
+      <div className="mt-6">{props.children}</div>
     </section>
   )
 }

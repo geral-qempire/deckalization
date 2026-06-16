@@ -11,8 +11,13 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as TechnicalRouteImport } from './routes/technical'
 import { Route as DemoRouteImport } from './routes/demo'
+import { Route as DatabaseRouteImport } from './routes/database'
+import { Route as BenchmarksRouteImport } from './routes/benchmarks'
+import { Route as ApiReferenceRouteImport } from './routes/api-reference'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as ApiReferenceIndexRouteImport } from './routes/api-reference/index'
 import { Route as ApiRefereeStreamRouteImport } from './routes/api/referee-stream'
+import { Route as ApiReferenceSlugRouteImport } from './routes/api-reference/$slug'
 
 const TechnicalRoute = TechnicalRouteImport.update({
   id: '/technical',
@@ -24,46 +29,115 @@ const DemoRoute = DemoRouteImport.update({
   path: '/demo',
   getParentRoute: () => rootRouteImport,
 } as any)
+const DatabaseRoute = DatabaseRouteImport.update({
+  id: '/database',
+  path: '/database',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const BenchmarksRoute = BenchmarksRouteImport.update({
+  id: '/benchmarks',
+  path: '/benchmarks',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiReferenceRoute = ApiReferenceRouteImport.update({
+  id: '/api-reference',
+  path: '/api-reference',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
+} as any)
+const ApiReferenceIndexRoute = ApiReferenceIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => ApiReferenceRoute,
 } as any)
 const ApiRefereeStreamRoute = ApiRefereeStreamRouteImport.update({
   id: '/api/referee-stream',
   path: '/api/referee-stream',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiReferenceSlugRoute = ApiReferenceSlugRouteImport.update({
+  id: '/$slug',
+  path: '/$slug',
+  getParentRoute: () => ApiReferenceRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/api-reference': typeof ApiReferenceRouteWithChildren
+  '/benchmarks': typeof BenchmarksRoute
+  '/database': typeof DatabaseRoute
   '/demo': typeof DemoRoute
   '/technical': typeof TechnicalRoute
+  '/api-reference/$slug': typeof ApiReferenceSlugRoute
   '/api/referee-stream': typeof ApiRefereeStreamRoute
+  '/api-reference/': typeof ApiReferenceIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/benchmarks': typeof BenchmarksRoute
+  '/database': typeof DatabaseRoute
   '/demo': typeof DemoRoute
   '/technical': typeof TechnicalRoute
+  '/api-reference/$slug': typeof ApiReferenceSlugRoute
   '/api/referee-stream': typeof ApiRefereeStreamRoute
+  '/api-reference': typeof ApiReferenceIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/api-reference': typeof ApiReferenceRouteWithChildren
+  '/benchmarks': typeof BenchmarksRoute
+  '/database': typeof DatabaseRoute
   '/demo': typeof DemoRoute
   '/technical': typeof TechnicalRoute
+  '/api-reference/$slug': typeof ApiReferenceSlugRoute
   '/api/referee-stream': typeof ApiRefereeStreamRoute
+  '/api-reference/': typeof ApiReferenceIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/demo' | '/technical' | '/api/referee-stream'
+  fullPaths:
+    | '/'
+    | '/api-reference'
+    | '/benchmarks'
+    | '/database'
+    | '/demo'
+    | '/technical'
+    | '/api-reference/$slug'
+    | '/api/referee-stream'
+    | '/api-reference/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/demo' | '/technical' | '/api/referee-stream'
-  id: '__root__' | '/' | '/demo' | '/technical' | '/api/referee-stream'
+  to:
+    | '/'
+    | '/benchmarks'
+    | '/database'
+    | '/demo'
+    | '/technical'
+    | '/api-reference/$slug'
+    | '/api/referee-stream'
+    | '/api-reference'
+  id:
+    | '__root__'
+    | '/'
+    | '/api-reference'
+    | '/benchmarks'
+    | '/database'
+    | '/demo'
+    | '/technical'
+    | '/api-reference/$slug'
+    | '/api/referee-stream'
+    | '/api-reference/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  ApiReferenceRoute: typeof ApiReferenceRouteWithChildren
+  BenchmarksRoute: typeof BenchmarksRoute
+  DatabaseRoute: typeof DatabaseRoute
   DemoRoute: typeof DemoRoute
   TechnicalRoute: typeof TechnicalRoute
   ApiRefereeStreamRoute: typeof ApiRefereeStreamRoute
@@ -85,12 +159,40 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DemoRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/database': {
+      id: '/database'
+      path: '/database'
+      fullPath: '/database'
+      preLoaderRoute: typeof DatabaseRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/benchmarks': {
+      id: '/benchmarks'
+      path: '/benchmarks'
+      fullPath: '/benchmarks'
+      preLoaderRoute: typeof BenchmarksRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api-reference': {
+      id: '/api-reference'
+      path: '/api-reference'
+      fullPath: '/api-reference'
+      preLoaderRoute: typeof ApiReferenceRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/api-reference/': {
+      id: '/api-reference/'
+      path: '/'
+      fullPath: '/api-reference/'
+      preLoaderRoute: typeof ApiReferenceIndexRouteImport
+      parentRoute: typeof ApiReferenceRoute
     }
     '/api/referee-stream': {
       id: '/api/referee-stream'
@@ -99,11 +201,35 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiRefereeStreamRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api-reference/$slug': {
+      id: '/api-reference/$slug'
+      path: '/$slug'
+      fullPath: '/api-reference/$slug'
+      preLoaderRoute: typeof ApiReferenceSlugRouteImport
+      parentRoute: typeof ApiReferenceRoute
+    }
   }
 }
 
+interface ApiReferenceRouteChildren {
+  ApiReferenceSlugRoute: typeof ApiReferenceSlugRoute
+  ApiReferenceIndexRoute: typeof ApiReferenceIndexRoute
+}
+
+const ApiReferenceRouteChildren: ApiReferenceRouteChildren = {
+  ApiReferenceSlugRoute: ApiReferenceSlugRoute,
+  ApiReferenceIndexRoute: ApiReferenceIndexRoute,
+}
+
+const ApiReferenceRouteWithChildren = ApiReferenceRoute._addFileChildren(
+  ApiReferenceRouteChildren,
+)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  ApiReferenceRoute: ApiReferenceRouteWithChildren,
+  BenchmarksRoute: BenchmarksRoute,
+  DatabaseRoute: DatabaseRoute,
   DemoRoute: DemoRoute,
   TechnicalRoute: TechnicalRoute,
   ApiRefereeStreamRoute: ApiRefereeStreamRoute,

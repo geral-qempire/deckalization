@@ -139,6 +139,10 @@ export interface ScatterPoint {
   x: number
   y: number
   tone: "good" | "neutral" | "warn"
+  /** Manual label placement to avoid overlap. Defaults to centred, above the dot. */
+  labelDx?: number
+  labelDy?: number
+  labelAnchor?: "start" | "middle" | "end"
 }
 
 const TONE_FILL: Record<ScatterPoint["tone"], string> = {
@@ -201,7 +205,12 @@ export function CostCorrectnessScatter({
       {points.map((p) => (
         <g key={p.label}>
           <circle cx={px(p.x)} cy={py(p.y)} r={7} className={cn(TONE_FILL[p.tone], "opacity-80")} />
-          <text x={px(p.x)} y={py(p.y) - 12} textAnchor="middle" className="fill-foreground text-[10px] font-medium">
+          <text
+            x={px(p.x) + (p.labelDx ?? 0)}
+            y={py(p.y) + (p.labelDy ?? -12)}
+            textAnchor={p.labelAnchor ?? "middle"}
+            className="fill-foreground text-[10px] font-medium"
+          >
             {p.label}
           </text>
         </g>

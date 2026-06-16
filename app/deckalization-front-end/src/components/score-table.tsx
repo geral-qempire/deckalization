@@ -26,7 +26,28 @@ function bestKey(row: ScoreRow): PipelineKey | null {
   return pick[0]
 }
 
-export function ScoreTable({ rows }: { rows: ScoreRow[] }) {
+/** True when `key`'s value ties or beats every other pipeline in the row. */
+function isBestOrTied(row: ScoreRow, key: PipelineKey): boolean {
+  const v = row[key]
+  if (v === null) return false
+  const others = PIPELINES.filter((p) => p.key !== key)
+    .map((p) => row[p.key])
+    .filter((x): x is number => x !== null)
+  return row.lowerBetter
+    ? others.every((o) => v <= o)
+    : others.every((o) => v >= o)
+}
+
+export function ScoreTable({
+  rows,
+  emphasizeKey,
+}: {
+  rows: ScoreRow[]
+  /** When set, gold-highlight every cell that ties or beats the rest of its row
+   * (so the production pipeline AND any model that out-scores it both stand out).
+   * Without it, only the single per-row best is highlighted. */
+  emphasizeKey?: PipelineKey
+}) {
   return (
     <div className="overflow-x-auto rounded-xl border border-border/60">
       <Table>
@@ -42,7 +63,7 @@ export function ScoreTable({ rows }: { rows: ScoreRow[] }) {
         </TableHeader>
         <TableBody>
           {rows.map((row) => {
-            const best = bestKey(row)
+            const best = emphasizeKey ? null : bestKey(row)
             return (
               <TableRow key={row.key}>
                 <TableCell className="font-medium">
@@ -58,7 +79,9 @@ export function ScoreTable({ rows }: { rows: ScoreRow[] }) {
                     key={p.key}
                     className={cn(
                       "text-right tabular-nums",
-                      best === p.key && "font-semibold text-primary",
+                      (emphasizeKey
+                        ? isBestOrTied(row, p.key)
+                        : best === p.key) && "font-semibold text-primary",
                     )}
                   >
                     {fmt(row[p.key], row.format)}

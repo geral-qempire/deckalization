@@ -1,18 +1,36 @@
-name: CI
+name: CI-Backend
 
-# Fast, secret-free checks on every push and PR: lint, type-check, and the
-# offline unit tests. Tests that need the live data layer (Convex / OpenRouter)
-# skip themselves automatically when their secrets are absent (see
-# tests/test_resolver.py), so this job is safe to run on forks.
+# Fast, secret-free checks for the Python agents on every push and PR: lint,
+# type-check, and the offline unit tests. Tests that need the live data layer
+# (Convex / OpenRouter) skip themselves automatically when their secrets are
+# absent (see tests/test_resolver.py), so this job is safe to run on forks.
+#
+# Scoped to backend paths — frontend-only changes are handled by CI-Frontend.
 
 on:
   push:
     branches: [main]
+    paths:
+      - "agents/**"
+      - "mcp_server/**"
+      - "tests/**"
+      - "convex/**"
+      - "pyproject.toml"
+      - "uv.lock"
+      - ".github/workflows/ci.yml"
   pull_request:
     branches: [main]
+    paths:
+      - "agents/**"
+      - "mcp_server/**"
+      - "tests/**"
+      - "convex/**"
+      - "pyproject.toml"
+      - "uv.lock"
+      - ".github/workflows/ci.yml"
 
 concurrency:
-  group: ci-${{ github.ref }}
+  group: ci-backend-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:

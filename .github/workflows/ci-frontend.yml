@@ -1,0 +1,116 @@
+name: CI-Frontend
+
+# Checks + deploy for the TanStack Start website in app/deckalization-front-end.
+#
+#   checks  — lint, type-check and build on every push/PR (secret-free).
+#   deploy  — production deploy to Vercel on push to main.
+#
+# Required repository secrets (deploy job only):
+#   VERCEL_TOKEN        — a Vercel access token (Account → Settings → Tokens)
+#   VERCEL_ORG_ID       — the Vercel team/org id   (.vercel/project.json → orgId)
+#   VERCEL_PROJECT_ID   — the Vercel project id     (.vercel/project.json → projectId)
+#
+# The app's own runtime/build env (VITE_CONVEX_URL, LANGGRAPH_DEPLOYMENT_URL,
+# LANGSMITH_API_KEY, LANGGRAPH_ASSISTANT_ID) is configured in the Vercel project's
+# Environment Variables and pulled by `vercel pull` — it does NOT live here.
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "app/deckalization-front-end/**"
+      - "convex/**"
+      - ".github/workflows/ci-frontend.yml"
+  pull_request:
+    branches: [main]
+    paths:
+      - "app/deckalization-front-end/**"
+      - "convex/**"
+      - ".github/workflows/ci-frontend.yml"
+
+concurrency:
+  group: ci-frontend-${{ github.ref }}
+  cancel-in-progress: true
+
+defaults:
+  run:
+    working-directory: app/deckalization-front-end
+
+jobs:
+  checks:
+    name: lint • types • build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+          cache-dependency-path: app/deckalization-front-end/pnpm-lock.yaml
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: ESLint (lint)
+        run: pnpm lint
+
+      - name: tsc (type-check)
+        run: pnpm typecheck
+
+      - name: Build
+        run: pnpm build
+
+  deploy:
+    name: deploy → Vercel (production)
+    needs: checks
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    environment: production
+    env:
+      VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+      VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+      VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+          cache-dependency-path: app/deckalization-front-end/pnpm-lock.yaml
+
+      - name: Preflight — required Vercel secrets present
+        run: |
+          missing=0
+          for var in VERCEL_TOKEN VERCEL_ORG_ID VERCEL_PROJECT_ID; do
+            if [ -z "${!var}" ]; then
+              echo "::error::Missing required secret: $var"
+              missing=1
+            fi
+          done
+          [ "$missing" -eq 0 ] || exit 1
+
+      - name: Install Vercel CLI
+        run: npm install --global vercel@latest
+
+      - name: Pull Vercel project settings + env (production)
+        run: vercel pull --yes --environment=production --token="$VERCEL_TOKEN"
+
+      - name: Build (prebuilt output)
+        run: vercel build --prod --token="$VERCEL_TOKEN"
+
+      - name: Deploy to Vercel (production)
+        run: vercel deploy --prebuilt --prod --token="$VERCEL_TOKEN"

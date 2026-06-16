@@ -7,9 +7,11 @@ dist-ssr
 .tanstack
 .wrangler
 .output
+.nitro
 .vinxi
 __unconfig*
 todos.json
 
 # typescript
 *.tsbuildinfo
+.vercel
