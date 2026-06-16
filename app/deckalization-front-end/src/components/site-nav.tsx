@@ -17,7 +17,7 @@ export function SiteNav() {
           <span className="flex size-7 items-center justify-center rounded-lg bg-primary text-primary-foreground">
             <Gavel className="size-4" />
           </span>
-          <span>deckalization</span>
+          <span>Deckalization</span>
         </Link>
         <nav className="flex items-center gap-1 text-sm">
           {links.map((l) => (
