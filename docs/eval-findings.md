@@ -114,6 +114,9 @@ LangSmith experiments: `bench40-referee_v2-sonnet45-f7577c33`,
 
 ### Why opus-4.8 underperforms on correctness
 
+> Standalone deep-dive (log-grounded, with the per-case failure breakdown):
+> [`docs/why-opus-lost.md`](./why-opus-lost.md).
+
 Opus ranking last on correctness (0.600 vs 0.700 for sonnet/mini, 0.838 for gpt-5.5) is
 counter-intuitive for a frontier model. Trace-level analysis on the bench40 sweep shows this
 is **not** a pipeline artifact — it is a pattern of **real reasoning errors on hard

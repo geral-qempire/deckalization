@@ -1,5 +1,14 @@
 import { createFileRoute } from "@tanstack/react-router"
-import { FlaskConical, Gauge, Layers, Scale, Sparkles, TrendingUp } from "lucide-react"
+import {
+  Download,
+  FileJson,
+  FlaskConical,
+  Gauge,
+  Layers,
+  Scale,
+  Sparkles,
+  TrendingUp,
+} from "lucide-react"
 import type { LucideIcon } from "lucide-react"
 import {
   Card,
@@ -9,6 +18,7 @@ import {
   CardTitle,
 } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
+import { Button } from "@/components/ui/button"
 import {
   Accordion,
   AccordionContent,
@@ -439,6 +449,50 @@ function Technical() {
             </div>
           </div>
         </Section>
+
+        {/* Opus aside */}
+        <section className="scroll-mt-28 pt-12" id="opus">
+          <Card className="overflow-hidden border-amber-500/30 bg-amber-500/[0.04]">
+            <CardContent className="flex flex-col gap-4 p-6">
+              <div className="flex items-center gap-2">
+                <span className="flex size-9 items-center justify-center rounded-lg bg-amber-500/15 text-amber-500">
+                  <Sparkles className="size-5" />
+                </span>
+                <h3 className="text-lg font-semibold tracking-tight">
+                  Wait — Opus did <span className="text-amber-500">badly?</span>
+                </h3>
+              </div>
+              <p className="max-w-3xl text-sm leading-relaxed text-muted-foreground">
+                Yes. The most expensive frontier model finished{" "}
+                <Em>last on correctness (0.600)</Em> while the concise{" "}
+                <Em>gpt-5.5 led at 0.838</Em>. The pattern is consistent: longer answers
+                score worse. At temperature 0, opus-4.8 writes the most verbose
+                derivations (~2,900 chars/answer) and on trap questions it commits to an
+                early wrong framing, then reasons confidently toward the wrong verdict —
+                miscounting, flipping yes/no, or misreading replacement effects. It's not
+                a pipeline bug (every model ran the same graph) and not hallucination
+                (faithfulness stayed high) — just a worse fit for terse, high-stakes
+                adjudication.
+              </p>
+              <div className="flex flex-wrap items-center gap-2">
+                <Button asChild variant="outline" size="sm">
+                  <a href="/data/bench40-adjudication-sweep.csv" download>
+                    <Download /> Full results (CSV)
+                  </a>
+                </Button>
+                <Button asChild variant="outline" size="sm">
+                  <a href="/data/bench40-adjudication-sweep.json" download>
+                    <FileJson /> Full results (JSON)
+                  </a>
+                </Button>
+                <span className="text-xs text-muted-foreground">
+                  Per-case scores, questions, and every model's answer — all 40 cases × 4
+                  models. Check it yourself.
+                </span>
+              </div>
+            </CardContent>
+          </Card>
+        </section>
 
         {/* Conclusions */}
         <Section

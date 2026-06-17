@@ -31,6 +31,9 @@ data/
 # The frontend bundles static data modules under src/data — not an ML cache.
 !app/deckalization-front-end/src/data/
 !app/deckalization-front-end/src/data/**
+# Downloadable benchmark result files served from the frontend's public/data.
+!app/deckalization-front-end/public/data/
+!app/deckalization-front-end/public/data/**
 
 # ---- OS / editor ----
 .DS_Store
