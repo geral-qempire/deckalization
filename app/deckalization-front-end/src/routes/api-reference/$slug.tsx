@@ -80,7 +80,7 @@ function EndpointDetail({ endpoint, groupTitle }: { endpoint: Endpoint; groupTit
         setStatusLabel("200 OK")
         setStatus("done")
       } else {
-        await runStream(values.question ?? "", setBody, setStatusLabel)
+        await runStream(values.question, setBody, setStatusLabel)
         setStatus("done")
       }
     } catch (err) {
