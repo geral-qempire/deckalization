@@ -265,8 +265,8 @@ function Demo() {
           </Card>
 
           {/* Final response */}
-          <Card className="overflow-hidden border-border/60 lg:col-span-2 lg:sticky lg:top-20">
-            <div className="border-b border-border/60 bg-gradient-to-br from-primary/[0.07] to-transparent px-6 py-4">
+          <Card className="gap-0 overflow-hidden border-border/60 pt-0 lg:col-span-2 lg:sticky lg:top-20">
+            <div className="border-b border-border/60 bg-gradient-to-br from-primary/[0.07] to-transparent px-(--card-spacing) py-4">
               <CardTitle className="flex items-center gap-2 text-base">
                 <Gavel className="size-4 text-primary" />
                 Final ruling
