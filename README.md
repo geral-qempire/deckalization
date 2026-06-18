@@ -1,15 +1,59 @@
-# deckalization
+# Deckalization
 
-A **Magic: The Gathering rules referee** — a multi-agent assistant that answers rules
-questions and adjudicates card interactions **with citations to the official
-Comprehensive Rules and current Oracle card text**, wrapped in a full
-CI/CD + evaluation + observability pipeline on the **LangChain / LangGraph / LangSmith** stack.
+**A Magic: The Gathering rules referee that shows its work.**
 
-> A "judge in a box": ask *"I control X, my opponent does Y — what happens?"* and the
-> system fetches exact card text, retrieves the relevant rules, reasons through the
-> interaction (stack, layers, state-based actions, replacement effects), and returns a
-> ruling that cites both card text and rule numbers — with a verifier loop that rejects
-> ungrounded rulings.
+[deckalization.vercel.app](https://deckalization.vercel.app/) · [Live demo](https://deckalization.vercel.app/demo) · [Benchmarks](https://deckalization.vercel.app/benchmarks) · [Technical deep-dive](https://deckalization.vercel.app/technical)
+
+Deckalization answers MTG rules questions with citations to the **Comprehensive Rules** and **Oracle card text**. It compares three answering architectures on a golden benchmark, measures them with six metrics, and lets you watch the winning agent reason through a question—node by node.
+
+Ask *"I control X, my opponent does Y — what happens?"* and the system resolves card names to real Oracle text, retrieves the relevant rules, reasons through the interaction (stack, layers, state-based actions, replacement effects), and returns a ruling that cites both card text and rule numbers. A verifier loop rejects ungrounded claims.
+
+---
+
+## Results (bench40)
+
+40 expert-curated rules questions, mostly from [RulesGuru](https://rulesguru.org), judged by an LLM against reference answers. Headline numbers from the pinned `bench40` suite (see [benchmarks](https://deckalization.vercel.app/benchmarks) for methodology).
+
+| Metric | Zero-shot | RAG baseline | **Referee v2** |
+| --- | ---: | ---: | ---: |
+| **Correctness** | 0.24 | 0.58 | **0.70** |
+| **Faithfulness** | — | 0.83 | **0.85** |
+| **Rule recall** | — | 0.10 | **0.34** |
+| Citation recall | 0.31 | 0.10 | 0.29 |
+| Citation validity | 0.96 | 1.00 | 1.00 |
+
+Referee v2 leads on every quality metric. Its standout advantage is **rule recall** (~3.5× RAG): query decomposition and cross-reference expansion pull the right Comprehensive Rules far more often than single-shot retrieval. Full scores, model sweeps, and metric definitions live on the [website](https://deckalization.vercel.app/technical) and in [`docs/eval-findings.md`](docs/eval-findings.md).
+
+---
+
+## Architectures
+
+Three pipelines are compared end-to-end; a fourth (referee v1) is kept as an ablation.
+
+| Pipeline | What it does |
+| --- | --- |
+| **Zero-shot** | One LLM call, no retrieval — the floor. |
+| **RAG baseline** | Extract cards → resolve Oracle text → single semantic rules search → answer. Strong and cheap; the bar to beat. |
+| **Referee v1** | Multi-agent graph with a verifier loop. Improved citations but *lost* correctness to plain RAG. |
+| **Referee v2** | Production graph: router → card lookup → query decomposition → rules retrieval → two-stage adjudication → verifier (patch, not re-draft) → formatter. |
+
+Four targeted fixes turned referee v2 from a deficit-vs-RAG into a decisive lead: generous card rulings in context, two-stage reason→format adjudication, verifier patches instead of full re-drafts, and decomposed rules retrieval with cross-reference expansion. See the [technical page](https://deckalization.vercel.app/technical) for the full story.
+
+```mermaid
+flowchart LR
+  Q[Question] --> R[Router]
+  R --> C[Card lookup]
+  C --> D[Decompose]
+  D --> RR[Rules retrieval]
+  RR --> A[Adjudication]
+  A --> V{Verifier}
+  V -->|grounded| F[Formatter]
+  V -->|ungrounded| P[Patch]
+  P --> V
+  F --> AN[Answer + citations]
+```
+
+---
 
 ## Stack
 
@@ -17,163 +61,156 @@ CI/CD + evaluation + observability pipeline on the **LangChain / LangGraph / Lan
 | --- | --- |
 | Orchestration | LangChain + LangGraph (Python) |
 | Data layer | Convex (TypeScript) — card mirror + rules vectors |
-| LLM gateway | OpenRouter (OpenAI-compatible), config-driven & version-pinned per node |
+| LLM gateway | OpenRouter (OpenAI-compatible), config-driven per node |
 | Embeddings | OpenRouter `text-embedding-3-large` (3072-dim) |
-| Tool interface | MCP — custom FastMCP server + official Convex MCP (dev) |
-| Observability + Evals | LangSmith |
+| Observability + evals | LangSmith |
+| Web UI | TanStack Start + shadcn/ui ([`app/deckalization-front-end/`](app/deckalization-front-end/)) |
+| Tool interface | FastMCP server (dev / external clients only) |
 | CI/CD | GitHub Actions |
 
-## Guardrails (non-negotiable)
+---
 
-- **No row, no ruling** — card lookups return real DB rows or `not_found`; never answer from model memory.
-- **MCP stays off the production hot path** — graph nodes call the Convex tools directly.
-- **Models are config-driven & version-pinned** in `agents/core/config.py` — never hardcode a model name in a node.
-- **All card lookups hit the local mirror** — the live Scryfall API is a fallback only.
+## Guardrails
 
-## Repo layout
+These are non-negotiable design constraints:
 
-See [AGENTS.md](AGENTS.md) for the canonical structure and the rules that keep it that way.
+- **No row, no ruling** — card lookups return real DB rows or `not_found`; never answer from model memory alone.
+- **MCP stays off the production hot path** — graph nodes call Convex tools directly.
+- **Models are config-driven** — pinned in [`agents/core/config.py`](agents/core/config.py), never hardcoded in nodes.
+- **Local mirror first** — all card lookups hit the Convex mirror; live Scryfall is fallback only.
+
+---
+
+## Repository layout
+
+Canonical structure and conventions: [`AGENTS.md`](AGENTS.md).
 
 ```
 deckalization/
-├── AGENTS.md          # canonical repo structure + conventions (read this first)
-├── agents/            # all Python — reasoning, orchestration & evals
-│   ├── core/          # shared across every architecture (config, llm, schemas,
-│   │   │              #   tracing, prompts, resolver, scryfall, normalize, context, extract)
-│   │   └── tools/     # Convex data-access layer
-│   ├── baseline/      # architecture: zero-shot + single-chain RAG
-│   ├── referee/       # architecture: multi-agent referee
-│   │   ├── nodes/     # all referee nodes (shared + v1 + v2 variants)
-│   │   ├── v1/        # v1 graph wiring
-│   │   ├── v2/        # v2 graph wiring (production)
-│   │   ├── routing.py # shared conditional-edge predicates
-│   │   ├── state.py   # shared graph state
-│   │   └── run.py     # referee CLI (defaults to v2)
-│   ├── ingest/        # Comprehensive Rules download/parse/embed/seed
-│   ├── evals/         # golden datasets, evaluators, runner, ingestion scripts
-│   └── hello.py       # phase-0 smoke graph
-├── convex/            # TypeScript — data layer (schema + functions + crons)
-├── mcp_server/        # FastMCP server over the same tool layer (named to avoid the `mcp` pkg clash)
-├── app/               # Streamlit chat UI (future)
-├── docs/              # eval findings & design notes
-├── tests/             # unit tests
-├── langgraph.json
-└── pyproject.toml
+├── agents/                 # Python — reasoning, orchestration, evals
+│   ├── core/               # shared config, LLM, resolver, prompts, Convex tools
+│   ├── baseline/           # zero-shot + single-chain RAG
+│   ├── referee/            # multi-agent referee (v1 + v2 graphs, shared nodes)
+│   ├── ingest/             # Comprehensive Rules download / parse / embed / seed
+│   └── evals/              # benchmark suites, evaluators, LangSmith harness
+├── convex/                 # TypeScript data layer (schema, queries, crons)
+├── app/deckalization-front-end/  # website + live demo UI
+├── mcp_server/             # FastMCP wrapper over core tools
+├── docs/                   # eval findings & design notes
+└── tests/
 ```
+
+---
 
 ## Getting started
 
 ### Prerequisites
-- [uv](https://docs.astral.sh/uv/) (Python toolchain) — pins Python 3.12
-- Node.js 18+ (for the Convex CLI)
+
+- [uv](https://docs.astral.sh/uv/) (Python 3.12)
+- Node.js 18+ (Convex CLI + frontend)
 
 ### 1. Python environment
+
 ```bash
 uv sync
 ```
 
 ### 2. Environment variables
+
 ```bash
 cp .env.local.example .env.local
 # Fill in OPENROUTER_API_KEY and LANGSMITH_API_KEY.
 ```
-A single `.env.local` holds everything: your secrets plus the Convex-managed vars.
 
-### 3. Convex (interactive login the first time)
+A single `.env.local` holds your secrets plus Convex-managed vars.
+
+### 3. Convex
+
 ```bash
 npx convex dev
-# Logs in via browser, creates the deployment, and writes the CONVEX_* vars to .env.local.
+# First run: browser login, creates deployment, writes CONVEX_* to .env.local.
 ```
 
-### 4. Smoke test (Phase 0 done-when)
+### 4. Smoke test
+
 ```bash
-uv run python -m agents.hello   # traced no-op graph + Convex ping
-uv run pytest                   # unit smoke tests
-npx @langchain/langgraph-cli dev  # or: langgraph dev — serves the graph locally
+uv run python -m agents.hello          # traced no-op graph + Convex ping
+uv run pytest                          # unit tests (live tests self-skip without Convex)
+npx @langchain/langgraph-cli dev       # serve graphs locally
 ```
 
-### 5. Phase 3 baselines (zero-shot vs RAG)
-```bash
-# Single question — both baselines, traced to LangSmith (deckalization-dev)
-uv run python -m agents.baseline.run --baseline both \
-  --question "Does deathtouch work with trample?"
+### 5. Run a rules question
 
-# Starter fixture set (~10 questions)
-uv run python -m agents.baseline.run --baseline both \
-  --fixture agents/evals/fixtures/sample_questions.jsonl
-```
-Filter LangSmith traces by tags `baseline:zero_shot` or `baseline:rag`.
-
-### 6. Phase 4 referee graph
 ```bash
-# Defaults to the v2 graph (production architecture)
+# Production referee (v2)
 uv run python -m agents.referee.run --question "Does deathtouch work with trample?"
 
-# Run the v1 graph instead (kept as a benchmark comparison)
-uv run python -m agents.referee.run --graph v1 --question "..."
-
-# Compare against Phase 3 RAG baseline on the same question
+# Compare architectures on the same question
+uv run python -m agents.baseline.run --baseline both --question "Does deathtouch work with trample?"
 uv run python -m agents.referee.run --question "..." --compare
 
+# Batch via fixture
 uv run python -m agents.referee.run --fixture agents/evals/fixtures/sample_questions.jsonl
 ```
-Filter LangSmith traces by tag `pipeline:referee`.
 
-### 7. Phase 5 eval harness
+LangSmith traces: filter by `pipeline:referee` or tags `baseline:zero_shot` / `baseline:rag`.
+
+### 6. Frontend (optional)
+
+From [`app/deckalization-front-end/`](app/deckalization-front-end/):
+
 ```bash
-# One-time: ingest all RulesGuru → Convex, then build fixed benchmark manifest
+pnpm install && pnpm dev
+```
+
+Set `VITE_CONVEX_URL` in the app's `.env`. Showcase replays work out of the box; live streaming needs `LANGGRAPH_DEPLOYMENT_URL` + `LANGSMITH_API_KEY` on the server (see the [frontend README](app/deckalization-front-end/README.md)).
+
+---
+
+## Evaluation harness
+
+Evals are LangSmith experiments—the canonical numbers come from here, not one-off local runs.
+
+```bash
+# One-time dataset setup
 uv run python -m agents.evals.scripts.ingest_rulesguru
 uv run python -m agents.evals.scripts.build_benchmark_manifest
 
-# Smoke (CI-sized, ~15 cases)
+# Quick CI-sized sanity check (~15 cases)
 uv run python -m agents.evals.run --suite smoke --target referee
 
-# Fixed 40-case sample used for CI / model sweeps (set in stone)
+# Headline comparison set (40 cases)
 uv run python -m agents.evals.run --suite bench40 --compare baseline_rag referee_v2
 
-# Full benchmark (~125 fixed cases, ~€8–10 for 3-way compare)
+# Full benchmark (~125 cases)
 uv run python -m agents.evals.run --suite benchmark --compare zero_shot baseline_rag referee_v2
 ```
 
-### 8. CI / quality gate (GitHub Actions)
+Pass/fail gates live in [`agents/evals/thresholds.yaml`](agents/evals/thresholds.yaml).
 
-Two workflows live in `.github/workflows/`:
+### CI / quality gate
 
-| Workflow | Trigger | What it does | Secrets |
-| --- | --- | --- | --- |
-| `ci.yml` | every push / PR to `main` | `ruff` + `mypy` + offline `pytest` | none (live tests self-skip) |
-| `eval.yml` | manual (`workflow_dispatch`) | runs the eval suite, uploads a comparison experiment to LangSmith, and fails if any `thresholds.yaml` gate (incl. "referee beats RAG") is missed | `OPENROUTER_API_KEY`, `LANGSMITH_API_KEY`, `CONVEX_URL` |
+| Workflow | Trigger | What it does |
+| --- | --- | --- |
+| [`ci.yml`](.github/workflows/ci.yml) | every push / PR | `ruff` + `mypy` + offline `pytest` (secret-free) |
+| [`eval.yml`](.github/workflows/eval.yml) | manual dispatch | runs eval suite, uploads LangSmith experiment, fails on threshold miss |
 
-Run the gate from the repo **Actions** tab → **Eval gate** → **Run workflow** (pick a
-suite; defaults to `bench40`, `referee_v2` vs `baseline_rag`). Set the three secrets under
-**Settings → Secrets and variables → Actions**. CI traces land in the `deckalization-ci`
-project (the workflow sets `DECKALIZATION_ENV=ci`).
+Run the eval gate from **Actions → Eval gate → Run workflow** (defaults: `bench40`, referee vs RAG). Requires `OPENROUTER_API_KEY`, `LANGSMITH_API_KEY`, and prod `CONVEX_URL` as repository secrets.
 
-## Environments (dev / prod)
+---
+
+## Environments
 
 Same variable names everywhere; only values differ.
 
-| Concern | dev | prod |
+| Concern | Local dev | CI / prod |
 | --- | --- | --- |
-| OpenRouter key | `deckalization-dev` key in `.env.local` | `deckalization-prod` key as LangGraph Platform secret |
-| LangSmith project | `deckalization-dev` | `deckalization-prod` |
-| Convex deployment | personal dev deployment (`npx convex dev`) | prod deployment (`npx convex deploy` + deploy key) |
-| CI (PRs) | `ci.yml` — secret-free lint/types/tests | `eval.yml` — `OPENROUTER_API_KEY` + `LANGSMITH_API_KEY` + prod `CONVEX_URL` as GitHub Actions secrets |
+| OpenRouter key | `deckalization-dev` in `.env.local` | prod key as deployment / Actions secret |
+| LangSmith project | `deckalization-dev` | `deckalization-ci` / `deckalization-prod` |
+| Convex | personal dev deployment | prod deployment for eval gate |
 
-The eval gate (`eval.yml`) points at the **prod** Convex deployment and uploads experiments to the `deckalization-ci` LangSmith project. Prod deploy of `referee_v2` is wired in **Phase 7 (deploy)**.
+---
 
-## Build plan
+## Attribution
 
-Built **one phase at a time**:
-
-- **Phase 0** — Scaffolding & infra ✅
-- **Phase 1** — Data layer: schema, ingestion & indexing ✅
-- **Phase 2** — Data-access tools, card resolver & FastMCP server ✅
-- **Phase 3** — Baseline zero-shot + single-chain RAG (traced in LangSmith)
-- **Phase 4** — Multi-agent graph (router + verifier loop) ✅
-- **Phase 5** — Eval harness (Convex goldens, benchmark suite, evaluators) ✅
-- **Phase 6** — CI/CD quality gate ✅
-- **Phase 7** — Deploy + monitor
-
-Tournament policy (MTR/IPG/JAR) and the player-friendly explanation formatter are
-deferred to **v1.1** — the seams exist in the graph but are not implemented in v1.
+Rules questions in the eval corpus are sourced from [RulesGuru](https://rulesguru.org) for non-commercial evaluation. Card data flows through Scryfall's API into a local mirror.
