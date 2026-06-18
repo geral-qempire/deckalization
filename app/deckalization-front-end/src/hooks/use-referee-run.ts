@@ -46,6 +46,20 @@ export function useRefereeRun() {
     abortRef.current = null
   }, [])
 
+  // User-initiated stop: abort the stream AND settle the UI out of "running" so
+  // controls (showcase chips, Run live) re-enable. `cancel` alone only aborts.
+  const stop = useCallback(() => {
+    cancel()
+    setState((prev) => {
+      if (prev.status !== "running") return prev
+      const nodeStates = { ...prev.nodeStates }
+      for (const k of Object.keys(nodeStates) as RefereeNodeId[]) {
+        if (nodeStates[k] === "active") nodeStates[k] = "done"
+      }
+      return { ...prev, nodeStates, status: "idle" }
+    })
+  }, [cancel])
+
   useEffect(() => cancel, [cancel])
 
   const onEvent = useCallback((e: GraphEvent) => {
@@ -119,5 +133,5 @@ export function useRefereeRun() {
     setState(INITIAL)
   }, [cancel])
 
-  return { state, runReplay, runLive, reset, cancel }
+  return { state, runReplay, runLive, reset, cancel, stop }
 }

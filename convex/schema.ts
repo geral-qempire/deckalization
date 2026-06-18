@@ -34,6 +34,10 @@ export default defineSchema({
     // the resolver to prefer playable cards over tokens/art among same-name rows.
     layout: v.optional(v.string()),
     setType: v.optional(v.string()),
+    // Scryfall CDN image links (front face for multi-faced cards). Stored at
+    // ingest so the UI never has to hit the Scryfall API at render time.
+    imageUrl: v.optional(v.string()), // "normal" size (~488×680)
+    imageUrlSmall: v.optional(v.string()), // "small" size (~146×204), for thumbnails
     // Bookkeeping for idempotent bulk refresh.
     scryfallId: v.optional(v.string()),
     updatedAt: v.number(),

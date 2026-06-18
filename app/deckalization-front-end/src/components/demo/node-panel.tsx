@@ -1,5 +1,8 @@
+import { useState } from "react"
 import {
   CheckCircle2,
+  ChevronDown,
+  ChevronUp,
   Compass,
   FileText,
   GitBranch,
@@ -14,6 +17,7 @@ import {
 import { Badge } from "@/components/ui/badge"
 import { cn } from "@/lib/utils"
 import { RulingCard } from "@/components/demo/ruling-card"
+import { CardPreview, CardThumb } from "@/components/demo/card-art"
 import type { RefereeNodeId, RefereeStateDelta } from "@/lib/graph-events"
 import { NODE_BY_ID } from "@/lib/graph-layout"
 
@@ -29,33 +33,56 @@ const NODE_ICON: Record<RefereeNodeId, React.ComponentType<{ className?: string 
   formatter: FileText,
 }
 
-export function NodePanel({
-  node,
-  delta,
-  active,
-}: {
+export interface TimelineNode {
+  id: string
   node: RefereeNodeId
   delta: RefereeStateDelta
   active?: boolean
-}) {
-  const meta = NODE_BY_ID[node]
-  const Icon = NODE_ICON[node]
+}
+
+export function NodeTimeline({ entries }: { entries: TimelineNode[] }) {
   return (
-    <div
-      className={cn(
-        "rounded-xl border border-border/60 bg-card p-4 transition-colors",
-        active && "border-primary/50 ring-1 ring-primary/20",
-      )}
-    >
-      <div className="mb-3 flex items-center gap-2">
-        <span className="flex size-7 items-center justify-center rounded-lg bg-primary/10 text-primary">
-          <Icon className="size-4" />
-        </span>
-        <span className="font-medium">{meta.label}</span>
-        <span className="text-xs text-muted-foreground">{meta.blurb}</span>
-      </div>
-      <NodeBody node={node} delta={delta} />
-    </div>
+    <ol className="flex flex-col">
+      {entries.map((e, i) => {
+        const meta = NODE_BY_ID[e.node]
+        const Icon = NODE_ICON[e.node]
+        const last = i === entries.length - 1
+        return (
+          <li key={e.id} className="flex gap-3.5">
+            {/* Rail */}
+            <div className="flex flex-col items-center">
+              <span
+                className={cn(
+                  "flex size-8 shrink-0 items-center justify-center rounded-full border bg-card transition-colors",
+                  e.active
+                    ? "border-primary/60 text-primary ring-4 ring-primary/10"
+                    : "border-border/70 text-muted-foreground",
+                )}
+              >
+                <Icon className="size-4" />
+              </span>
+              {!last && <span className="my-1 w-px flex-1 bg-border/60" />}
+            </div>
+
+            {/* Step */}
+            <div className={cn("min-w-0 flex-1", last ? "pb-0" : "pb-5")}>
+              <div className="mb-1.5 flex items-baseline gap-2">
+                <span className="text-sm font-medium">{meta.label}</span>
+                <span className="truncate text-xs text-muted-foreground">{meta.blurb}</span>
+              </div>
+              <div
+                className={cn(
+                  "rounded-xl border bg-card p-3.5 transition-colors",
+                  e.active ? "border-primary/40 ring-1 ring-primary/15" : "border-border/60",
+                )}
+              >
+                <NodeBody node={e.node} delta={e.delta} />
+              </div>
+            </div>
+          </li>
+        )
+      })}
+    </ol>
   )
 }
 
@@ -125,28 +152,33 @@ function CardLookupBody({ delta }: { delta: RefereeStateDelta }) {
             ? ` ${c.power ?? "?"}/${c.toughness ?? "?"}`
             : ""
         return (
-          <div key={`${c.name}-${i}`} className="rounded-md border border-border/50 bg-muted/30 p-2.5">
-            <div className="flex items-center gap-2">
-              <span className="text-sm font-semibold">{c.name}</span>
-              {c.manaCost && (
-                <span className="text-xs text-muted-foreground">{c.manaCost}</span>
-              )}
-              {entry.method && (
-                <Badge variant="outline" className="ml-auto text-[10px] text-muted-foreground">
-                  {entry.method}
-                </Badge>
-              )}
+          <CardPreview key={`${c.name}-${i}`} name={c.name}>
+            <div className="flex cursor-zoom-in gap-3 rounded-lg border border-border/50 bg-muted/30 p-2.5 transition-colors hover:border-primary/40 hover:bg-muted/50">
+              <CardThumb name={c.name} />
+              <div className="min-w-0 flex-1">
+                <div className="flex items-center gap-2">
+                  <span className="text-sm font-semibold">{c.name}</span>
+                  {c.manaCost && (
+                    <span className="text-xs text-muted-foreground">{c.manaCost}</span>
+                  )}
+                  {entry.method && (
+                    <Badge variant="outline" className="ml-auto text-[10px] text-muted-foreground">
+                      {entry.method}
+                    </Badge>
+                  )}
+                </div>
+                {(c.typeLine || pt) && (
+                  <p className="text-xs text-muted-foreground">
+                    {c.typeLine}
+                    {pt}
+                  </p>
+                )}
+                {c.oracleText && (
+                  <p className="mt-1 line-clamp-4 text-xs">{c.oracleText}</p>
+                )}
+              </div>
             </div>
-            {(c.typeLine || pt) && (
-              <p className="text-xs text-muted-foreground">
-                {c.typeLine}
-                {pt}
-              </p>
-            )}
-            {c.oracleText && (
-              <p className="mt-1 line-clamp-3 text-xs">{c.oracleText}</p>
-            )}
-          </div>
+          </CardPreview>
         )
       })}
       {notes.map((n, i) => (
@@ -173,13 +205,17 @@ function DecomposeBody({ delta }: { delta: RefereeStateDelta }) {
   )
 }
 
+const RULES_PREVIEW = 6
+
 function RulesBody({ delta }: { delta: RefereeStateDelta }) {
+  const [expanded, setExpanded] = useState(false)
   const rules = delta.retrieved_rules ?? []
   if (rules.length === 0) return <Empty>No rules retrieved.</Empty>
-  const top = rules.slice(0, 6)
+  const shown = expanded ? rules : rules.slice(0, RULES_PREVIEW)
+  const hidden = rules.length - RULES_PREVIEW
   return (
     <div className="flex flex-col gap-1.5">
-      {top.map((r, i) => (
+      {shown.map((r, i) => (
         <div key={`${r.ruleNumber}-${i}`} className="rounded-md border border-border/50 bg-muted/30 p-2 text-xs">
           <div className="flex items-center gap-2">
             <span className="font-semibold text-primary">CR {r.ruleNumber}</span>
@@ -190,13 +226,28 @@ function RulesBody({ delta }: { delta: RefereeStateDelta }) {
               </span>
             )}
           </div>
-          <p className="mt-1 line-clamp-2 text-muted-foreground">{r.text}</p>
+          <p className={cn("mt-1 text-muted-foreground", !expanded && "line-clamp-2")}>
+            {r.text}
+          </p>
         </div>
       ))}
-      {rules.length > top.length && (
-        <span className="text-xs text-muted-foreground">
-          +{rules.length - top.length} more rules retrieved
-        </span>
+      {hidden > 0 && (
+        <button
+          type="button"
+          onClick={() => setExpanded((v) => !v)}
+          className="mt-0.5 flex items-center gap-1 self-start rounded-md text-xs font-medium text-primary transition-colors hover:underline"
+        >
+          {expanded ? (
+            <>
+              <ChevronUp className="size-3.5" /> Show fewer
+            </>
+          ) : (
+            <>
+              <ChevronDown className="size-3.5" /> +{hidden} more{" "}
+              {hidden === 1 ? "rule" : "rules"} retrieved
+            </>
+          )}
+        </button>
       )}
     </div>
   )

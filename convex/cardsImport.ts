@@ -102,6 +102,11 @@ function mapCard(raw: any, rulingsByOracle: Map<string, Ruling[]>) {
     ? raw.colors
     : Array.from(new Set(faces.flatMap((f) => f.colors ?? [])));
 
+  // image_uris is top-level for single-faced cards and on each face for
+  // multi-faced ones — fall back to the front face so DFCs still get art.
+  const imageUris: Record<string, string> | undefined =
+    raw.image_uris ?? faces.find((f) => f.image_uris)?.image_uris;
+
   return {
     oracleId,
     name: raw.name ?? "",
@@ -119,6 +124,8 @@ function mapCard(raw: any, rulingsByOracle: Map<string, Ruling[]>) {
     rulings: rulingsByOracle.get(oracleId) ?? [],
     layout: typeof raw.layout === "string" ? raw.layout : undefined,
     setType: typeof raw.set_type === "string" ? raw.set_type : undefined,
+    imageUrl: firstString(imageUris?.normal, imageUris?.large, imageUris?.png),
+    imageUrlSmall: firstString(imageUris?.small, imageUris?.normal),
     scryfallId: raw.id,
     updatedAt: Date.now(),
   };

@@ -24,6 +24,8 @@ const cardValidator = v.object({
   rulings: v.array(v.any()),
   layout: v.optional(v.string()),
   setType: v.optional(v.string()),
+  imageUrl: v.optional(v.string()),
+  imageUrlSmall: v.optional(v.string()),
   scryfallId: v.optional(v.string()),
   updatedAt: v.number(),
 });
