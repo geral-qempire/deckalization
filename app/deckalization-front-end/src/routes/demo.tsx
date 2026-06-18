@@ -62,8 +62,8 @@ function Demo() {
         </h1>
         <p className="max-w-3xl text-muted-foreground">
           Ask a Magic: The Gathering rules question and watch it flow through the
-          multi-agent graph — routing, card resolution, query decomposition, rules
-          retrieval, adjudication and the verifier loop — with every node's output
+          multi-agent graph: routing, card resolution, query decomposition, rules
+          retrieval, adjudication and the verifier loop, with every node's output
           revealed as it happens.
         </p>
       </header>
@@ -135,7 +135,7 @@ function Demo() {
             <div className="flex flex-col gap-2 border-t border-border/60 pt-3">
               <span className="flex items-center gap-1.5 text-xs font-medium text-muted-foreground">
                 <Sparkles className="size-3.5 text-primary" />
-                Instant showcase runs (pre-recorded — no waiting)
+                Instant showcase runs (pre-recorded, no waiting)
               </span>
               <div className="flex flex-wrap gap-2">
                 {RECORDED_RUNS.map((r) => (
@@ -152,7 +152,7 @@ function Demo() {
                 ))}
               </div>
               <span className="text-[11px] text-muted-foreground">
-                Live runs hit the deployed graph — they can take 30s+. ⌘/Ctrl+Enter to
+                Live runs hit the deployed graph and can take 30s+. ⌘/Ctrl+Enter to
                 run.
               </span>
             </div>

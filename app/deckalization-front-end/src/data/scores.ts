@@ -87,12 +87,12 @@ export const HEADLINE_STATS: HeadlineStat[] = [
   {
     value: "0.70",
     label: "Correctness",
-    detail: "referee_v2 on the 40-case benchmark — +0.13 over RAG, ~3× zero-shot",
+    detail: "referee_v2 on the 40-case benchmark: +0.13 over RAG, ~3× zero-shot",
   },
   {
     value: "3.5×",
     label: "Rule retrieval vs RAG",
-    detail: "rule_recall 0.34 vs 0.10 — query decomposition + cross-reference expansion",
+    detail: "rule_recall 0.34 vs 0.10 via query decomposition + cross-reference expansion",
   },
   {
     value: "0.85",

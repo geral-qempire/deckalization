@@ -17,7 +17,7 @@ export const ARCHITECTURES: Architecture[] = [
     tagline: "A single LLM call, no retrieval",
     steps: ["question", "LLM", "answer"],
     description:
-      "One model call answering purely from memory — no card data, no rules text. The floor: it shows how far raw model knowledge gets you on adversarial rules questions.",
+      "One model call answering purely from memory, with no card data and no rules text. The floor: it shows how far raw model knowledge gets you on adversarial rules questions.",
     status: "baseline",
   },
   {
@@ -26,7 +26,7 @@ export const ARCHITECTURES: Architecture[] = [
     tagline: "A linear retrieval chain",
     steps: ["extract cards", "resolve cards", "search rules", "answer"],
     description:
-      "Extract card names, resolve them to Oracle text, run one semantic search over the Comprehensive Rules, then produce a single grounded, structured answer. Strong and cheap — the bar the agent has to beat.",
+      "Extract card names, resolve them to Oracle text, run one semantic search over the Comprehensive Rules, then produce a single grounded, structured answer. Strong and cheap: the bar the agent has to beat.",
     status: "baseline",
   },
   {
@@ -35,7 +35,7 @@ export const ARCHITECTURES: Architecture[] = [
     tagline: "First multi-agent graph",
     steps: ["router", "card lookup", "rules retrieval", "adjudication", "verifier loop"],
     description:
-      "A multi-agent LangGraph: route → look up cards → retrieve rules → adjudicate → verify. On an 'ungrounded' verdict the verifier re-retrieved and re-drafted from scratch. It improved citations but actually lost correctness to plain RAG — the machinery hurt the answers.",
+      "A multi-agent LangGraph: route → look up cards → retrieve rules → adjudicate → verify. On an 'ungrounded' verdict the verifier re-retrieved and re-drafted from scratch. It improved citations but actually lost correctness to plain RAG: the machinery hurt the answers.",
     status: "ablation",
   },
   {
@@ -79,7 +79,7 @@ export const REFEREE_V2_CHANGES: ChangeNote[] = [
   },
   {
     title: "Query decomposition + cross-reference expansion",
-    body: "A narrative question is split into 2–4 focused CR searches, and 'see rule NNN' references are followed deterministically — pulling the right rules ~5× more often than RAG.",
+    body: "A narrative question is split into 2–4 focused CR searches, and 'see rule NNN' references are followed deterministically, pulling the right rules ~5× more often than RAG.",
   },
 ]
 
@@ -99,11 +99,11 @@ export const KEY_FINDINGS: Finding[] = [
   },
   {
     title: "Un-truncating card rulings was not the bottleneck",
-    body: "Removing all ruling caps moved aggregate correctness by less than one case — most cards simply have few rulings. Kept the change (strictly more correct), but it was not the lever.",
+    body: "Removing all ruling caps moved aggregate correctness by less than one case, because most cards simply have few rulings. Kept the change (strictly more correct), but it was not the lever.",
   },
   {
     title: "The breakthrough: the format step was discarding the reasoning",
-    body: "Two-stage adjudication was compressing multi-paragraph reasoning into a one-line ruling — and the judge grades that text. Preserving the stage-1 prose verbatim lifted correctness 0.496 → 0.716 (+0.22), flipping a deficit into a +0.16 lead over RAG.",
+    body: "Two-stage adjudication was compressing multi-paragraph reasoning into a one-line ruling, and the judge grades that text. Preserving the stage-1 prose verbatim lifted correctness 0.496 → 0.716 (+0.22), flipping a deficit into a +0.16 lead over RAG.",
   },
   {
     title: "Bigger model ≠ better referee",

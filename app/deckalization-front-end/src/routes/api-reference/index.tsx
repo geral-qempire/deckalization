@@ -17,7 +17,7 @@ function ApiIntro() {
       <p className="mt-4 text-lg text-muted-foreground">
         Two surfaces power deckalization: a Convex data layer (cards, rules, aliases, eval
         cases) and the LangGraph referee agent. The same tools are also exposed over MCP.
-        Everything here is the real, deployed contract — and most read endpoints can be run
+        Everything here is the real, deployed contract, and most read endpoints can be run
         right from the browser.
       </p>
 

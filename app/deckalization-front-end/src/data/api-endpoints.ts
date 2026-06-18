@@ -80,12 +80,12 @@ export const GROUPS: Group[] = [
             name: "normalizedName",
             type: "string",
             required: true,
-            desc: "Card name — normalized (lower-cased, punctuation/diacritics stripped) before the exact lookup.",
+            desc: "Card name, normalized (lower-cased, punctuation/diacritics stripped) before the exact lookup.",
             default: "Lightning Bolt",
             normalize: true,
           },
         ],
-        returns: "Card[] — all matching card documents (empty array if none).",
+        returns: "Card[]: all matching card documents (empty array if none).",
         request: {
           lang: "typescript",
           code: `import { api } from "@convex/_generated/api"
@@ -127,7 +127,7 @@ const cards = await convex.query(
         name: "searchCardsByName",
         path: "queries:searchCardsByName",
         summary:
-          "Full-text fuzzy search over card names — the candidate generator for disambiguation.",
+          "Full-text fuzzy search over card names; the candidate generator for disambiguation.",
         params: [
           {
             name: "query",
@@ -145,7 +145,7 @@ const cards = await convex.query(
           },
         ],
         returns:
-          "Array<{ oracleId, name, normalizedName, typeLine, layout, setType }> — slim candidate rows.",
+          "Array<{ oracleId, name, normalizedName, typeLine, layout, setType }>: slim candidate rows.",
         request: {
           lang: "typescript",
           code: `const hits = await convex.query(api.queries.searchCardsByName, {
@@ -165,7 +165,7 @@ const cards = await convex.query(
         params: [
           { name: "card", type: "Card", required: true, desc: "Full card document (see schema)." },
         ],
-        returns: "boolean — true if a new row was inserted, false if an existing row was patched.",
+        returns: "boolean: true if a new row was inserted, false if an existing row was patched.",
         request: {
           lang: "typescript",
           code: `const inserted = await convex.mutation(api.cards.upsertOne, {
@@ -197,7 +197,7 @@ const cards = await convex.query(
             default: "601.2a",
           },
         ],
-        returns: "RuleChunk | null — { ruleNumber, section, text, rulesVersion? }",
+        returns: "RuleChunk | null: { ruleNumber, section, text, rulesVersion? }",
         request: {
           lang: "typescript",
           code: `const rule = await convex.query(api.queries.getRuleByNumber, {
@@ -217,7 +217,7 @@ const cards = await convex.query(
           { name: "embedding", type: "number[]", required: true, desc: "Query embedding vector (same model as ingest)." },
           { name: "limit", type: "number", required: false, desc: "Max chunks. Default 8." },
         ],
-        returns: "Array<RuleChunk & { score: number }> — sorted by descending similarity.",
+        returns: "Array<RuleChunk & { score: number }>: sorted by descending similarity.",
         request: {
           lang: "typescript",
           code: `const hits = await convex.action(api.queries.searchRules, {
@@ -262,12 +262,12 @@ const cards = await convex.query(
             name: "normalizedAlias",
             type: "string",
             required: true,
-            desc: "Nickname — normalized (lower-cased, punctuation stripped) before the lookup.",
+            desc: "Nickname, normalized (lower-cased, punctuation stripped) before the lookup.",
             default: "Bob",
             normalize: true,
           },
         ],
-        returns: "Alias | null — { alias, normalizedAlias, oracleId, canonicalName }",
+        returns: "Alias | null: { alias, normalizedAlias, oracleId, canonicalName }",
         request: {
           lang: "typescript",
           code: `const alias = await convex.query(api.aliases.getByNormalizedAlias, {
@@ -304,7 +304,7 @@ const cards = await convex.query(
           { name: "oracleId", type: "string", required: true, desc: "Target card oracle id." },
           { name: "canonicalName", type: "string", required: true, desc: "Canonical card name." },
         ],
-        returns: "boolean — true if inserted, false if patched.",
+        returns: "boolean: true if inserted, false if patched.",
         request: {
           lang: "typescript",
           code: `await convex.mutation(api.aliases.upsert, {
@@ -334,7 +334,7 @@ const cards = await convex.query(
           { name: "kind", type: '"rules_qa" | "card_resolution"', required: false, desc: "Filter by case kind.", options: KIND_OPTIONS },
           { name: "limit", type: "number", required: false, desc: "Cap the result count.", default: "5" },
         ],
-        returns: "EvalCase[] — sorted by externalId.",
+        returns: "EvalCase[]: sorted by externalId.",
         request: {
           lang: "typescript",
           code: `const cases = await convex.query(api.evalCases.listEvalCasesBySuite, {
@@ -449,7 +449,7 @@ const cards = await convex.query(
         name: "/api/referee-stream",
         path: "POST /api/referee-stream",
         summary:
-          "Website proxy. Streams a live run of referee_v2 as newline-delimited JSON — one GraphEvent per line (start → node… → final).",
+          "Website proxy. Streams a live run of referee_v2 as newline-delimited JSON: one GraphEvent per line (start → node… → final).",
         params: [
           {
             name: "question",
@@ -485,7 +485,7 @@ const cards = await convex.query(
           "The deployed assistant directly. Authenticate with the LangSmith API key; stream in 'updates' mode to get one payload per node.",
         params: [
           { name: "assistantId", type: "string", required: true, desc: 'Graph name. Default "referee_v2" (also: baseline_rag, referee).' },
-          { name: "input", type: "RefereeState", required: true, desc: "Initial state — at minimum { question }, with list fields initialized." },
+          { name: "input", type: "RefereeState", required: true, desc: "Initial state, at minimum { question }, with list fields initialized." },
           { name: "streamMode", type: '"updates" | "values"', required: false, desc: '"updates" emits per-node deltas.' },
         ],
         returns: "Async stream of { event, data } chunks; node deltas mirror RefereeState.",
@@ -523,7 +523,7 @@ for await (const chunk of stream) {
         path: "resolveCard(name)",
         summary: "Resolve a misspelled or nicknamed card name through the full resolver ladder.",
         params: [{ name: "name", type: "string", required: true, desc: "Raw card name or nickname." }],
-        returns: "{ status, card, candidates, confidence } — status ∈ resolved | ambiguous | not_found | rules_concept.",
+        returns: "{ status, card, candidates, confidence }: status ∈ resolved | ambiguous | not_found | rules_concept.",
         request: {
           lang: "json",
           code: `{ "tool": "resolveCard", "arguments": { "name": "bob" } }`,

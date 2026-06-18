@@ -16,7 +16,7 @@ const SUITES: Suite[] = [
   {
     name: "benchmark",
     count: 125,
-    blurb: "The full stratified evaluation set — sampled across complexity and difficulty to mirror the corpus.",
+    blurb: "The full stratified evaluation set, sampled across complexity and difficulty to mirror the corpus.",
   },
   {
     name: "bench40",
@@ -27,7 +27,7 @@ const SUITES: Suite[] = [
   {
     name: "smoke",
     count: 15,
-    blurb: "A tiny set for fast CI sanity checks — does the pipeline still run and score sanely?",
+    blurb: "A tiny set for fast CI sanity checks: does the pipeline still run and score sanely?",
   },
   {
     name: "card_resolution",
@@ -55,7 +55,7 @@ const CASE_FIELDS = [
   ["expectedAnswer", "Expert reference answer the LLM judge grades against."],
   ["expectedRules", "Golden Comprehensive-Rule numbers (drives rule + citation recall)."],
   ["cards", "Cards the question is about (drives card recall / precision)."],
-  ["tags", "RulesGuru topic tags — sliced into interaction categories."],
+  ["tags", "RulesGuru topic tags, sliced into interaction categories."],
   ["complexity / level", "Stratification keys (Simple/Intermediate/Complicated × L0–L3)."],
 ]
 
@@ -136,7 +136,7 @@ function BenchmarksPage() {
         <Section
           icon={Shuffle}
           title="How cases are sampled"
-          subtitle="A pinned manifest (seed 42) keeps the suites identical across runs — so score deltas reflect the model, not the sample."
+          subtitle="A pinned manifest (seed 42) keeps the suites identical across runs, so score deltas reflect the model, not the sample."
         >
           <div className="grid gap-6 lg:grid-cols-2">
             <div className="space-y-3 text-sm leading-relaxed text-muted-foreground">
@@ -147,7 +147,7 @@ function BenchmarksPage() {
                 always included so trend lines stay comparable as the manifest grows.
               </p>
               <p>
-                bench40 is a stratified 40-case slice of benchmark — small enough to sweep
+                bench40 is a stratified 40-case slice of benchmark: small enough to sweep
                 models cheaply, balanced enough to stay representative.
               </p>
             </div>
@@ -215,7 +215,7 @@ function BenchmarksPage() {
             </p>
             <p>
               Answers are graded by a <Em>claude-sonnet-4.5</Em> judge for correctness and
-              faithfulness, alongside deterministic rule/citation/card recall checks — six
+              faithfulness, alongside deterministic rule/citation/card recall checks: six
               metrics in all. See the{" "}
               <Link to="/technical" className="text-primary underline-offset-2 hover:underline">
                 Technical

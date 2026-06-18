@@ -152,7 +152,7 @@ function Technical() {
           </h1>
           <p className="mt-4 max-w-2xl text-lg text-muted-foreground">
             Four architectures, a purpose-built metric suite, and the scores each earned on
-            a 40-case golden benchmark. Here&apos;s how they stack up — and the surprises
+            a 40-case golden benchmark. Here&apos;s how they stack up, and the surprises
             along the way.
           </p>
           <div className="mt-6 flex flex-wrap gap-2 text-xs">
@@ -230,7 +230,7 @@ function Technical() {
         <Section
           n="01"
           title="The architectures compared"
-          subtitle="From a single model call to a five-stage multi-agent graph. referee_v2 — highlighted in gold — is what ships."
+          subtitle="From a single model call to a five-stage multi-agent graph. referee_v2 (highlighted in gold) is what ships."
           id="architectures"
         >
           <Tabs defaultValue="referee_v2">
@@ -291,7 +291,7 @@ function Technical() {
                   <TabsContent value="efficiency" className="pt-3">
                     <ScoreTable rows={BENCH40_EFFICIENCY} />
                     <p className="mt-3 text-xs leading-relaxed text-muted-foreground">
-                      referee_v2 costs ~1.7× RAG and is ~4× slower at the median — the
+                      referee_v2 costs ~1.7× RAG and is ~4× slower at the median: the
                       price of decomposition, retrieval and a verifier loop.
                     </p>
                   </TabsContent>
@@ -303,10 +303,10 @@ function Technical() {
           {/* Where it helps */}
           <Card className="mt-6 border-border/60">
             <CardHeader>
-              <CardTitle className="text-base">Where the graph helps — and where it doesn&apos;t</CardTitle>
+              <CardTitle className="text-base">Where the graph helps, and where it doesn&apos;t</CardTitle>
               <CardDescription>
                 Correctness sliced from LangSmith example metadata. Buckets are small (n
-                shown) — read them as directional.
+                shown), so read them as directional.
               </CardDescription>
             </CardHeader>
             <CardContent>
@@ -321,7 +321,7 @@ function Technical() {
                     <p>
                       Gains concentrate where retrieval is the bottleneck:{" "}
                       <Em>costs &amp; casting</Em> (0.38 → 0.75) and{" "}
-                      <Em>replacement &amp; prevention</Em> (0.50 → 0.75) — questions where
+                      <Em>replacement &amp; prevention</Em> (0.50 → 0.75): questions where
                       pulling the precise rule decides the answer.
                     </p>
                     <p>
@@ -335,7 +335,7 @@ function Technical() {
                   <ComparisonBars buckets={COMPLEXITY_BREAKDOWN} />
                   <div className="flex flex-col justify-center gap-3 text-sm leading-relaxed text-muted-foreground">
                     <p>
-                      referee_v2 lifts <Em>Simple</Em> questions 0.57 → 0.75 — the bulk of
+                      referee_v2 lifts <Em>Simple</Em> questions 0.57 → 0.75: the bulk of
                       the benchmark (n=28) and the bulk of the overall win.
                     </p>
                     <p>
@@ -444,7 +444,7 @@ function Technical() {
                 2,891 characters at 0.600 correctness, while the concise gpt-5.5 (1,336
                 chars) leads at 0.838. At temperature 0, verbose derivation on trap
                 questions locks in an early wrong framing. <Em>gpt-5-mini</Em> ties
-                sonnet-4.5 on correctness at the lowest cost — the production pick.
+                sonnet-4.5 on correctness at the lowest cost, the production pick.
               </p>
             </div>
           </div>
@@ -459,7 +459,7 @@ function Technical() {
                   <Sparkles className="size-5" />
                 </span>
                 <h3 className="text-lg font-semibold tracking-tight">
-                  Wait — Opus did <span className="text-amber-500">badly?</span>
+                  Wait, Opus did <span className="text-amber-500">badly?</span>
                 </h3>
               </div>
               <p className="max-w-3xl text-sm leading-relaxed text-muted-foreground">
@@ -468,10 +468,10 @@ function Technical() {
                 <Em>gpt-5.5 led at 0.838</Em>. The pattern is consistent: longer answers
                 score worse. At temperature 0, opus-4.8 writes the most verbose
                 derivations (~2,900 chars/answer) and on trap questions it commits to an
-                early wrong framing, then reasons confidently toward the wrong verdict —
+                early wrong framing, then reasons confidently toward the wrong verdict:
                 miscounting, flipping yes/no, or misreading replacement effects. It's not
                 a pipeline bug (every model ran the same graph) and not hallucination
-                (faithfulness stayed high) — just a worse fit for terse, high-stakes
+                (faithfulness stayed high). It's just a worse fit for terse, high-stakes
                 adjudication.
               </p>
               <div className="flex flex-wrap items-center gap-2">
@@ -486,8 +486,8 @@ function Technical() {
                   </a>
                 </Button>
                 <span className="text-xs text-muted-foreground">
-                  Per-case scores, questions, and every model's answer — all 40 cases × 4
-                  models. Check it yourself.
+                  Per-case scores, questions, and every model's answer across all 40 cases
+                  × 4 models. Check it yourself.
                 </span>
               </div>
             </CardContent>
@@ -505,20 +505,20 @@ function Technical() {
             <VerdictCard
               icon={TrendingUp}
               kicker="Finding 1"
-              title="The graph wins — at a price"
-              body="referee_v2 leads correctness (0.70 vs RAG's 0.575) and triples rule retrieval, while tying on card resolution and citation validity. But it costs ~1.7× and runs ~4× slower — a premium you pay when answer quality matters more than latency."
+              title="The graph wins, at a price"
+              body="referee_v2 leads correctness (0.70 vs RAG's 0.575) and triples rule retrieval, while tying on card resolution and citation validity. But it costs ~1.7× and runs ~4× slower: a premium you pay when answer quality matters more than latency."
             />
             <VerdictCard
               icon={Layers}
               kicker="Finding 2"
               title="It helps evidence, not deduction"
-              body="The gains concentrate where retrieval is the bottleneck — costs & casting, replacement & prevention, and simple questions. On layers, continuous effects and harder reasoning puzzles it only ties RAG: more machinery finds better rules, it doesn't reason better."
+              body="The gains concentrate where retrieval is the bottleneck: costs & casting, replacement & prevention, and simple questions. On layers, continuous effects and harder reasoning puzzles it only ties RAG: more machinery finds better rules, it doesn't reason better."
             />
             <VerdictCard
               icon={Scale}
               kicker="Finding 3"
               title="Bigger model ≠ better referee"
-              body="On the adjudication sweep the frontier opus model ranked last; the concise gpt-5.5 led, and gpt-5-mini tied sonnet-4.5 on correctness at the lowest cost in the field — so gpt-5-mini is the production default."
+              body="On the adjudication sweep the frontier opus model ranked last; the concise gpt-5.5 led, and gpt-5-mini tied sonnet-4.5 on correctness at the lowest cost in the field, so gpt-5-mini is the production default."
             />
           </div>
         </Section>

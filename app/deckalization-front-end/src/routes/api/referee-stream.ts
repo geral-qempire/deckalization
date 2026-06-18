@@ -50,7 +50,7 @@ async function handlePost({ request }: { request: Request }): Promise<Response> 
 
   if (!deploymentUrl) {
     return Response.json(
-      { error: "Live runs are disabled — LANGGRAPH_DEPLOYMENT_URL is not set." },
+      { error: "Live runs are disabled: LANGGRAPH_DEPLOYMENT_URL is not set." },
       { status: 503 },
     )
   }

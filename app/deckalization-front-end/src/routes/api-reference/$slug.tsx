@@ -260,7 +260,7 @@ function ParamField({
           >
             {param.options.map((o) => (
               <option key={o} value={o}>
-                {o === "" ? "— any —" : o}
+                {o === "" ? "(any)" : o}
               </option>
             ))}
           </select>
@@ -354,7 +354,7 @@ async function runStream(
 
 function referenceNote(endpoint: Endpoint): string {
   if (endpoint.kind === "tool") {
-    return "Exposed over MCP — call it from your MCP host (Cursor, Claude Desktop) after launching the server with `uv run python -m mcp_server.server`."
+    return "Exposed over MCP. Call it from your MCP host (Cursor, Claude Desktop) after launching the server with `uv run python -m mcp_server.server`."
   }
   if (endpoint.kind === "stream") {
     return "Runs server-side with the LangSmith API key. Use the website proxy /api/referee-stream to try a live run from the browser."

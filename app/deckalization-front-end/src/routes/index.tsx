@@ -69,7 +69,7 @@ function Home() {
             </h2>
             <p className="mt-2 max-w-2xl text-sm text-muted-foreground">
               40 expert-curated rules questions, judged by an LLM against reference
-              answers. The multi-agent referee leads on correctness — and the best
+              answers. The multi-agent referee leads on correctness, and the best
               reasoning model to power it turned out to be a small one, not a frontier one.
             </p>
           </div>
@@ -98,7 +98,7 @@ function Home() {
             <CardHeader>
               <CardTitle className="text-base">Cost vs. correctness</CardTitle>
               <CardDescription>
-                Adjudication-model sweep — up and to the left is better.
+                Adjudication-model sweep: up and to the left is better.
               </CardDescription>
             </CardHeader>
             <CardContent className="flex items-center justify-center">
@@ -135,7 +135,7 @@ function Home() {
           to="/demo"
           icon={<Network className="size-5" />}
           title="Inside the graph"
-          body="Send a question and watch it flow through the referee: routing, card resolution, query decomposition, rules retrieval, adjudication, and the verifier loop — each node's output revealed in real time."
+          body="Send a question and watch it flow through the referee: routing, card resolution, query decomposition, rules retrieval, adjudication, and the verifier loop, with each node's output revealed in real time."
           cta="Open the demo"
         />
       </section>

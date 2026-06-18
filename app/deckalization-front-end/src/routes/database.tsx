@@ -38,9 +38,9 @@ const TABLES: TableDef[] = [
     name: "cards",
     rows: "~30,000 Oracle cards",
     purpose:
-      "The Oracle-card mirror, refreshed from Scryfall bulk data. Keyed/relational lookup by normalized name — never vectorized, because the question already names the card.",
+      "The Oracle-card mirror, refreshed from Scryfall bulk data. Keyed/relational lookup by normalized name, never vectorized, because the question already names the card.",
     fields: [
-      { name: "oracleId", type: "string", desc: "Scryfall oracle_id — stable card identity; upsert key." },
+      { name: "oracleId", type: "string", desc: "Scryfall oracle_id; stable card identity and upsert key." },
       { name: "name", type: "string", desc: "Display name." },
       { name: "normalizedName", type: "string", desc: "Lower-cased, punctuation/diacritics-stripped key for exact lookup." },
       { name: "oracleText", type: "string", desc: "Full Oracle rules text." },
@@ -55,7 +55,7 @@ const TABLES: TableDef[] = [
       { name: "legalities", type: "any", desc: "Format → legality map." },
       { name: "rulings", type: "any[]", desc: "Official card rulings (full text, untruncated)." },
       { name: "layout", type: "string", optional: true, desc: 'Scryfall layout ("normal", "token", "art_series").' },
-      { name: "setType", type: "string", optional: true, desc: "Set type — lets the resolver prefer playable printings." },
+      { name: "setType", type: "string", optional: true, desc: "Set type; lets the resolver prefer playable printings." },
       { name: "scryfallId", type: "string", optional: true, desc: "Bookkeeping for idempotent refresh." },
       { name: "updatedAt", type: "number", desc: "Last-refresh timestamp." },
     ],
@@ -69,7 +69,7 @@ const TABLES: TableDef[] = [
     name: "ruleChunks",
     rows: "Comprehensive Rules, chunked",
     purpose:
-      "Parsed + embedded Comprehensive Rules. Semantic vector search by meaning — you don't know the rule number up front, so you retrieve by similarity.",
+      "Parsed + embedded Comprehensive Rules. Semantic vector search by meaning, because you don't know the rule number up front, so you retrieve by similarity.",
     fields: [
       { name: "ruleNumber", type: "string", desc: 'CR number, e.g. "601.2a".' },
       { name: "section", type: "string", desc: "Top-level CR section." },
@@ -99,7 +99,7 @@ const TABLES: TableDef[] = [
     name: "evalCases",
     rows: "~1,160 golden cases",
     purpose:
-      "The golden benchmark store — the full RulesGuru corpus plus fixed benchmark/smoke subsets. See the Benchmarks page for how the suites are sampled.",
+      "The golden benchmark store: the full RulesGuru corpus plus fixed benchmark/smoke subsets. See the Benchmarks page for how the suites are sampled.",
     fields: [
       { name: "source", type: "string", desc: '"rulesguru" | "hand".' },
       { name: "externalId", type: "string", desc: "Id within the source." },
@@ -112,8 +112,8 @@ const TABLES: TableDef[] = [
       { name: "complexity", type: "string", optional: true, desc: "Simple / Intermediate / Complicated." },
       { name: "level", type: "string", optional: true, desc: "Difficulty level (L0–L3 / Corner Case)." },
       { name: "sourceUrl", type: "string", optional: true, desc: "Link to the original question." },
-      { name: "expectedStatus", type: "string", optional: true, desc: "card_resolution only — expected resolve status." },
-      { name: "expectedCardName", type: "string", optional: true, desc: "card_resolution only — expected card." },
+      { name: "expectedStatus", type: "string", optional: true, desc: "card_resolution only: expected resolve status." },
+      { name: "expectedCardName", type: "string", optional: true, desc: "card_resolution only: expected card." },
       { name: "suites", type: "string[]", desc: 'Suite membership: "benchmark", "bench40", "smoke", …' },
       { name: "updatedAt", type: "number", desc: "Last-write timestamp." },
     ],
@@ -136,7 +136,7 @@ function DatabasePage() {
           </span>
           <h1 className="mt-4 text-4xl font-semibold tracking-tight sm:text-5xl">Database</h1>
           <p className="mt-4 max-w-2xl text-lg text-muted-foreground">
-            deckalization runs on Convex — two datasets, two access patterns. Cards are
+            deckalization runs on Convex with two datasets and two access patterns. Cards are
             looked up relationally by normalized name (plus fuzzy search); the
             Comprehensive Rules are retrieved by meaning through a vector index. Aliases
             feed the resolver, and eval cases hold the golden benchmark.

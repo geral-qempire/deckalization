@@ -42,7 +42,7 @@ export function RulingCard({
             {ruling.rule_citations.map((c, i) => (
               <li key={`${c.rule_number}-${i}`} className="rounded-md border border-border/50 bg-muted/30 p-2 text-xs">
                 <span className="font-semibold text-primary">CR {c.rule_number}</span>
-                <span className="text-muted-foreground"> — {c.excerpt}</span>
+                <span className="text-muted-foreground">: {c.excerpt}</span>
               </li>
             ))}
           </ul>
@@ -58,7 +58,7 @@ export function RulingCard({
             {ruling.card_citations.map((c, i) => (
               <li key={`${c.name}-${i}`} className="rounded-md border border-border/50 bg-muted/30 p-2 text-xs">
                 <span className="font-semibold">{c.name}</span>
-                <span className="text-muted-foreground"> — {c.oracle_excerpt}</span>
+                <span className="text-muted-foreground">: {c.oracle_excerpt}</span>
               </li>
             ))}
           </ul>
