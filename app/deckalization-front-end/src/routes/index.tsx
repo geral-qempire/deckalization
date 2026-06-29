@@ -20,7 +20,9 @@ export const Route = createFileRoute("/")({ component: Home })
 
 function Home() {
   return (
-    <main className="mx-auto max-w-6xl px-4 py-16 sm:py-24">
+    <main className="relative">
+      <div className="pointer-events-none absolute inset-x-0 top-0 h-[520px] bg-[radial-gradient(60%_120%_at_50%_-10%,color-mix(in_oklab,var(--color-primary)_14%,transparent),transparent)]" />
+      <div className="relative mx-auto max-w-6xl px-4 py-16 sm:py-24">
       <section className="flex flex-col items-start gap-6">
         <span className="inline-flex items-center gap-2 rounded-full border border-border/60 bg-muted/40 px-3 py-1 text-xs text-muted-foreground">
           <ShieldCheck className="size-3.5 text-primary" />
@@ -139,6 +141,7 @@ function Home() {
           cta="Open the demo"
         />
       </section>
+      </div>
     </main>
   )
 }

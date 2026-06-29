@@ -2,6 +2,7 @@ import { Link, createFileRoute } from "@tanstack/react-router"
 import { FlaskConical, GitBranch, Scale, Shuffle } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { MetricBar } from "@/components/charts"
 
 export const Route = createFileRoute("/benchmarks")({ component: BenchmarksPage })
 
@@ -158,19 +159,14 @@ function BenchmarksPage() {
               </CardHeader>
               <CardContent className="space-y-3">
                 {COMPLEXITY.map((c) => (
-                  <div key={c.label} className="flex items-center gap-3">
-                    <span className="w-24 shrink-0 text-xs text-muted-foreground">{c.label}</span>
-                    <div className="relative h-5 flex-1 overflow-hidden rounded-md bg-muted/50">
-                      <div
-                        className="flex h-full items-center justify-end rounded-md bg-primary pr-1.5"
-                        style={{ width: `${(c.n / BENCH40_TOTAL) * 100}%` }}
-                      >
-                        <span className="text-[10px] font-semibold tabular-nums text-background/90">
-                          {c.n}
-                        </span>
-                      </div>
-                    </div>
-                  </div>
+                  <MetricBar
+                    key={c.label}
+                    label={c.label}
+                    fillPct={(c.n / BENCH40_TOTAL) * 100}
+                    value={String(c.n)}
+                    barClassName="bg-primary"
+                    forceLabelOutside
+                  />
                 ))}
               </CardContent>
             </Card>

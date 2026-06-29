@@ -3,6 +3,7 @@ import { Link } from "@tanstack/react-router"
 import { Gavel, Menu, X } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { SOCIAL_LINKS } from "@/components/brand-icons"
+import { ThemeToggle } from "@/components/theme-toggle"
 
 const links = [
   { to: "/", label: "Overview" },
@@ -45,6 +46,7 @@ export function SiteNav() {
         </nav>
 
         <div className="ml-auto flex items-center gap-1.5">
+          <ThemeToggle />
           {SOCIAL_LINKS.map((s) => (
             <a
               key={s.label}

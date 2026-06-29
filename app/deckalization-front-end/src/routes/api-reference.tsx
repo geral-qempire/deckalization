@@ -6,7 +6,9 @@ export const Route = createFileRoute("/api-reference")({ component: ApiLayout })
 
 function ApiLayout() {
   return (
-    <div className="mx-auto grid max-w-6xl gap-10 px-4 py-10 lg:grid-cols-[230px_1fr]">
+    <div className="relative">
+    <div className="pointer-events-none absolute inset-x-0 top-0 h-[420px] bg-[radial-gradient(60%_120%_at_50%_-10%,color-mix(in_oklab,var(--color-primary)_12%,transparent),transparent)]" />
+    <div className="relative mx-auto grid max-w-6xl gap-10 px-4 py-10 lg:grid-cols-[230px_1fr]">
       <aside className="hidden lg:block">
         <nav className="sticky top-20 space-y-6">
           <Link
@@ -45,6 +47,7 @@ function ApiLayout() {
       <div className="min-w-0">
         <Outlet />
       </div>
+    </div>
     </div>
   )
 }

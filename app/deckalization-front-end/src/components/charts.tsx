@@ -14,6 +14,16 @@ const PIPELINE_DOT: Record<PipelineKey, string> = {
   referee_v2: "bg-primary",
 }
 
+// Color of the value rendered inside the bar. The yellow (primary) fill keeps a
+// dark label in both themes; the others go white in dark mode.
+const DARK_ON_FILL = "text-background/90"
+const WHITE_IN_DARK = "text-background dark:text-foreground"
+const PIPELINE_INSIDE_LABEL: Record<PipelineKey, string> = {
+  zero_shot: WHITE_IN_DARK,
+  baseline_rag: WHITE_IN_DARK,
+  referee_v2: DARK_ON_FILL,
+}
+
 export function PipelineLegend() {
   return (
     <div className="flex flex-wrap items-center gap-4 text-xs text-muted-foreground">
@@ -23,6 +33,72 @@ export function PipelineLegend() {
           {p.label}
         </span>
       ))}
+    </div>
+  )
+}
+
+/**
+ * One horizontal bar row: a left-hand label and the bar track with the numeric
+ * value rendered inside the fill (right-aligned). When the fill is too short to
+ * hold the text it spills just past the fill edge instead, so the number is
+ * always readable in both themes.
+ */
+export function MetricBar({
+  label,
+  fillPct,
+  value,
+  barClassName,
+  insideLabelClassName = WHITE_IN_DARK,
+  forceLabelOutside = false,
+}: {
+  label: string
+  /** Bar width as a percentage (0-100), or null when there is no data. */
+  fillPct: number | null
+  /** Formatted value text, or null to show "n/a". */
+  value: string | null
+  barClassName?: string
+  /** Color of the value when it sits inside the fill. */
+  insideLabelClassName?: string
+  /** Always render the value past the fill edge, never inside it. */
+  forceLabelOutside?: boolean
+}) {
+  // Below this fill width the value won't fit inside the bar, so render it just
+  // past the fill edge in the foreground color instead.
+  const labelFitsInside = !forceLabelOutside && fillPct !== null && fillPct >= 24
+
+  return (
+    <div className="flex items-center gap-2">
+      <span className="w-24 shrink-0 text-xs text-muted-foreground">{label}</span>
+      <div className="relative h-5 flex-1 rounded-md bg-muted/50">
+        {fillPct === null ? (
+          <span className="absolute inset-y-0 left-2 flex items-center text-xs text-muted-foreground">
+            n/a
+          </span>
+        ) : (
+          <>
+            <div
+              className={cn(
+                "absolute inset-y-0 left-0 rounded-md transition-[width] duration-700",
+                barClassName,
+              )}
+              style={{ width: `${Math.max(fillPct, 1)}%` }}
+            />
+            <span
+              className={cn(
+                "absolute inset-y-0 flex items-center text-xs font-semibold tabular-nums",
+                labelFitsInside ? insideLabelClassName : "text-foreground",
+              )}
+              style={
+                labelFitsInside
+                  ? { right: `calc(${100 - fillPct}% + 0.5rem)` }
+                  : { left: `calc(${fillPct}% + 0.375rem)` }
+              }
+            >
+              {value}
+            </span>
+          </>
+        )}
+      </div>
     </div>
   )
 }
@@ -40,31 +116,14 @@ export function MetricBars({ rows }: { rows: ScoreRow[] }) {
             {PIPELINES.map((p) => {
               const v = row[p.key]
               return (
-                <div key={p.key} className="flex items-center gap-2">
-                  <span className="w-24 shrink-0 text-xs text-muted-foreground">
-                    {p.label}
-                  </span>
-                  <div className="relative h-5 flex-1 overflow-hidden rounded-md bg-muted/50">
-                    {v !== null && (
-                      <div
-                        className={cn(
-                          "flex h-full items-center justify-end rounded-md pr-1.5 transition-[width] duration-700",
-                          PIPELINE_BAR[p.key],
-                        )}
-                        style={{ width: `${Math.max(v * 100, 6)}%` }}
-                      >
-                        <span className="text-[10px] font-semibold text-background/90 tabular-nums">
-                          {v.toFixed(3)}
-                        </span>
-                      </div>
-                    )}
-                    {v === null && (
-                      <span className="absolute left-2 top-1/2 -translate-y-1/2 text-[10px] text-muted-foreground">
-                        n/a
-                      </span>
-                    )}
-                  </div>
-                </div>
+                <MetricBar
+                  key={p.key}
+                  label={p.label}
+                  fillPct={v !== null ? Math.max(v * 100, 6) : null}
+                  value={v !== null ? v.toFixed(3) : null}
+                  barClassName={PIPELINE_BAR[p.key]}
+                  insideLabelClassName={PIPELINE_INSIDE_LABEL[p.key]}
+                />
               )
             })}
           </div>
@@ -101,30 +160,14 @@ export function ComparisonBars({
             {series.map((key) => {
               const v = bucket.values[key] ?? null
               return (
-                <div key={key} className="flex items-center gap-2">
-                  <span className="w-24 shrink-0 text-xs text-muted-foreground">
-                    {labelFor(key)}
-                  </span>
-                  <div className="relative h-5 flex-1 overflow-hidden rounded-md bg-muted/50">
-                    {v !== null ? (
-                      <div
-                        className={cn(
-                          "flex h-full items-center justify-end rounded-md pr-1.5 transition-[width] duration-700",
-                          PIPELINE_BAR[key],
-                        )}
-                        style={{ width: `${Math.max(v * 100, 6)}%` }}
-                      >
-                        <span className="text-[10px] font-semibold text-background/90 tabular-nums">
-                          {v.toFixed(2)}
-                        </span>
-                      </div>
-                    ) : (
-                      <span className="absolute left-2 top-1/2 -translate-y-1/2 text-[10px] text-muted-foreground">
-                        n/a
-                      </span>
-                    )}
-                  </div>
-                </div>
+                <MetricBar
+                  key={key}
+                  label={labelFor(key)}
+                  fillPct={v !== null ? Math.max(v * 100, 6) : null}
+                  value={v !== null ? v.toFixed(2) : null}
+                  barClassName={PIPELINE_BAR[key]}
+                  insideLabelClassName={PIPELINE_INSIDE_LABEL[key]}
+                />
               )
             })}
           </div>
@@ -191,13 +234,13 @@ export function CostCorrectnessScatter({
       {yTicks.map((t) => (
         <g key={`y${t}`}>
           <line x1={pad.left - 4} y1={py(t)} x2={w - pad.right} y2={py(t)} className="stroke-border/40" strokeWidth={1} strokeDasharray="3 3" />
-          <text x={pad.left - 8} y={py(t) + 3} textAnchor="end" className="fill-muted-foreground text-[10px]">
+          <text x={pad.left - 8} y={py(t) + 4} textAnchor="end" className="fill-foreground/80 text-xs font-medium tabular-nums">
             {t.toFixed(2)}
           </text>
         </g>
       ))}
       {xTicks.map((t) => (
-        <text key={`x${t}`} x={px(t)} y={h - pad.bottom + 16} textAnchor="middle" className="fill-muted-foreground text-[10px]">
+        <text key={`x${t}`} x={px(t)} y={h - pad.bottom + 18} textAnchor="middle" className="fill-foreground/80 text-xs font-medium tabular-nums">
           ${t.toFixed(2)}
         </text>
       ))}
@@ -209,17 +252,21 @@ export function CostCorrectnessScatter({
             x={px(p.x) + (p.labelDx ?? 0)}
             y={py(p.y) + (p.labelDy ?? -12)}
             textAnchor={p.labelAnchor ?? "middle"}
-            className="fill-foreground text-[10px] font-medium"
+            className="fill-foreground text-[11px] font-semibold"
+            stroke="var(--background)"
+            strokeWidth={3}
+            strokeLinejoin="round"
+            style={{ paintOrder: "stroke" }}
           >
             {p.label}
           </text>
         </g>
       ))}
 
-      <text x={(w + pad.left) / 2} y={h - 6} textAnchor="middle" className="fill-muted-foreground text-[11px]">
+      <text x={(w + pad.left) / 2} y={h - 6} textAnchor="middle" className="fill-foreground/70 text-xs font-medium">
         {xLabel}
       </text>
-      <text x={-(h - pad.bottom) / 2} y={14} textAnchor="middle" transform="rotate(-90)" className="fill-muted-foreground text-[11px]">
+      <text x={-(h - pad.bottom) / 2} y={14} textAnchor="middle" transform="rotate(-90)" className="fill-foreground/70 text-xs font-medium">
         {yLabel}
       </text>
     </svg>

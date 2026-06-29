@@ -36,8 +36,8 @@ export function CodeBlock({
     })
   }
   return (
-    <div className={cn("overflow-hidden rounded-xl border border-border/60 bg-[#0d1117]", className)}>
-      <div className="flex items-center justify-between border-b border-border/60 bg-white/[0.03] px-3 py-1.5">
+    <div className={cn("overflow-hidden rounded-xl border border-border/60 bg-muted/40 dark:bg-[#0d1117]", className)}>
+      <div className="flex items-center justify-between border-b border-border/60 bg-black/[0.03] px-3 py-1.5 dark:bg-white/[0.03]">
         <span className="text-[11px] font-medium text-muted-foreground">
           {label ?? sample.lang}
         </span>
@@ -45,7 +45,7 @@ export function CodeBlock({
           type="button"
           onClick={copy}
           aria-label="Copy code"
-          className="inline-flex items-center gap-1 rounded-md px-1.5 py-0.5 text-[11px] text-muted-foreground transition-colors hover:bg-white/5 hover:text-foreground"
+          className="inline-flex items-center gap-1 rounded-md px-1.5 py-0.5 text-[11px] text-muted-foreground transition-colors hover:bg-foreground/5 hover:text-foreground dark:hover:bg-white/5"
         >
           {copied ? <Check className="size-3" /> : <Copy className="size-3" />}
           {copied ? "Copied" : "Copy"}

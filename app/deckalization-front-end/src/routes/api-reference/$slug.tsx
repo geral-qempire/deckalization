@@ -212,7 +212,7 @@ function EndpointDetail({ endpoint, groupTitle }: { endpoint: Endpoint; groupTit
                 </span>
               )}
             </div>
-            <div className="mt-2 overflow-hidden rounded-xl border border-border/60 bg-[#0d1117]">
+            <div className="mt-2 overflow-hidden rounded-xl border border-border/60 bg-muted/40 dark:bg-[#0d1117]">
               <pre className="max-h-[420px] overflow-auto p-4 text-xs leading-relaxed">
                 <code className="font-mono text-foreground/90">
                   {body ||

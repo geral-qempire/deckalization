@@ -5,6 +5,8 @@ import type { QueryClient } from "@tanstack/react-query"
 import { TooltipProvider } from "@/components/ui/tooltip"
 import { SiteNav } from "@/components/site-nav"
 import { SiteFooter } from "@/components/site-footer"
+import { ThemeProvider } from "@/components/theme-provider"
+import { THEME_INIT_SCRIPT } from "@/lib/theme"
 
 import appCss from "../styles.css?url"
 
@@ -51,18 +53,22 @@ export const Route = createRootRouteWithContext<{
 
 function RootDocument({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className="dark">
+    <html lang="en" suppressHydrationWarning>
       <head>
+        {/* Set the theme before paint to avoid a flash of the wrong colours. */}
+        <script dangerouslySetInnerHTML={{ __html: THEME_INIT_SCRIPT }} />
         <HeadContent />
       </head>
       <body>
-        <TooltipProvider delayDuration={150}>
-          <div className="flex min-h-svh flex-col">
-            <SiteNav />
-            <div className="flex-1">{children}</div>
-            <SiteFooter />
-          </div>
-        </TooltipProvider>
+        <ThemeProvider>
+          <TooltipProvider delayDuration={150}>
+            <div className="flex min-h-svh flex-col">
+              <SiteNav />
+              <div className="flex-1">{children}</div>
+              <SiteFooter />
+            </div>
+          </TooltipProvider>
+        </ThemeProvider>
         <TanStackDevtools
           config={{
             position: "bottom-right",
